@@ -6,7 +6,7 @@
 |---|---|
 | Client | Aura Logistic SRL (Sibiu) |
 | Domeniu | Transport alternativ de persoane |
-| Persoana intervievată | **[DE COMPLETAT: nume, rol în firmă — ex. administrator]** |
+| Persoana intervievată | Oprescu Gabriel, Administrator |
 | Data | 16.11.2026 |
 | Locul | Față în față, la biroul clientului |
 | Contabil | Nu a participat |

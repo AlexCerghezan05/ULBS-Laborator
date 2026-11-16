@@ -12,7 +12,7 @@
 - Q-001 · What will this repo hold, and in which stack? · _investigating_
 - Q-002 · Which build, run and test commands does the project use?
 - Q-003 · How is work released or handed in?
-- Q-004 · Cine a răspuns la interviu
+- Q-004 · Cine a răspuns la interviu · _answered_
 - Q-005 · Contactul contabilului
 - Q-006 · Proforme
 - Q-007 · Regula de rotunjire
@@ -46,7 +46,8 @@
 - **Who answers:** Alexandru Cerghezan
 
 ## Q-004 · Cine a răspuns la interviu
-- **Status:** open
+- **Status:** answered
+- **Answer:** Oprescu Gabriel, Administrator al Aura Logistic SRL (16.11.2026).
 - **Context:** Numele și rolul persoanei din Aura Logistic SRL care a răspuns (administrator?). Necesar pentru INTERVIEW.md.
 - **Blocks:** INTERVIEW.md (persoana intervievată).
 - **Who answers:** Alexandru Cerghezan (răspunsul vine de la client, Aura Logistic SRL)
