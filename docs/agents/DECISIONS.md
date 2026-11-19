@@ -35,4 +35,6 @@
 - D-002 · Stack: Java 21 + Spring Boot, PostgreSQL, React + TypeScript
 - D-003 · O singură firmă furnizor pe instalare
 - D-012 · Roluri: Admin, Operator, Contabil, cu drepturile pe ecrane
+- D-023 · Build și rulare: Maven, testele în profilul `test` din Compose, frontend în nginx
+- D-024 · Securitate de bază: nginx, Docker, CI, fără indexare
 

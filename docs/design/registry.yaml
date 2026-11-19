@@ -147,3 +147,12 @@ designs:
     screenshots: []
     design_ref: none
     status: planned
+
+  - id: DS-p21-health
+    kind: screen
+    summary: Ecran tehnic temporar al scheletului (D-023) - cere o dată GET /api/health și arată răspunsul (încărcare, succes, eroare). Dispare când apare DS-p21-login.
+    roles: oricine, fără autentificare (autentificarea are plan separat, D-012)
+    source: frontend/src/App.tsx
+    screenshots: []
+    design_ref: mocks/DS-p21-health.html
+    status: implemented

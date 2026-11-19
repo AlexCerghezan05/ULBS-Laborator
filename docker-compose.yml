@@ -1,0 +1,67 @@
+# D-001, D-023. Rulare: docker compose up --build
+# Teste: docker compose --profile test run --rm backend-test
+x-db-env: &db-env
+  POSTGRES_DB: ${POSTGRES_DB:?Setați POSTGRES_DB în .env (vezi .env.example)}
+  POSTGRES_USER: ${POSTGRES_USER:?Setați POSTGRES_USER în .env (vezi .env.example)}
+  POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Setați POSTGRES_PASSWORD în .env (vezi .env.example)}
+
+x-db-healthcheck: &db-healthcheck
+  test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
+  interval: 2s
+  timeout: 3s
+  retries: 30
+
+services:
+  db:
+    image: postgres:18.7-alpine
+    environment: *db-env
+    volumes:
+      - db-data:/var/lib/postgresql
+    healthcheck: *db-healthcheck
+
+  backend:
+    build: ./backend
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/${POSTGRES_DB}
+      SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER}
+      SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD}
+    ports:
+      - "127.0.0.1:8081:8080" # D-024: doar local
+    depends_on:
+      db:
+        condition: service_healthy
+
+  frontend:
+    build: ./frontend
+    ports:
+      - "127.0.0.1:8090:80" # D-024: doar local; 8080 e ocupat pe host
+    depends_on:
+      - backend
+
+  db-test:
+    profiles: [test]
+    image: postgres:18.7-alpine
+    environment: *db-env
+    tmpfs:
+      - /var/lib/postgresql
+    healthcheck: *db-healthcheck
+
+  backend-test:
+    profiles: [test]
+    image: maven:3.9.16-eclipse-temurin-21
+    working_dir: /app
+    command: mvn -B verify
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db-test:5432/${POSTGRES_DB}
+      SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER}
+      SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - ./backend:/app
+      - m2:/root/.m2
+    depends_on:
+      db-test:
+        condition: service_healthy
+
+volumes:
+  db-data:
+  m2:

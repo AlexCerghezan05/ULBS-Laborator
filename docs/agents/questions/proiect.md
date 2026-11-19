@@ -9,7 +9,8 @@
 - **Who answers:** Alexandru Cerghezan
 
 ## Q-002 · Which build, run and test commands does the project use?
-- **Status:** open
+- **Status:** answered
+- **Answer:** `cp .env.example .env` (o dată, cu parola completată); rulare: `docker compose up --build` (frontend http://localhost:8090, backend http://localhost:8081); build: `docker compose build`; teste: `docker compose --profile test run --rm backend-test` (`mvn -B verify` pe `db-test`); frontend-ul nu are încă teste (Alexandru Cerghezan, 19.11.2026, planul „Scheletul proiectului”; D-023).
 - **Blocks:** AGENTS.md sections 2 and 6 (definition of done).
 - **Who answers:** Alexandru Cerghezan (after Q-001)
 
@@ -17,6 +18,7 @@
 - **Status:** open
 - **Blocks:** AGENTS.md section 5 (branches, tags, delivery).
 - **Who answers:** Alexandru Cerghezan
+- **Confirmed:** 2026-11-19
 
 ## Q-021 · Unde rulează deploy-ul live HTTPS
 - **Status:** open
@@ -24,6 +26,7 @@
 - **Blocks:** Deploy-ul live; AGENTS.md §5.
 - **Who answers:** Alexandru Cerghezan
 - **Source:** docs/brief.md (cerințe comune); interviul cu Alexandru Cerghezan, 19.11.2026
+- **Confirmed:** 2026-11-19
 
 ## Q-022 · Cum facem screenshot-urile aplicației
 - **Status:** open
@@ -31,3 +34,11 @@
 - **Blocks:** AGENTS.md §2 (comanda de screenshot) și §6 (Definition of Done pentru UI).
 - **Who answers:** Alexandru Cerghezan
 - **Source:** setup-ul de design, 19.11.2026
+- **Confirmed:** 2026-11-19
+
+## Q-035 · CSP complet pentru aplicație
+- **Status:** open
+- **Context:** D-024 pune în nginx doar `X-Content-Type-Options`, `X-Frame-Options` și `Referrer-Policy`. Un `Content-Security-Policy` complet (surse permise pentru scripturi, stiluri, imagini, `connect-src`, `form-action`) lipsește. Contează odată cu formularele de facturare (DS-p21-invoice-form), care trimit date spre `/api`.
+- **Blocks:** Headerele de securitate pentru formularele de facturare; o eventuală extindere a D-024.
+- **Who answers:** Alexandru Cerghezan
+- **Source:** review-ul PR #1 (Security), 19.11.2026; owner-ul a amânat CSP-ul

@@ -4,8 +4,9 @@ Aplicație de facturare cu export e-Factura (UBL 2.1, RO_CIUS) pentru un client 
 o firmă mică din Sibiu (Aura Logistic SRL, transport alternativ de persoane).
 Proiectul P21 din catalogul Web Avansat. Fișa completă: [`docs/brief.md`](docs/brief.md).
 
-> Stadiu (19.11.2026): scope și stack aprobate (D-002…D-022 în
-> [`docs/agents/DECISIONS.md`](docs/agents/DECISIONS.md)). Nu există cod încă.
+> Stadiu (19.11.2026): scope și stack aprobate (D-002…D-023 în
+> [`docs/agents/DECISIONS.md`](docs/agents/DECISIONS.md)). Există scheletul: backend cu
+> `GET /api/health`, prima migrare (cotele de TVA, D-020), pagina de stare, Docker Compose și CI.
 
 ## Documente
 | Ce | Unde |
@@ -66,5 +67,13 @@ Proiectul P21 din catalogul Web Avansat. Fișa completă: [`docs/brief.md`](docs
 ```bash
 # Ledger lint (Python rulează în Docker):
 MSYS_NO_PATHCONV=1 docker run --rm -v "$(pwd -W):/repo" -w /repo python:3.12-slim python3 docs/agents/tools/ledger-lint.py --fix
-# build / run / test: încă nu există (Q-002)
+# O dată: copiați fișierul de mediu și completați parola
+cp .env.example .env
+# Rulare (frontend http://localhost:8090, backend http://localhost:8081):
+docker compose up --build
+# Build:
+docker compose build
+# Teste (mvn -B verify pe Postgres-ul db-test, D-023):
+docker compose --profile test run --rm backend-test
 ```
+CI (GitHub Actions, `.github/workflows/ci.yml`) rulează testele și ledger-lint la fiecare push.

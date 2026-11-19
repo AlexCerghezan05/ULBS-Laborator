@@ -86,11 +86,23 @@ Stack: Java 21 + Spring Boot, PostgreSQL + Flyway, REST + OpenAPI, React + TypeS
 ```bash
 # Ledger lint (Python is not installed on the host; runs in Docker):
 MSYS_NO_PATHCONV=1 docker run --rm -v "$(pwd -W):/repo" -w /repo python:3.12-slim python3 docs/agents/tools/ledger-lint.py --fix
-# install / build / run / test: none yet (Q-002)
-# screenshot (UI): none yet, no UI code (Q-022)
+# Setup (once): copy the example env file and set the password
+cp .env.example .env
+# Run everything (frontend http://localhost:8090, backend http://localhost:8081):
+docker compose up --build
+# Build the images:
+docker compose build
+# Test (mvn -B verify on the db-test Postgres, D-023):
+docker compose --profile test run --rm backend-test
+# Frontend tests: none yet.
+# screenshot (UI): none yet (Q-022)
 ```
 
 ## 3. Layout
+- `backend/` — Spring Boot (Maven); Flyway migrations in `src/main/resources/db/migration/`.
+- `frontend/` — React + TypeScript (Vite), served by nginx (`nginx.conf`).
+- `docker-compose.yml` — `db`, `backend`, `frontend`; profile `test`: `db-test`, `backend-test`.
+- `.github/workflows/ci.yml` — tests and ledger lint on every push.
 - `docs/agents/` — the knowledge ledger and the guide for people.
 - `docs/design/` — design guardrails, tokens, screen registry, mocks and screenshots.
 - `.claude/` — the `/plan` and `/build` skills and the planner and builder agents.
@@ -102,7 +114,7 @@ MSYS_NO_PATHCONV=1 docker run --rm -v "$(pwd -W):/repo" -w /repo python:3.12-sli
 Default branch: `main`. No release flow yet (Q-003). Push only on the owner's go.
 
 ## 6. Definition of done
-- Tests: none yet (Q-002); list each behaviour as "checked by hand".
+- Tests: `docker compose --profile test run --rm backend-test` passes. Behaviour without an automated test (frontend) is listed as "checked by hand".
 - The ledger lint passes.
 - UI changes: screenshots of every changed screen, light and dark, compared with `docs/design/DESIGN.md` (command: Q-022).
 - New practices recorded as candidate patterns; open points recorded as Q- entries.

@@ -1,0 +1,44 @@
+/* DS-p21-health, după mocks/DS-p21-health.html. Doar tokens din tokens.css (D-011);
+   textul folosește scala --text-* din DESIGN.md → Typography. */
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+body {
+  background: var(--color-bg); color: var(--color-text); font: var(--text-base);
+  -webkit-font-smoothing: antialiased;
+}
+h1 { font: var(--text-lg); margin: 0; }
+h2 { font: var(--text-md); margin: 0; }
+p { margin: 0; }
+.muted { color: var(--color-text-muted); }
+:focus-visible { outline: 2px solid var(--color-accent); outline-offset: 2px; /* --focus-ring */ }
+
+.screen { container-type: inline-size; background: var(--color-surface); padding: var(--space-6) var(--space-5); min-height: 100vh; }
+.col { max-width: 560px; margin: 0 auto; display: flex; flex-direction: column; gap: var(--space-5); }
+.head { display: flex; flex-direction: column; gap: var(--space-1); }
+
+.label-tag { display: inline-flex; align-items: center; gap: var(--space-1); font: var(--text-xs); border-radius: var(--radius-sm); padding: 2px var(--space-2); }
+.label-tag.success { color: var(--color-success); background: var(--color-success-bg); }
+
+.result { display: flex; flex-direction: column; gap: var(--space-3); }
+dl.resp {
+  margin: 0; display: grid; grid-template-columns: max-content 1fr; gap: var(--space-1) var(--space-4);
+  padding: var(--space-3) var(--space-4); background: var(--color-surface-muted); border-radius: var(--radius-sm);
+}
+.resp-row { display: contents; }
+dl.resp dt { color: var(--color-text-muted); }
+dl.resp dd { margin: 0; font-weight: 500; overflow-wrap: anywhere; }
+
+.banner { display: flex; gap: var(--space-3); align-items: flex-start; border-radius: var(--radius-md); padding: var(--space-3) var(--space-4); border: var(--border-width) solid; }
+.banner.danger { background: var(--color-danger-bg); border-color: var(--color-danger); }
+.banner.danger > svg { color: var(--color-danger); flex: none; margin-top: 2px; }
+.banner p { margin-top: var(--space-1); }
+
+.sk { background: var(--color-surface-muted); border-radius: var(--radius-sm); height: 14px; }
+.sk.w40 { width: 40%; }
+.sk.h64 { height: 64px; }
+.sk-stack { display: flex; flex-direction: column; gap: var(--space-3); }
+
+/* Telefon (sm, 360–767 px) */
+@container (max-width: 767px) {
+  .screen { padding: var(--space-5) var(--space-4); }
+}
