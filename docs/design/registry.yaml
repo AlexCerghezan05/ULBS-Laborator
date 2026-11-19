@@ -2,7 +2,7 @@
 # Plans, commits, mocks and board files use the ID (tickets don't). kind: foundation | component | screen
 # status: planned (listed, no mock yet) | draft (mock drawn) | approved (confirmed on the board) | implemented | deprecated (never delete an entry)
 # summary: what the screen does · roles: who sees it and what they can do (D-012)
-# Screen list approved 2026-11-19 (from docs/scope.md → Ecrane). Nothing is drawn yet.
+# Screen list approved 2026-11-19 (from docs/scope.md → Ecrane).
 # Entry shape:
 #   - id: DS-p21-<name>
 #     kind: screen
@@ -78,12 +78,12 @@ designs:
 
   - id: DS-p21-invoice-form
     kind: screen
-    summary: Crearea unei facturi sau proforme - serie, client, date (emitere, scadență), monedă (RON/EUR/USD, D-008), linii cu discount și cote TVA multiple, totaluri.
+    summary: Crearea unei facturi sau proforme, într-o singură coloană - serie, număr alocat la emitere, date (emitere, scadență), monedă (RON/EUR/USD cu curs BNR, D-008), client (căutare, apoi CIF și adresă), linii (produs, cantitate, preț, cotă TVA, valoare; U.M. și discount la „Mai multe”), totaluri pe cote, mențiuni legale când există. Furnizorul nu apare (D-003).
     roles: Admin, Operator
     source: none yet
     screenshots: []
-    design_ref: none
-    status: planned
+    design_ref: mocks/DS-p21-invoice-form.html
+    status: approved
 
   - id: DS-p21-invoice-view
     kind: screen
