@@ -5,10 +5,10 @@
 ## D-005 · Serii multiple configurabile, numerotare fără goluri
 - **Status:** approved
 - **Date:** 2026-11-19
-- **Rule:** Admin-ul configurează serii; fiecare are tipul de document (factură, proformă, storno, chitanță) și formatul de număr. Seed: seria `Aa`. Storno-ul folosește seria facturii. Numărul este secvențial, fără goluri și fără duplicate sub emiteri simultane. Proforma nu consumă număr din seria de facturi. Resetarea anuală și formatul după 9999 așteaptă Q-008.
-- **Why:** Fișa (twist) cere numerotare sigură sub concurență și proforme fără număr de factură; clientul folosește seria `Aa` și stornează pe aceeași serie.
-- **Rejected:** Doar seria `Aa` fixă, cu o serie de proforme separată și fixă.
-- **Evidence:** interviul de scope, 19.11.2026 (întrebarea 2); INTERVIEW.md; docs/brief.md.
+- **Rule:** Admin-ul configurează serii; fiecare are tipul de document (factură, proformă, chitanță) și formatul de număr. Seed: seria `Aa`. Storno-ul nu are serie proprie: ia mereu următorul număr din seria facturii originale. Numărul este secvențial, fără goluri și fără duplicate sub emiteri simultane. Proforma nu consumă număr din seria de facturi. Resetarea anuală și formatul după 9999 așteaptă Q-008.
+- **Why:** Fișa (twist) cere numerotare sigură sub concurență și proforme fără număr de factură; clientul folosește seria `Aa` și stornează pe aceeași serie, deci un tip de serie „storno” nu ar fi folosit (Q-028).
+- **Rejected:** Doar seria `Aa` fixă, cu o serie de proforme separată și fixă; tipul de serie „storno”, obligatoriu sau opțional.
+- **Evidence:** interviul de scope, 19.11.2026 (întrebarea 2); INTERVIEW.md; docs/brief.md; răspunsul la Q-028, 19.11.2026.
 - **Source:** user · confidence high
 - **Confirmed:** 2026-11-19
 
@@ -32,13 +32,13 @@
 - **Source:** user · confidence high
 - **Confirmed:** 2026-11-19
 
-## D-008 · Facturi în RON, EUR și USD cu curs BNR din ziua emiterii
+## D-008 · Facturi în RON, EUR și USD cu ultimul curs BNR comunicat înaintea datei emiterii
 - **Status:** approved
 - **Date:** 2026-11-19
-- **Rule:** Facturile pot fi în RON, EUR sau USD. La EUR/USD se folosește cursul BNR din ziua emiterii: import zilnic din XML-ul oficial BNR, fallback la ultimul curs disponibil, marcat pe factură. Factura afișează echivalentul în RON. Clientul real facturează doar în RON, deci facturile în EUR/USD sunt facturi de test, ca la D-006.
-- **Why:** Fișa și Definition of Done cer facturi în EUR/USD cu echivalent corect în RON.
-- **Rejected:** Doar RON, cu importul BNR păstrat fără folosire pe facturi (propunerea inițială, schimbată de user).
-- **Evidence:** decizia userului, 19.11.2026; docs/brief.md; INTERVIEW.md (valută); Q-009.
+- **Rule:** Facturile pot fi în RON, EUR sau USD. La EUR/USD se folosește ultimul curs comunicat de BNR anterior datei emiterii (în practică, cursul publicat în ziua bancară precedentă), conform art. 290 din Codul fiscal. Cursurile vin dintr-un import zilnic al XML-ului oficial BNR. „Curs de rezervă” și mențiunea pe factură apar doar dacă lipsește cursul din ziua bancară precedentă și se folosește unul mai vechi. Factura afișează echivalentul în RON. Clientul real facturează doar în RON, deci facturile în EUR/USD sunt facturi de test, ca la D-006. Confirmarea regulii de contabil: Q-033.
+- **Why:** Fișa și Definition of Done cer facturi în EUR/USD cu echivalent corect în RON. BNR publică cursul zilei în jurul orei 13:00, iar art. 290 cere ultimul curs comunicat, deci cursul din ziua bancară precedentă e cazul normal, nu unul de rezervă (Q-031).
+- **Rejected:** Doar RON, cu importul BNR păstrat fără folosire pe facturi (propunerea inițială, schimbată de user); cursul publicat chiar în ziua emiterii, cu orice alt curs marcat ca rezervă; ultimul curs publicat în momentul emiterii, inclusiv cel din aceeași zi.
+- **Evidence:** decizia userului, 19.11.2026; docs/brief.md; INTERVIEW.md (valută); Q-009; răspunsul la Q-031, 19.11.2026.
 - **Source:** user · confidence high
 - **Confirmed:** 2026-11-19
 
@@ -89,5 +89,35 @@
 - **Why:** D-014 cere alegerea dintr-o listă de serii de proformă; răspunsul la Q-025 acoperă lista goală. Doar Admin-ul configurează seriile (D-012).
 - **Rejected:** O serie de proformă în seed; butonul ascuns.
 - **Evidence:** răspunsul la Q-025, 19.11.2026; `docs/design/mocks/DS-p21-invoice-form.html` (stările „Fără serie de proformă”).
+- **Source:** user · confidence high
+- **Confirmed:** 2026-11-19
+
+## D-018 · Fără ciorne de factură
+- **Status:** approved
+- **Date:** 2026-11-19
+- **Rule:** Nu există ciorne. Formularul de factură are doar „Salvează ca proformă” și „Emite factura”; lista de facturi nu are statusul „Ciornă”.
+- **Why:** Macheta aprobată avea „Salvează ciornă” fără nicio decizie sau cerință în spate; răspunsul la Q-026.
+- **Rejected:** Ciorne editabile, fără număr, cu status propriu în listă.
+- **Evidence:** răspunsul la Q-026, 19.11.2026; `docs/design/mocks/DS-p21-invoice-form.html`.
+- **Source:** user · confidence high
+- **Confirmed:** 2026-11-19
+
+## D-020 · Cotele de TVA într-un tabel populat prin migrare
+- **Status:** approved
+- **Date:** 2026-11-19
+- **Rule:** Cotele de TVA stau într-un singur loc: un tabel în baza de date, populat printr-o migrare Flyway: 21%, 11%, scutit (0%), taxare inversă (0%), fiecare cu codul de clasificare TVA pentru XML. Nu există ecran sau setare pentru cote. O cotă nouă înseamnă o migrare nouă.
+- **Why:** Macheta oferea pe linie cote fără o sursă stabilită; o schimbare de lege (ca 19% → 21%) se face printr-o versiune nouă (Q-029).
+- **Rejected:** Cote configurabile de Admin în setările firmei; ecran separat de cote; listă fixă scrisă direct în cod.
+- **Evidence:** răspunsul la Q-029, 19.11.2026; `docs/design/mocks/DS-p21-invoice-form.html`; D-006.
+- **Source:** user · confidence high
+- **Confirmed:** 2026-11-19
+
+## D-021 · Linia de factură din catalog, cu text liber permis
+- **Status:** approved
+- **Date:** 2026-11-19
+- **Rule:** Câmpul „Produs / serviciu” al liniei caută în catalogul de produse/servicii; la alegere completează denumirea, U.M., prețul și cota, toate modificabile pe linie. Se poate scrie și o denumire care nu e în catalog, cu U.M., preț și cotă completate de mână.
+- **Why:** Scope-ul are catalog (DS-p21-products), iar pe S1 denumirea e scrisă pentru factura respectivă; răspunsul la Q-030.
+- **Rejected:** Linie obligatoriu din catalog (editabilă sau nu).
+- **Evidence:** răspunsul la Q-030, 19.11.2026; `docs/design/registry.yaml`; SAMPLES.md (S1).
 - **Source:** user · confidence high
 - **Confirmed:** 2026-11-19

@@ -10,8 +10,9 @@ Termenii clientului (Aura Logistic SRL), din interviul din 16.11.2026 și din fa
 | Termen | Parte de vorbire | Sens | _Avoid_ |
 |---|---|---|---|
 | Furnizor | substantiv | Firma care emite factura (clientul nostru). Plătitor de TVA, fără TVA la încasare. | emitent, vânzător |
-| Client | substantiv | Firma care primește factura: persoană juridică sau PFA din România, cu CIF. | cumpărător, beneficiar |
-| PFA | substantiv | Persoană fizică autorizată. Are CIF fără prefix RO și Reg. com. care începe cu F. Se facturează ca B2B. | persoană fizică |
+| Client | substantiv | Cel care primește factura, din România: persoană juridică sau PFA (cu CIF) ori persoană fizică (cu CNP opțional) (D-010). | cumpărător, beneficiar |
+| PFA | substantiv | Persoană fizică autorizată. Are CIF fără prefix RO și Reg. com. care începe cu F. Se facturează ca B2B. | persoană fizică (e alt tip de client) |
+| Persoană fizică | substantiv | Client fără CIF, identificat prin CNP. CNP-ul e opțional; fără el, XML-ul e-Factura primește 13 zerouri (`0000000000000`). Nu e PFA. | consumator, persoană privată |
 | Serie | substantiv | Literele din fața numărului facturii. Clientul folosește o singură serie: `Aa`. | prefix, cod |
 | Număr factură | substantiv | 4 cifre cu zerouri în față (`0060`). Secvențial, fără goluri, resetat la 1 în fiecare an (Q-008). | id factură |
 | Factură emisă | substantiv | Factură cu număr alocat. Nu se mai modifică, doar se stornează. | factură finalizată |
@@ -35,7 +36,7 @@ Termenii clientului (Aura Logistic SRL), din interviul din 16.11.2026 și din fa
 | Sold client | substantiv | Suma rămasă de încasat de la un client: facturi emise minus storno minus încasări. | datorie, balanță |
 | Factură restantă | substantiv | Factură emisă cu termenul de plată depășit și sold neîncasat. | factură întârziată |
 | Reminder de plată | substantiv | Email trimis clientului pentru o factură restantă. Clientul nu trimite acum reminder-e (Q-019). | notificare, somație |
-| Curs BNR | substantiv | Cursul oficial publicat zilnic de BNR (XML), importat automat. Se folosește la facturile în EUR/USD, din ziua emiterii (D-008). Clientul real facturează doar în RON (Q-009). | curs valutar, rată |
+| Curs BNR | substantiv | Cursul oficial publicat zilnic de BNR (XML), importat automat. Se folosește la facturile în EUR/USD: ultimul curs comunicat anterior datei emiterii, în practică cel din ziua bancară precedentă (D-008). Clientul real facturează doar în RON (Q-009). | curs valutar, rată |
 | Jurnal de vânzări | substantiv | Raportul lunar cu facturile emise, pentru contabil (coloane: Q-020). | registru vânzări |
 | TVA colectat | substantiv | TVA-ul de pe facturile emise într-o perioadă, raportat contabilului (coloane: Q-020). | TVA de plată |
 | SmartBill | substantiv | Programul de facturare pe care clientul îl folosește acum; modelul de PDF vine de aici. | — |
