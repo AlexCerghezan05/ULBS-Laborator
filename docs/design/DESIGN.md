@@ -102,28 +102,98 @@ them; a ticket with UI has a design subtask instead (team addon).
 - PDF model: the client's SmartBill invoice, `samples/factura_Aa0060_anonimizata.pdf` (S1, `SAMPLES.md`). The client has no logo.
 
 ## Tokens
-_None approved yet._ The first set is proposed after the style interview, as a
-PROPOSAL (AGENTS.md → The gate). Until it is approved, no UI is built.
+
+> **Status: approved** (D-011). **Confirmed:** 2026-11-19 by Alexandru Cerghezan.
+> Source: the style interview of 2026-11-19 (below). A change to a token is a
+> PROPOSAL (AGENTS.md → The gate).
+
+### Style interview (2026-11-19, Alexandru Cerghezan)
+- **Color:** accent from the client's SmartBill PDF (slate blue, ~`#3E6A87`) on a neutral grey base. The client has no logo and no other brand material.
+- **Font:** Inter for the UI, tabular figures for amounts. The PDF keeps Helvetica/Arial, like the SmartBill model.
+- **Tone and density:** sober and compact; a work tool. 14 px in tables. Plain, direct copy, formal address, no jokes.
+- **References:** Stripe Dashboard (4–6 px radius, thin borders instead of shadows, dense tables, amounts right-aligned, statuses as small colored labels); Linear (uncluttered, no decoration, everything reachable by keyboard); SmartBill (invoice field order: supplier left, client right, total at the bottom); GOV.UK (a label on every field, explicit error next to the field).
+- **Not wanted:** large shadows, gradients, needless animation.
+- **Confirmed by the owner:** desktop first, and it must work on a phone; no monospace font (CIF, IBAN and invoice numbers use Inter with tabular figures); "uncluttered" means no decoration and clear grouping, not looser rows.
 
 ### Color
+All text pairs below were checked: text ≥ 4.5:1, input borders and focus ≥ 3:1, in both themes.
+
 | Token | Light | Dark | Use |
 |---|---|---|---|
+| `--color-bg` | `#F6F8FA` | `#0F1419` | page background |
+| `--color-surface` | `#FFFFFF` | `#161C22` | cards, tables, forms, dialogs |
+| `--color-surface-muted` | `#F1F3F5` | `#1D252D` | totals row, table header, footer (as in the PDF) |
+| `--color-border` | `#D8DEE4` | `#2C3640` | table rules, card borders (decorative) |
+| `--color-border-strong` | `#8592A0` | `#5E6B78` | input borders (3.2:1) |
+| `--color-text` | `#1F2933` | `#E6EAEE` | body text, amounts |
+| `--color-text-muted` | `#5B6672` | `#9AA6B2` | labels, secondary text, hints |
+| `--color-accent` | `#3E6A87` | `#7FA9C7` | primary button, links, active nav, focus ring |
+| `--color-accent-hover` | `#335A73` | `#9BBDD6` | primary button hover/active |
+| `--color-on-accent` | `#FFFFFF` | `#0F1419` | text on the accent |
+| `--color-accent-subtle` | `#E8F0F5` | `#1B2B38` | selected row, "proformă" label background |
+| `--color-success` / `-bg` | `#1E7A46` / `#E6F4EC` | `#5CC98A` / `#12291C` | label "plătită", success messages |
+| `--color-danger` / `-bg` | `#B42318` / `#FDECEA` | `#F28B82` / `#3A1715` | label "restantă", field errors, destructive actions |
+| `--color-warning` / `-bg` | `#8A5A00` / `#FFF4E0` | `#E8B04B` / `#33270F` | warnings, e.g. the BNR fallback rate (D-008) |
+| `--color-neutral` / `-bg` | `#4B5563` / `#EEF0F2` | `#B0B8C1` / `#232A31` | label "stornată" |
+
+Status labels: small (12 px, weight 500), radius 4 px, text color on its `-bg`, always
+with the word ("Plătită"), never color alone. "Proformă" uses accent on accent-subtle.
 
 ### Typography
+UI font: **Inter** (self-hosted, `font-feature-settings: "tnum"` on every amount, date
+and number column). Fallback: `system-ui, "Segoe UI", Roboto, Arial, sans-serif`.
+Invoice PDF: Helvetica/Arial, like the SmartBill model (S1).
+
 | Token | Family | Size / line height | Weight | Use |
 |---|---|---|---|---|
+| `--text-xs` | Inter | 12 / 16 px | 500 | status labels, table column headers |
+| `--text-sm` | Inter | 13 / 18 px | 400 | hints, secondary text, field errors |
+| `--text-base` | Inter | 14 / 20 px | 400 | body, table cells, inputs, buttons (buttons 500) |
+| `--text-md` | Inter | 16 / 24 px | 600 | section headings, dialog titles |
+| `--text-lg` | Inter | 20 / 28 px | 600 | page title (one per screen) |
+| `--text-xl` | Inter | 24 / 32 px | 600 | invoice total on the invoice screen |
 
 ### Spacing
+Base 4 px. Table rows 36 px high; inputs and buttons 32 px (hit area ≥ 24 px with a
+pointer; 44 px on touch widths).
+
 | Token | Value |
 |---|---|
+| `--space-1` | 4px |
+| `--space-2` | 8px |
+| `--space-3` | 12px |
+| `--space-4` | 16px |
+| `--space-5` | 24px |
+| `--space-6` | 32px |
+| `--space-7` | 48px |
 
 ### Radius, shadow, motion
 | Token | Value | Use |
 |---|---|---|
+| `--radius-sm` | 4px | inputs, buttons, status labels |
+| `--radius-md` | 6px | cards, dialogs, menus |
+| `--border-width` | 1px | all borders |
+| `--focus-ring` | 2px solid `--color-accent`, offset 2px | every focusable control |
+| `--shadow-overlay` | `0 4px 12px rgb(0 0 0 / 0.12)` (dark: `0 4px 12px rgb(0 0 0 / 0.5)`) | menus and dialogs only; nothing else has a shadow |
+| `--duration-fast` | 120ms | hover, focus, menu open |
+| `--duration-base` | 200ms | dialog open/close |
+| `--easing` | `ease-out` | all transitions |
+
+No gradients. No decorative animation. With `prefers-reduced-motion`, durations are 0.
 
 ### Breakpoints / window sizes
+Desktop first; usable without horizontal scroll down to 360 px.
+
 | Name | Min | Max |
 |---|---|---|
+| `sm` (phone) | 360px | 767px |
+| `md` (tablet) | 768px | 1199px |
+| `lg` (desktop, primary) | 1200px | — |
+
+### Layout rules from the interview
+- Invoice view and form: supplier left, client right, lines table, totals bottom right (SmartBill order).
+- Amounts and quantities right-aligned, tabular figures; currency after the amount ("360.00 Lei").
+- Forms: a visible label above every field; the error text under the field, in `--color-danger`, with an icon; the error says what to do.
 
 ## Hard-coded values found (to migrate)
 | path:line | Value | Should be |
