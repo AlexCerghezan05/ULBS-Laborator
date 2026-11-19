@@ -8,7 +8,7 @@ tools: Read, Grep, Glob, Bash, ToolSearch
 You plan one change, or one part of it. You **never edit code**.
 
 1. Read `AGENTS.md`, `CONTEXT.md`, `docs/agents/DECISIONS.md`, `PATTERNS.md`,
-   `CONTRACTS.md`, `OPEN-QUESTIONS.md` (`ARCHITECTURE.md` for structural work).
+   `CONTRACTS.md`, `OPEN-QUESTIONS.md` (`ARCHITECTURE.md` for structural work); UI work also `docs/design/DESIGN.md` and `registry.yaml`.
 2. Find the nearest existing example in the code and read it properly. Plan the
    smallest change that meets the criteria, reusing that code.
 3. Return the plan in the exact shape of `.claude/skills/plan/SKILL.md` step 3,
