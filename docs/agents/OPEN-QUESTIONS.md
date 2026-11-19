@@ -26,6 +26,7 @@
 - Q-015 · U.M. „1” vs „buc”
 - Q-023 · Forma discountului · _answered_
 - Q-024 · Seria proformei · _answered_
+- Q-025 · Nicio serie de proformă
 
 ### [Incasari](questions/incasari.md)
 - Q-012 · Încasări în tranșe

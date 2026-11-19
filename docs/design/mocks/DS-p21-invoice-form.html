@@ -25,7 +25,7 @@
 
   --font-ui: Inter, system-ui, "Segoe UI", Roboto, Arial, sans-serif;
   --space-1:4px; --space-2:8px; --space-3:12px; --space-4:16px; --space-5:24px; --space-6:32px; --space-7:48px;
-  --radius-sm:4px; --radius-md:6px; --border-width:1px;
+  --radius-sm:4px; --radius-md:6px; --border-width:1px; --opacity-disabled:0.55;
   --duration-fast:120ms; --duration-base:200ms; --easing:ease-out;
   color-scheme: light;
 }
@@ -135,7 +135,14 @@ textarea.input { resize:none; field-sizing:content; }
 .btn.primary:hover { background:var(--color-accent-hover); border-color:var(--color-accent-hover); }
 .btn.quiet { border-color:transparent; background:transparent; color:var(--color-accent); padding-left:var(--space-2); padding-right:var(--space-2); }
 .btn.quiet:hover { background:var(--color-accent-subtle); }
-.btn:disabled { opacity:.55; cursor:not-allowed; }
+.btn:disabled { opacity:var(--opacity-disabled); cursor:not-allowed; }
+
+/* „Salvează ca proformă”: alegerea seriei (D-014) */
+.pf-anchor { position:relative; }
+.popover { position:absolute; bottom:calc(100% + var(--space-2)); left:0; z-index:5; width:296px; display:flex; flex-direction:column; gap:var(--space-3);
+  background:var(--color-surface); border:var(--border-width) solid var(--color-border); border-radius:var(--radius-md); box-shadow:var(--shadow-overlay); padding:var(--space-4); }
+.popover h3 { font-size:16px; line-height:24px; font-weight:600; margin:0; }
+.popover .row { display:flex; gap:var(--space-2); justify-content:flex-end; flex-wrap:wrap; }
 .icon-btn { width:32px; padding:0; justify-content:center; border-color:transparent; background:transparent; color:var(--color-text-muted); }
 .icon-btn:hover { color:var(--color-danger); background:var(--color-danger-bg); }
 .more-btn { border-color:transparent; background:transparent; color:var(--color-accent); padding:5px var(--space-2); font-size:13px; }
@@ -224,6 +231,9 @@ tr.more td { padding-top:0; }
   .totals { max-width:none; }
   .actions .btn { flex:1 1 100%; justify-content:center; } .actions .spacer { display:none; }
   .actions .btn.primary { order:-1; }
+  .actions .pf-anchor { flex:1 1 100%; display:flex; flex-direction:column; gap:var(--space-2); }
+  .popover { position:static; width:100%; box-shadow:none; }
+  .popover .row .btn { flex:1 1 100%; }
 }
 </style>
 </head>
@@ -251,7 +261,9 @@ tr.more td { padding-top:0; }
       <li><strong>„Mai multe”</strong> pe fiecare linie arată U.M. și discountul. Când linia e închisă și are un discount, el apare sub denumire, ca să nu rămână ascuns. Ștergerea liniei rămâne vizibilă (iconița coș).</li>
       <li><strong>Totalurile</strong>: valoarea fără TVA, apoi TVA-ul pe fiecare cotă (cu baza lui), apoi totalul de plată.</li>
       <li><strong>Mențiunile legale</strong> apar doar când există. Mențiunea art. 319 alin. 29 vine din setările firmei, deci apare pe orice factură a clientului.</li>
-      <li>Rămân deschise: rotunjirea (Q-007), formatul numărului (Q-008), U.M. „1” (Q-015). Discountul ca procent pe linie (Q-023) și alegerea seriei proformei (Q-024) au răspuns și așteaptă decizia (decizii propuse); lista de serii la „Salvează ca proformă” se desenează după aprobare.</li>
+      <li><strong>Discount</strong> ca procent pe linie (D-013).</li>
+      <li><strong>„Salvează ca proformă”</strong> deschide lista seriilor de tip proformă, cu prima preselectată (D-014). Seriile „PF” și „PFE” sunt ilustrative; seed-ul are doar seria de facturi <code>Aa</code>. Ce se întâmplă când nu există nicio serie de proformă: Q-025. Pe telefon, alegerea apare sub buton, nu deasupra.</li>
+      <li>Rămân deschise: rotunjirea (Q-007), formatul numărului (Q-008), U.M. „1” (Q-015), nicio serie de proformă (Q-025).</li>
       <li><strong>Starea EUR</strong> e o factură de test (D-008, D-006): cursul 5.0850 și liniile sunt ilustrative.</li>
     </ul>
   </section>
@@ -287,6 +299,7 @@ const STATES = {
              errors:{ client:'Alegeți clientul. Căutați după denumire sau CIF.',
                       due:'Termenul de plată este înaintea datei emiterii. Alegeți 10.11.2026 sau o dată ulterioară.',
                       qty0:'Introduceți o cantitate mai mare decât 0.' } },
+  proforma:{ label:'Salvează ca proformă', client:CLIENT_S1, lines:[LINE_S1], issue:'10.11.2026', due:'10.11.2026', cur:'RON', pf:true },
   success: { label:'Succes (emisă)', client:CLIENT_S1, lines:[LINE_S1], issue:'10.11.2026', due:'10.11.2026', cur:'RON', issued:'Aa0060' },
   long:    { label:'Text lung', client:CLIENT_LONG, lines:[{ ...LINE_S1, desc:'Inchiriere masina 7 zile, cu asigurare CASCO, scaun pentru copil, kilometraj nelimitat, predare si preluare la Aeroportul International Sibiu, in afara programului de lucru' }],
              issue:'10.11.2026', due:'10.11.2026', cur:'RON' },
@@ -415,9 +428,23 @@ function actionBar(s) {
   if (s.issued) return '';
   return `<div class="actions" role="group" aria-label="Acțiuni factură">
     <button class="btn quiet" type="button">Salvează ciornă</button>
-    <button class="btn quiet" type="button">Salvează ca proformă</button>
+    <div class="pf-anchor">
+      <button class="btn quiet pf-btn" type="button" aria-expanded="${!!s.pf}" aria-controls="pf-pop">Salvează ca proformă</button>
+      ${s.pf ? proformaPopover() : ''}
+    </div>
     <span class="spacer"></span>
     <button class="btn primary" type="button">Emite factura</button>
+  </div>`;
+}
+/* Seriile de tip proformă (D-014); valori ilustrative */
+const PF_SERIES = ['PF', 'PFE'];
+function proformaPopover() {
+  return `<div class="popover" id="pf-pop" role="dialog" aria-labelledby="pf-h">
+    <h3 id="pf-h">Salvează ca proformă</h3>
+    <div class="field"><label for="pf-serie">Serie proformă</label>
+      <div class="sel-wrap"><select id="pf-serie" class="input">${PF_SERIES.map((x,i)=>`<option ${i===0?'selected':''}>${x}</option>`).join('')}</select>${I.chev}</div>
+      <div class="hint">Proforma nu consumă număr din seria de facturi.</div></div>
+    <div class="row"><button class="btn quiet pf-cancel" type="button">Anulează</button><button class="btn primary" type="button">Salvează proforma</button></div>
   </div>`;
 }
 function errorSummary(s) {
@@ -463,6 +490,9 @@ function render(key) {
 }
 /* „Mai multe” deschide/închide rândul cu U.M. și discount */
 document.getElementById('app').addEventListener('click', e => {
+  const p = e.target.closest('.pf-btn, .pf-cancel');
+  if (p) { const s = STATES[current]; s.pf = p.classList.contains('pf-btn') ? !s.pf : false; render(current);
+    document.querySelector(s.pf ? '#pf-serie' : '.pf-btn')?.focus(); return; }
   const b = e.target.closest('.more-btn'); if (!b) return;
   const l = STATES[current].lines[+b.dataset.line]; l.open = !l.open; render(current);
   document.querySelector(`.more-btn[data-line="${b.dataset.line}"]`)?.focus();
