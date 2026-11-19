@@ -1,0 +1,490 @@
+<!doctype html>
+<html lang="ro">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Formular factură</title>
+<!-- DS-p21-invoice-form · status: approved (19.11.2026) · machetă, nu cod de producție.
+     Doar tokens din docs/design/DESIGN.md (D-011). Inter vine aici din Google Fonts;
+     în aplicație e self-hosted. -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ---------- Tokens (DESIGN.md → Tokens) ---------- */
+:root {
+  --color-bg:#F6F8FA; --color-surface:#FFFFFF; --color-surface-muted:#F1F3F5;
+  --color-border:#D8DEE4; --color-border-strong:#8592A0;
+  --color-text:#1F2933; --color-text-muted:#5B6672;
+  --color-accent:#3E6A87; --color-accent-hover:#335A73; --color-on-accent:#FFFFFF; --color-accent-subtle:#E8F0F5;
+  --color-success:#1E7A46; --color-success-bg:#E6F4EC;
+  --color-danger:#B42318; --color-danger-bg:#FDECEA;
+  --color-warning:#8A5A00; --color-warning-bg:#FFF4E0;
+  --color-neutral:#4B5563; --color-neutral-bg:#EEF0F2;
+  --shadow-overlay:0 4px 12px rgb(0 0 0 / 0.12);
+
+  --font-ui: Inter, system-ui, "Segoe UI", Roboto, Arial, sans-serif;
+  --space-1:4px; --space-2:8px; --space-3:12px; --space-4:16px; --space-5:24px; --space-6:32px; --space-7:48px;
+  --radius-sm:4px; --radius-md:6px; --border-width:1px;
+  --duration-fast:120ms; --duration-base:200ms; --easing:ease-out;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --color-bg:#0F1419; --color-surface:#161C22; --color-surface-muted:#1D252D;
+    --color-border:#2C3640; --color-border-strong:#5E6B78;
+    --color-text:#E6EAEE; --color-text-muted:#9AA6B2;
+    --color-accent:#7FA9C7; --color-accent-hover:#9BBDD6; --color-on-accent:#0F1419; --color-accent-subtle:#1B2B38;
+    --color-success:#5CC98A; --color-success-bg:#12291C;
+    --color-danger:#F28B82; --color-danger-bg:#3A1715;
+    --color-warning:#E8B04B; --color-warning-bg:#33270F;
+    --color-neutral:#B0B8C1; --color-neutral-bg:#232A31;
+    --shadow-overlay:0 4px 12px rgb(0 0 0 / 0.5);
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --color-bg:#0F1419; --color-surface:#161C22; --color-surface-muted:#1D252D;
+  --color-border:#2C3640; --color-border-strong:#5E6B78;
+  --color-text:#E6EAEE; --color-text-muted:#9AA6B2;
+  --color-accent:#7FA9C7; --color-accent-hover:#9BBDD6; --color-on-accent:#0F1419; --color-accent-subtle:#1B2B38;
+  --color-success:#5CC98A; --color-success-bg:#12291C;
+  --color-danger:#F28B82; --color-danger-bg:#3A1715;
+  --color-warning:#E8B04B; --color-warning-bg:#33270F;
+  --color-neutral:#B0B8C1; --color-neutral-bg:#232A31;
+  --shadow-overlay:0 4px 12px rgb(0 0 0 / 0.5);
+  color-scheme: dark;
+}
+@media (prefers-reduced-motion: reduce) { :root { --duration-fast:0ms; --duration-base:0ms; } }
+
+/* ---------- Base ---------- */
+* { box-sizing: border-box; }
+html, body { margin:0; }
+body { background:var(--color-bg); color:var(--color-text); font-family:var(--font-ui);
+  font-size:14px; line-height:20px; -webkit-font-smoothing:antialiased; }
+.num { font-feature-settings:"tnum"; }
+h1 { font-size:20px; line-height:28px; font-weight:600; margin:0; }
+h2 { font-size:16px; line-height:24px; font-weight:600; margin:0 0 var(--space-3); }
+.muted { color:var(--color-text-muted); }
+.sm { font-size:13px; line-height:18px; }
+.sr-only { position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; }
+a { color:var(--color-accent); }
+:focus-visible { outline:2px solid var(--color-accent); outline-offset:2px; }
+
+/* ---------- Mock chrome (nu face parte din ecran) ---------- */
+.mockbar { position:sticky; top:0; z-index:10; background:var(--color-surface); border-bottom:var(--border-width) solid var(--color-border);
+  padding:var(--space-2) var(--space-4); display:flex; flex-wrap:wrap; gap:var(--space-2) var(--space-4); align-items:center; }
+.mockbar .tag { font-size:12px; line-height:16px; font-weight:500; color:var(--color-neutral); background:var(--color-neutral-bg); border-radius:var(--radius-sm); padding:2px var(--space-2); }
+.seg { display:inline-flex; flex-wrap:wrap; gap:var(--space-1); }
+.seg button { font:inherit; font-size:13px; line-height:18px; min-height:28px; padding:var(--space-1) var(--space-2); border-radius:var(--radius-sm);
+  border:var(--border-width) solid var(--color-border); background:var(--color-surface); color:var(--color-text); cursor:pointer; }
+.seg button[aria-pressed="true"] { background:var(--color-accent-subtle); border-color:var(--color-accent); font-weight:500; }
+.mocklabel { font-size:12px; line-height:16px; font-weight:500; color:var(--color-text-muted); }
+.stage { padding:var(--space-5) var(--space-4) var(--space-7); }
+.frame { container-type:inline-size; margin:0 auto; max-width:1200px; }
+.frame.phone { max-width:360px; border:var(--border-width) dashed var(--color-border-strong); }
+
+/* ---------- Ecran: o coloană, fără casete ---------- */
+.screen { background:var(--color-surface); padding:var(--space-6) var(--space-5); }
+.col { max-width:960px; margin:0 auto; display:flex; flex-direction:column; gap:var(--space-6); }
+.head { display:flex; flex-direction:column; gap:var(--space-1); }
+.crumbs { font-size:13px; line-height:18px; color:var(--color-text-muted); }
+.titlerow { display:flex; align-items:center; gap:var(--space-3); flex-wrap:wrap; }
+.label-tag { display:inline-flex; align-items:center; gap:var(--space-1); font-size:12px; line-height:16px; font-weight:500; border-radius:var(--radius-sm); padding:2px var(--space-2); }
+.label-tag.neutral { color:var(--color-neutral); background:var(--color-neutral-bg); }
+.label-tag.success { color:var(--color-success); background:var(--color-success-bg); }
+.label-tag.warning { color:var(--color-warning); background:var(--color-warning-bg); }
+
+/* Fields */
+.fields { display:grid; grid-template-columns: repeat(5, minmax(0,1fr)); gap:var(--space-4); }
+.field { display:flex; flex-direction:column; gap:var(--space-1); min-width:0; }
+.field > label, .field > .flabel { font-size:13px; line-height:18px; font-weight:500; }
+.hint { font-size:13px; line-height:18px; color:var(--color-text-muted); }
+.input, select.input, textarea.input { font:inherit; font-size:14px; line-height:20px; color:var(--color-text); background:var(--color-surface);
+  border:var(--border-width) solid var(--color-border-strong); border-radius:var(--radius-sm); min-height:32px; padding:5px var(--space-2); width:100%;
+  transition:border-color var(--duration-fast) var(--easing); }
+textarea.input { resize:none; field-sizing:content; }
+.input:disabled { background:var(--color-surface-muted); color:var(--color-text); }
+.input.has-error { border-color:var(--color-danger); }
+.input-icon { position:relative; }
+.input-icon svg { position:absolute; left:var(--space-2); top:8px; color:var(--color-text-muted); pointer-events:none; }
+.input-icon .input { padding-left:28px; }
+.input-icon.right svg { left:auto; right:var(--space-2); }
+.input-icon.right .input { padding-left:var(--space-2); padding-right:28px; }
+.static { min-height:32px; display:flex; align-items:center; gap:var(--space-2); color:var(--color-text-muted); }
+.static strong { color:var(--color-text); font-weight:600; }
+.err { display:flex; gap:var(--space-1); align-items:flex-start; font-size:13px; line-height:18px; color:var(--color-danger); }
+.err svg { flex:none; margin-top:1px; }
+.sel-wrap { position:relative; }
+.sel-wrap select { appearance:none; padding-right:28px; }
+.sel-wrap svg { position:absolute; right:var(--space-2); top:8px; pointer-events:none; color:var(--color-text-muted); }
+.rate { margin-top:var(--space-3); display:flex; gap:var(--space-2); align-items:flex-start; }
+.rate.warn svg { color:var(--color-warning); flex:none; margin-top:2px; }
+
+/* Client */
+.client { max-width:560px; }
+.client-meta { margin-top:var(--space-1); color:var(--color-text-muted); overflow-wrap:anywhere; }
+.client-name { font-weight:600; overflow-wrap:anywhere; min-height:32px; display:flex; align-items:center; }
+
+/* Buttons */
+.btn { font:inherit; font-size:14px; line-height:20px; font-weight:500; min-height:32px; padding:5px var(--space-3); border-radius:var(--radius-sm);
+  border:var(--border-width) solid var(--color-border-strong); background:var(--color-surface); color:var(--color-text); cursor:pointer;
+  display:inline-flex; align-items:center; gap:var(--space-1); text-decoration:none; transition:background var(--duration-fast) var(--easing); }
+.btn:hover { background:var(--color-surface-muted); }
+.btn.primary { background:var(--color-accent); border-color:var(--color-accent); color:var(--color-on-accent); }
+.btn.primary:hover { background:var(--color-accent-hover); border-color:var(--color-accent-hover); }
+.btn.quiet { border-color:transparent; background:transparent; color:var(--color-accent); padding-left:var(--space-2); padding-right:var(--space-2); }
+.btn.quiet:hover { background:var(--color-accent-subtle); }
+.btn:disabled { opacity:.55; cursor:not-allowed; }
+.icon-btn { width:32px; padding:0; justify-content:center; border-color:transparent; background:transparent; color:var(--color-text-muted); }
+.icon-btn:hover { color:var(--color-danger); background:var(--color-danger-bg); }
+.more-btn { border-color:transparent; background:transparent; color:var(--color-accent); padding:5px var(--space-2); font-size:13px; }
+.more-btn:hover { background:var(--color-accent-subtle); }
+.more-btn svg { transition:transform var(--duration-fast) var(--easing); }
+.more-btn[aria-expanded="true"] svg { transform:rotate(180deg); }
+
+/* Lines */
+table.lines { width:100%; border-collapse:collapse; }
+table.lines th { font-size:12px; line-height:16px; font-weight:500; color:var(--color-text-muted); text-align:left; padding:0 var(--space-2) var(--space-2);
+  border-bottom:var(--border-width) solid var(--color-border); vertical-align:bottom; }
+table.lines td { padding:var(--space-2); vertical-align:top; }
+table.lines tr.line td { border-top:var(--border-width) solid var(--color-border); }
+table.lines tr.line:first-child td { border-top:0; }
+table.lines td.ro { padding-top:14px; }
+table.lines .r { text-align:right; } table.lines .r .input { text-align:right; }
+table.lines col.c-q { width:88px; } table.lines col.c-p { width:136px; } table.lines col.c-t { width:176px; }
+table.lines col.c-v { width:112px; } table.lines col.c-a { width:132px; }
+td.c-act { white-space:nowrap; text-align:right; }
+.line-sum { margin-top:var(--space-1); }
+tr.more td { padding-top:0; }
+.more-panel { display:flex; flex-wrap:wrap; gap:var(--space-4); padding:var(--space-3); background:var(--color-surface-muted); border-radius:var(--radius-sm); }
+.more-panel .field { width:120px; }
+.suffix { position:relative; } .suffix .input { padding-right:24px; } .suffix span { position:absolute; right:var(--space-2); top:6px; color:var(--color-text-muted); }
+.lines-foot { padding-top:var(--space-2); }
+.empty-text { color:var(--color-text-muted); padding:var(--space-4) 0; }
+
+/* Totals */
+.totals { margin-left:auto; width:100%; max-width:360px; }
+.totals .row { display:flex; justify-content:space-between; gap:var(--space-3); padding:var(--space-1) 0; }
+.totals .row .num { text-align:right; }
+.totals .grand { border-top:var(--border-width) solid var(--color-border); margin-top:var(--space-2); padding-top:var(--space-3); align-items:baseline; }
+.grand .lbl { font-weight:600; }
+.grand .val { font-size:24px; line-height:32px; font-weight:600; }
+.grand .cur { font-size:14px; font-weight:500; }
+.equiv { text-align:right; margin-top:var(--space-1); display:flex; flex-direction:column; align-items:flex-end; gap:var(--space-1); }
+.mentions { margin-top:var(--space-4); }
+.mentions p { margin:0; }
+
+/* Actions */
+.actions { display:flex; gap:var(--space-2); align-items:center; flex-wrap:wrap; border-top:var(--border-width) solid var(--color-border); padding-top:var(--space-4); }
+.actions .spacer { flex:1; }
+
+/* Banners */
+.banner { display:flex; gap:var(--space-3); align-items:flex-start; border-radius:var(--radius-md); padding:var(--space-3) var(--space-4); border:var(--border-width) solid; }
+.banner.success { background:var(--color-success-bg); border-color:var(--color-success); }
+.banner.success > svg { color:var(--color-success); }
+.banner.danger { background:var(--color-danger-bg); border-color:var(--color-danger); }
+.banner.danger > svg { color:var(--color-danger); }
+.banner > svg { flex:none; margin-top:2px; }
+.banner h2 { margin:0 0 var(--space-1); }
+.banner ul { margin:var(--space-1) 0 0; padding-left:var(--space-4); }
+.banner .row { display:flex; gap:var(--space-2); flex-wrap:wrap; margin-top:var(--space-3); }
+
+/* Skeleton */
+.sk { background:var(--color-surface-muted); border-radius:var(--radius-sm); height:14px; }
+.sk.h32 { height:32px; } .sk.w20 { width:20%; } .sk.w40 { width:40%; } .sk.w60 { width:60%; }
+.sk-stack { display:flex; flex-direction:column; gap:var(--space-2); }
+
+/* Notes */
+.notes { margin:var(--space-5) auto 0; max-width:1200px; background:var(--color-surface); border:var(--border-width) solid var(--color-border); border-radius:var(--radius-md); padding:var(--space-4); }
+.notes ul { margin:var(--space-2) 0 0; padding-left:var(--space-5); }
+.notes li { margin-bottom:var(--space-1); overflow-wrap:anywhere; }
+
+/* ---------- Telefon (sm, 360–767 px) ---------- */
+@container (max-width: 767px) {
+  .screen { padding:var(--space-5) var(--space-4); }
+  .col { gap:var(--space-5); }
+  .fields { grid-template-columns:1fr 1fr; }
+  .input, .btn, select.input { min-height:44px; }
+  .icon-btn { width:44px; }
+  .input-icon svg, .sel-wrap svg { top:14px; }
+  .suffix span { top:12px; }
+  table.lines, table.lines tbody, table.lines tr, table.lines td { display:block; width:100%; }
+  table.lines colgroup, table.lines thead { display:none; }
+  table.lines tr.line { display:grid; grid-template-columns:1fr 1fr; gap:var(--space-2) var(--space-3); padding:var(--space-3) 0; border-top:var(--border-width) solid var(--color-border); }
+  table.lines tr.line td { border:0; padding:0; text-align:left !important; }
+  table.lines tr.line td::before { content:attr(data-label); display:block; font-size:13px; line-height:18px; font-weight:500; margin-bottom:var(--space-1); }
+  table.lines td.ro { padding-top:0; }
+  table.lines td.c-desc { grid-column:1 / -1; }
+  table.lines td.c-act { grid-column:1 / -1; display:flex; justify-content:space-between; }
+  table.lines td.c-act::before { display:none !important; }
+  table.lines .r .input { text-align:left; }
+  tr.more td { padding:0 0 var(--space-3); }
+  table.lines tr[hidden] { display:none; }
+  .totals { max-width:none; }
+  .actions .btn { flex:1 1 100%; justify-content:center; } .actions .spacer { display:none; }
+  .actions .btn.primary { order:-1; }
+}
+</style>
+</head>
+<body>
+
+<div class="mockbar" role="region" aria-label="Comenzi machetă">
+  <span class="tag">Machetă · DS-p21-invoice-form · approved</span>
+  <span class="mocklabel" id="lbl-state">Stare</span>
+  <div class="seg" id="seg-state" role="group" aria-labelledby="lbl-state"></div>
+  <span class="mocklabel" id="lbl-theme">Temă</span>
+  <div class="seg" id="seg-theme" role="group" aria-labelledby="lbl-theme"></div>
+  <span class="mocklabel" id="lbl-size">Lățime</span>
+  <div class="seg" id="seg-size" role="group" aria-labelledby="lbl-size"></div>
+</div>
+
+<div class="stage">
+  <div class="frame" id="frame"><div id="app"></div></div>
+
+  <section class="notes" aria-labelledby="notes-h">
+    <h2 id="notes-h">Note pentru confirmare (nu fac parte din ecran)</h2>
+    <ul class="sm">
+      <li>Varianta simplă, aleasă pe 19.11.2026. Tokens din D-011, date din S1 (SAMPLES.md).</li>
+      <li><strong>Furnizorul</strong> nu apare în formular: e mereu aceeași firmă (D-003). Apare pe PDF și pe ecranul facturii emise.</li>
+      <li><strong>Clientul</strong>: sub câmpul de căutare apar pe un rând doar CIF-ul și adresa. Reg. com. nu se mai vede în formular, dar rămâne pe factură.</li>
+      <li><strong>„Mai multe”</strong> pe fiecare linie arată U.M. și discountul. Când linia e închisă și are un discount, el apare sub denumire, ca să nu rămână ascuns. Ștergerea liniei rămâne vizibilă (iconița coș).</li>
+      <li><strong>Totalurile</strong>: valoarea fără TVA, apoi TVA-ul pe fiecare cotă (cu baza lui), apoi totalul de plată.</li>
+      <li><strong>Mențiunile legale</strong> apar doar când există. Mențiunea art. 319 alin. 29 vine din setările firmei, deci apare pe orice factură a clientului.</li>
+      <li>Rămân deschise: rotunjirea (Q-007), formatul numărului (Q-008), U.M. „1” (Q-015). Discountul ca procent pe linie (Q-023) și alegerea seriei proformei (Q-024) au răspuns și așteaptă decizia (decizii propuse); lista de serii la „Salvează ca proformă” se desenează după aprobare.</li>
+      <li><strong>Starea EUR</strong> e o factură de test (D-008, D-006): cursul 5.0850 și liniile sunt ilustrative.</li>
+    </ul>
+  </section>
+</div>
+
+<script>
+const I = {
+  chev:'<svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+  cal:'<svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><rect x="2.5" y="3.5" width="11" height="10" rx="1.5" stroke="currentColor" stroke-width="1.3"/><path d="M2.5 6.5h11M5.5 2v3M10.5 2v3" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>',
+  search:'<svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><circle cx="7" cy="7" r="4.5" stroke="currentColor" stroke-width="1.4"/><path d="M10.5 10.5L14 14" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>',
+  err:'<svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.4"/><path d="M8 4.5v4.2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><circle cx="8" cy="11.2" r=".9" fill="currentColor"/></svg>',
+  ok:'<svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true"><circle cx="10" cy="10" r="8.25" stroke="currentColor" stroke-width="1.5"/><path d="M6.2 10.3l2.5 2.5 5-5.2" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+  warn:'<svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M8 1.8L15 14H1L8 1.8z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/><path d="M8 6.3v3.6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><circle cx="8" cy="11.8" r=".85" fill="currentColor"/></svg>',
+  trash:'<svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 4.5h10M6.5 4.5V3h3v1.5M4.5 4.5l.6 8.5h5.8l.6-8.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+  plus:'<svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M8 3v10M3 8h10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>'
+};
+const err = (id, t) => `<div class="err" id="${id}">${I.err}<span>${t}</span></div>`;
+const esc = s => String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;');
+
+/* Date (S1 din SAMPLES.md, anonimizat) */
+const CLIENT_S1 = { name:'CLIENT EXEMPLU PERSOANA FIZICA AUTORIZATA', cif:'76543210', addr:'Str. Fictiva, Nr.2, Sc.1, Et.P, Ap.2, Sibiu, Judet: Sibiu' };
+const CLIENT_LONG = { name:'CLIENT EXEMPLU CU O DENUMIRE FOARTE LUNGA PENTRU VERIFICAREA AFISARII PE MAI MULTE RANDURI PERSOANA FIZICA AUTORIZATA',
+  cif:'76543210', addr:'Str. Fictiva cu Nume Foarte Lung de Strada, Nr.2, Bl. A12, Sc.1, Et.P, Ap.2, Localitatea Exemplu, Comuna Exemplu, Judet: Sibiu' };
+const COTE = [ {v:'21',label:'21%',r:21}, {v:'11',label:'11%',r:11}, {v:'S',label:'Scutit (0%)',r:0}, {v:'TI',label:'Taxare inversă (0%)',r:0} ];
+const LINE_S1 = { desc:'Inchiriere masina 7 zile', um:'1', qty:'1', price:'297.52', disc:'0', cota:'21' };
+const MENTION_S1 = 'Factura este valabila fara semnatura si stampila, conform art. 319 alin. 29 din legea 227/2015.';
+
+const STATES = {
+  filled:  { label:'Completată (S1)', client:CLIENT_S1, lines:[LINE_S1], issue:'10.11.2026', due:'10.11.2026', cur:'RON' },
+  empty:   { label:'Gol', client:null, lines:[], issue:'19.11.2026', due:'19.11.2026', cur:'RON' },
+  loading: { label:'Încărcare', loading:true },
+  error:   { label:'Eroare de validare', client:null, lines:[{...LINE_S1, qty:'0'}], issue:'10.11.2026', due:'09.11.2026', cur:'RON',
+             errors:{ client:'Alegeți clientul. Căutați după denumire sau CIF.',
+                      due:'Termenul de plată este înaintea datei emiterii. Alegeți 10.11.2026 sau o dată ulterioară.',
+                      qty0:'Introduceți o cantitate mai mare decât 0.' } },
+  success: { label:'Succes (emisă)', client:CLIENT_S1, lines:[LINE_S1], issue:'10.11.2026', due:'10.11.2026', cur:'RON', issued:'Aa0060' },
+  long:    { label:'Text lung', client:CLIENT_LONG, lines:[{ ...LINE_S1, desc:'Inchiriere masina 7 zile, cu asigurare CASCO, scaun pentru copil, kilometraj nelimitat, predare si preluare la Aeroportul International Sibiu, in afara programului de lucru' }],
+             issue:'10.11.2026', due:'10.11.2026', cur:'RON' },
+  eur:     { label:'EUR, curs de rezervă (test)', client:CLIENT_S1, issue:'19.11.2026', due:'19.11.2026', cur:'EUR',
+             rate:{ value:'5.0850', date:'18.11.2026', fallback:true },
+             lines:[ { desc:'Inchiriere masina 3 zile', um:'1', qty:'1', price:'150.00', disc:'0', cota:'21' },
+                     { desc:'Cazare 2 nopti', um:'1', qty:'2', price:'80.00', disc:'10', cota:'11', open:true } ] }
+};
+
+/* Calcul (machetă: bani întregi; regula reală: D-007 / Q-007) */
+const cents = s => Math.round(parseFloat(s || '0') * 100);
+const fmt = c => (c/100).toFixed(2);
+function lineCalc(l) {
+  const gross = Math.round(cents(l.price) * parseFloat(l.qty || '0'));
+  const val = Math.round(gross * (100 - parseFloat(l.disc || '0')) / 100);
+  const r = (COTE.find(c => c.v === l.cota) || COTE[0]).r;
+  return { val, vat: Math.round(val * r / 100) };
+}
+function totals(lines) {
+  const by = {};
+  lines.forEach(l => { const c = lineCalc(l); (by[l.cota] ||= {base:0, vat:0}); by[l.cota].base += c.val; by[l.cota].vat += c.vat; });
+  const base = Object.values(by).reduce((a,b)=>a+b.base,0), vat = Object.values(by).reduce((a,b)=>a+b.vat,0);
+  return { by, base, vat, total: base + vat };
+}
+const curLabel = c => c === 'RON' ? 'Lei' : c;
+
+/* Render */
+function docSection(s, ro) {
+  const dis = ro ? 'disabled' : '', due = s.errors?.due;
+  const numberField = s.issued
+    ? `<div class="static num"><strong>${s.issued}</strong><span class="label-tag success">Emisă</span></div>`
+    : `<div class="static">Se alocă la emitere</div>`;
+  let rate = '';
+  if (s.cur !== 'RON' && s.rate) {
+    rate = s.rate.fallback
+      ? `<div class="rate warn" role="status">${I.warn}<div><strong>Curs de rezervă: 1 ${s.cur} = <span class="num">${s.rate.value}</span> Lei</strong> <span class="muted">(BNR, <span class="num">${s.rate.date}</span>). Cursul din <span class="num">${s.issue}</span> nu a fost încă importat; factura va purta mențiunea.</span></div></div>`
+      : `<div class="rate"><span class="muted">Curs BNR din <span class="num">${s.issue}</span>:</span> <strong class="num">1 ${s.cur} = ${s.rate.value} Lei</strong></div>`;
+  }
+  return `<section aria-labelledby="h-doc">
+    <h2 id="h-doc">Document</h2>
+    <div class="fields">
+      <div class="field"><label for="f-serie">Serie</label>
+        <div class="sel-wrap"><select id="f-serie" class="input" ${dis}><option>Aa</option></select>${I.chev}</div></div>
+      <div class="field"><span class="flabel">Număr</span>${numberField}</div>
+      <div class="field"><label for="f-issue">Data emiterii</label>
+        <div class="input-icon right">${I.cal}<input id="f-issue" class="input num" value="${s.issue}" ${dis}></div></div>
+      <div class="field"><label for="f-due">Termen de plată</label>
+        <div class="input-icon right">${I.cal}<input id="f-due" class="input num${due?' has-error':''}" value="${s.due}" ${dis} ${due?'aria-invalid="true" aria-describedby="e-due"':''}></div>
+        ${due ? err('e-due', due) : ''}</div>
+      <div class="field"><label for="f-cur">Monedă</label>
+        <div class="sel-wrap"><select id="f-cur" class="input" ${dis}>${['RON','EUR','USD'].map(c=>`<option ${c===s.cur?'selected':''}>${c}</option>`).join('')}</select>${I.chev}</div></div>
+    </div>${rate}
+  </section>`;
+}
+function clientSection(s, ro) {
+  const e = s.errors?.client, c = s.client;
+  const meta = c ? `<div class="client-meta sm num" id="client-meta">CIF ${c.cif} · ${esc(c.addr)}</div>` : '';
+  const control = ro
+    ? `<div class="client-name">${esc(c.name)}</div>`
+    : `<div class="input-icon">${I.search}<textarea id="f-client" rows="1" class="input${e?' has-error':''}" placeholder="Căutați după denumire sau CIF" role="combobox" aria-expanded="false"
+         ${e?'aria-invalid="true" aria-describedby="e-client"':(c?'aria-describedby="client-meta"':'')}>${c?esc(c.name):''}</textarea></div>`;
+  return `<section class="client" aria-labelledby="h-cli">
+    <h2 id="h-cli">Client</h2>
+    <div class="field"><label for="f-client" class="sr-only">Client</label>${control}
+      ${e ? err('e-client', e) : meta}
+      ${!c && !e ? `<div class="hint">Alegeți un client existent sau <a href="#">adăugați unul nou</a>.</div>` : ''}</div>
+  </section>`;
+}
+function linesSection(s, ro) {
+  const cl = curLabel(s.cur), dis = ro ? 'disabled' : '';
+  const rows = s.lines.map((l, i) => {
+    const c = lineCalc(l), n = i + 1, qe = (l.qty === '0' && s.errors?.qty0), open = !!l.open;
+    const sum = !open && l.disc !== '0' ? `<div class="line-sum hint">Discount ${l.disc}%</div>` : '';
+    return `<tr class="line">
+      <td class="c-desc" data-label="Produs / serviciu"><textarea class="input" rows="1" aria-label="Produs / serviciu, linia ${n}" ${dis}>${esc(l.desc)}</textarea>${sum}</td>
+      <td class="r" data-label="Cantitate"><input class="input num${qe?' has-error':''}" value="${l.qty}" aria-label="Cantitate, linia ${n}" ${dis} ${qe?`aria-invalid="true" aria-describedby="e-qty${n}"`:''}>${qe ? err('e-qty'+n, s.errors.qty0) : ''}</td>
+      <td class="r" data-label="Preț fără TVA (${cl})"><input class="input num" value="${l.price}" aria-label="Preț unitar fără TVA, linia ${n}" ${dis}></td>
+      <td data-label="Cotă TVA"><div class="sel-wrap"><select class="input" aria-label="Cotă TVA, linia ${n}" ${dis}>${COTE.map(o=>`<option ${o.v===l.cota?'selected':''}>${o.label}</option>`).join('')}</select>${I.chev}</div></td>
+      <td class="r ro num" data-label="Valoare (${cl})">${fmt(c.val)}</td>
+      <td class="c-act">${ro ? '' : `<button class="btn more-btn" type="button" aria-expanded="${open}" aria-controls="more-${n}" data-line="${i}">Mai multe ${I.chev}</button><button class="btn icon-btn" type="button" aria-label="Șterge linia ${n}">${I.trash}</button>`}</td>
+    </tr>
+    <tr class="more" id="more-${n}" ${open ? '' : 'hidden'}><td colspan="6"><div class="more-panel">
+      <div class="field"><label for="um-${n}">U.M.</label><input id="um-${n}" class="input" value="${l.um}" ${dis}></div>
+      <div class="field"><label for="disc-${n}">Discount</label><div class="suffix"><input id="disc-${n}" class="input num" value="${l.disc}" ${dis}><span aria-hidden="true">%</span></div></div>
+    </div></td></tr>`;
+  }).join('');
+  const body = s.lines.length
+    ? `<table class="lines">
+        <colgroup><col><col class="c-q"><col class="c-p"><col class="c-t"><col class="c-v"><col class="c-a"></colgroup>
+        <thead><tr><th>Produs / serviciu</th><th class="r">Cant.</th><th class="r">Preț fără TVA (${cl})</th><th>Cotă TVA</th><th class="r">Valoare (${cl})</th><th><span class="sr-only">Acțiuni</span></th></tr></thead>
+        <tbody>${rows}</tbody></table>`
+    : `<p class="empty-text">Nicio linie încă. Adăugați produsele sau serviciile facturate.</p>`;
+  return `<section aria-labelledby="h-lines">
+    <h2 id="h-lines">Linii</h2>${body}
+    ${ro ? '' : `<div class="lines-foot"><button class="btn quiet" type="button">${I.plus} Adaugă linie</button></div>`}
+  </section>`;
+}
+function totalsSection(s) {
+  const t = totals(s.lines), cl = curLabel(s.cur);
+  const vatRows = Object.entries(t.by).map(([k,v]) => {
+    const lbl = COTE.find(c=>c.v===k).label;
+    return `<div class="row"><span>TVA ${lbl} <span class="muted num">(din ${fmt(v.base)})</span></span><span class="num">${fmt(v.vat)}</span></div>`;
+  }).join('') || `<div class="row"><span>TVA</span><span class="num">0.00</span></div>`;
+  let equiv = '';
+  if (s.cur !== 'RON' && s.rate) {
+    const ron = Math.round(t.total * parseFloat(s.rate.value));
+    equiv = `<div class="equiv"><span><span class="muted">Echivalent în RON:</span> <strong class="num">${fmt(ron)} Lei</strong></span>
+      ${s.rate.fallback ? `<span class="label-tag warning">${I.warn.replace('width="16" height="16"','width="12" height="12"')} Curs de rezervă</span>` : ''}</div>`;
+  }
+  const mentions = [];
+  if (s.client || s.lines.length) mentions.push(MENTION_S1);
+  if (s.lines.some(l=>l.cota==='TI')) mentions.push('Taxare inversă.');
+  if (s.rate?.fallback) mentions.push(`Curs de rezervă: cursul BNR din ${s.rate.date}.`);
+  return `<section aria-labelledby="h-tot">
+    <div class="totals">
+      <h2 id="h-tot" class="sr-only">Totaluri</h2>
+      <div class="row"><span>Valoare fără TVA</span><span class="num">${fmt(t.base)}</span></div>
+      ${vatRows}
+      <div class="row grand"><span class="lbl">Total plată</span><span class="val num">${fmt(t.total)} <span class="cur">${cl}</span></span></div>
+      ${equiv}
+    </div>
+    ${mentions.length ? `<div class="mentions sm muted" aria-label="Mențiuni legale">${mentions.map(m=>`<p>${esc(m)}</p>`).join('')}</div>` : ''}
+  </section>`;
+}
+function actionBar(s) {
+  if (s.issued) return '';
+  return `<div class="actions" role="group" aria-label="Acțiuni factură">
+    <button class="btn quiet" type="button">Salvează ciornă</button>
+    <button class="btn quiet" type="button">Salvează ca proformă</button>
+    <span class="spacer"></span>
+    <button class="btn primary" type="button">Emite factura</button>
+  </div>`;
+}
+function errorSummary(s) {
+  const e = s.errors; if (!e) return '';
+  return `<div class="banner danger" role="alert" tabindex="-1">${I.err.replace(/16/g,'20')}<div>
+    <h2>Factura nu a fost emisă. Corectați 3 câmpuri:</h2>
+    <ul><li><a href="#f-client">Client: ${e.client}</a></li><li><a href="#f-due">Termen de plată: ${e.due}</a></li><li><a href="#e-qty1">Linia 1, cantitate: ${e.qty0}</a></li></ul></div></div>`;
+}
+function successBanner(s) {
+  if (!s.issued) return '';
+  return `<div class="banner success" role="status">${I.ok}<div>
+    <h2>Factura ${s.issued} a fost emisă</h2>
+    <div class="sm">Numărul ${s.issued} a fost alocat din seria Aa. Factura emisă nu se mai modifică; o puteți storna din pagina facturii.</div>
+    <div class="row"><a class="btn primary" href="#">Deschide factura ${s.issued}</a><a class="btn quiet" href="#">Factură nouă</a></div></div></div>`;
+}
+function head(s) {
+  const t = s.issued ? 'Factura ' + s.issued : 'Factură nouă';
+  return `<div class="head"><div class="crumbs">Facturi / ${t}</div>
+    <div class="titlerow"><h1>${t}</h1>${s.cur && s.cur !== 'RON' ? '<span class="label-tag neutral">Factură de test</span>' : ''}</div></div>`;
+}
+function loadingScreen() {
+  const sk = c => `<div class="sk ${c}"></div>`;
+  return `<div class="screen" aria-busy="true"><div class="col">
+    <span class="sr-only" role="status">Se încarcă formularul facturii…</span>
+    ${head({})}
+    <div class="sk-stack">${sk('w20')}<div class="fields">${Array(5).fill(`<div class="sk-stack">${sk('w60')}${sk('h32')}</div>`).join('')}</div></div>
+    <div class="sk-stack" style="max-width:560px">${sk('w20')}${sk('h32')}${sk('w60')}</div>
+    <div class="sk-stack">${sk('w20')}${sk('h32')}${sk('h32')}</div>
+    <div class="sk-stack" style="margin-left:auto;width:100%;max-width:360px">${sk('w60')}${sk('w60')}${sk('h32')}</div>
+    <div class="actions"><button class="btn quiet" disabled>Salvează ciornă</button><button class="btn quiet" disabled>Salvează ca proformă</button><span class="spacer"></span><button class="btn primary" disabled>Emite factura</button></div>
+  </div></div>`;
+}
+let current;
+function render(key) {
+  current = key;
+  const s = STATES[key], app = document.getElementById('app');
+  if (s.loading) { app.innerHTML = loadingScreen(); return; }
+  const ro = !!s.issued;
+  app.innerHTML = `<div class="screen"><div class="col">
+    ${head(s)}${successBanner(s)}${errorSummary(s)}
+    ${docSection(s, ro)}${clientSection(s, ro)}${linesSection(s, ro)}${totalsSection(s)}${actionBar(s)}
+  </div></div>`;
+}
+/* „Mai multe” deschide/închide rândul cu U.M. și discount */
+document.getElementById('app').addEventListener('click', e => {
+  const b = e.target.closest('.more-btn'); if (!b) return;
+  const l = STATES[current].lines[+b.dataset.line]; l.open = !l.open; render(current);
+  document.querySelector(`.more-btn[data-line="${b.dataset.line}"]`)?.focus();
+});
+
+/* Mock controls */
+function seg(id, items, cur, onPick) {
+  const el = document.getElementById(id);
+  el.innerHTML = items.map(([k,l]) => `<button type="button" data-k="${k}" aria-pressed="${k===cur}">${l}</button>`).join('');
+  el.onclick = e => { const b = e.target.closest('button'); if (!b) return;
+    el.querySelectorAll('button').forEach(x => x.setAttribute('aria-pressed', x === b)); onPick(b.dataset.k); };
+}
+const params = new URLSearchParams(location.search);
+let state = STATES[params.get('state')] ? params.get('state') : 'filled';
+let theme = ['light','dark'].includes(params.get('theme')) ? params.get('theme') : 'system';
+let size = params.get('size') === 'phone' ? 'phone' : 'desktop';
+const applyTheme = t => { t === 'system' ? document.documentElement.removeAttribute('data-theme') : document.documentElement.setAttribute('data-theme', t); };
+const applySize = z => document.getElementById('frame').classList.toggle('phone', z === 'phone');
+seg('seg-state', Object.entries(STATES).map(([k,v]) => [k, v.label]), state, render);
+seg('seg-theme', [['system','Sistem'],['light','Light'],['dark','Dark']], theme, applyTheme);
+seg('seg-size', [['desktop','Desktop'],['phone','Telefon 360 px']], size, applySize);
+applyTheme(theme); applySize(size); render(state);
+</script>
+</body>
+</html>

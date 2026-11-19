@@ -24,6 +24,8 @@
 - Q-010 · Storno parțial
 - Q-011 · Ce înseamnă o „bucată”
 - Q-015 · U.M. „1” vs „buc”
+- Q-023 · Forma discountului · _answered_
+- Q-024 · Seria proformei · _answered_
 
 ### [Incasari](questions/incasari.md)
 - Q-012 · Încasări în tranșe

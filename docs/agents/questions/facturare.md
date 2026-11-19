@@ -50,3 +50,19 @@
 - **Blocks:** U.M. implicită.
 - **Who answers:** Alexandru Cerghezan (răspunsul vine de la client, Aura Logistic SRL)
 - **Source:** interviul din 16.11.2026 și factura Aa0060 (INTERVIEW.md, SAMPLES.md)
+
+## Q-023 · Forma discountului
+- **Status:** answered
+- **Answer:** Discount ca procent pe linie (Alexandru Cerghezan, 19.11.2026). Decizia: propusă pe 19.11.2026, așteaptă aprobarea.
+- **Context:** Fișa cere „linii cu discount”. Discountul e procent sau valoare? Se aplică pe linie, pe total sau ca linie separată (cum face SmartBill)? Macheta DS-p21-invoice-form îl desenează ca procent pe linie, provizoriu.
+- **Blocks:** Coloana „Discount” din formularul de factură, calculul valorii pe linie, XML-ul (AllowanceCharge).
+- **Who answers:** Alexandru Cerghezan
+- **Source:** macheta DS-p21-invoice-form, 19.11.2026; docs/scope.md
+
+## Q-024 · Seria proformei
+- **Status:** answered
+- **Answer:** La „Salvează ca proformă” Operatorul alege seria dintr-o listă cu seriile de tip proformă; prima e preselectată (Alexandru Cerghezan, 19.11.2026). Decizia: propusă pe 19.11.2026, așteaptă aprobarea.
+- **Context:** La „Salvează ca proformă”, ce serie primește proforma? Una implicită pe tipul „proformă”, sau Operatorul o alege în formular când există mai multe (D-005)?
+- **Blocks:** Butonul „Salvează ca proformă” din formularul de factură.
+- **Who answers:** Alexandru Cerghezan
+- **Source:** macheta DS-p21-invoice-form, 19.11.2026; D-005
