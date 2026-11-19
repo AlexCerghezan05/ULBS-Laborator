@@ -55,7 +55,7 @@
 ## D-014 · Seria proformei aleasă la salvare
 - **Status:** approved
 - **Date:** 2026-11-19
-- **Rule:** La „Salvează ca proformă”, Operatorul alege seria dintr-o listă cu seriile de tip proformă (D-005); prima din listă e preselectată. Cazul fără nicio serie de proformă: Q-025.
+- **Rule:** La „Salvează ca proformă”, Operatorul alege seria dintr-o listă cu seriile de tip proformă (D-005); prima din listă e preselectată. Cazul fără nicio serie de proformă: D-017.
 - **Why:** D-005 permite mai multe serii pe tip de document; răspunsul la Q-024.
 - **Rejected:** O singură serie de proformă implicită, fără alegere.
 - **Evidence:** răspunsul la Q-024, 19.11.2026; `docs/design/mocks/DS-p21-invoice-form.html` (starea „Salvează ca proformă”).
