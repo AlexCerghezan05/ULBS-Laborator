@@ -37,3 +37,11 @@
 - **Blocks:** Definition of Done: „cele 5 facturi reale produc XML valid”; testele de rotunjire pe facturi reale (Q-007).
 - **Who answers:** Alexandru Cerghezan (facturile vin de la client, Aura Logistic SRL)
 - **Source:** interviul cu Alexandru Cerghezan, 19.11.2026; SAMPLES.md
+
+## Q-027 · Clientul persoană fizică
+- **Status:** answered
+- **Answer:** Persoanele fizice rămân clienți (D-010). CNP-ul e opțional; fără el, XML-ul primește 13 zerouri (`0000000000000`). CONTEXT.md primește termenul „Persoană fizică”, distinct de PFA (Alexandru Cerghezan, 19.11.2026). Decizia: D-019.
+- **Context:** D-010 și docs/scope.md includ persoanele fizice, dar CONTEXT.md definea Clientul ca „persoană juridică sau PFA, cu CIF” și punea „persoană fizică” pe lista de evitat. RO_CIUS cere un identificator pentru persoana fizică.
+- **Blocks:** Formularul de client (DS-p21-clients); identificatorul cumpărătorului în XML.
+- **Who answers:** Alexandru Cerghezan
+- **Source:** CONTEXT.md; D-010; docs/scope.md

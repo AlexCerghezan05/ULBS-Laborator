@@ -267,7 +267,8 @@ tr.more td { padding-top:0; }
       <li><strong>„Salvează ca proformă”</strong> deschide lista seriilor de tip proformă, cu prima preselectată (D-014). Seriile „PF” și „PFE” sunt ilustrative; seed-ul are doar seria de facturi <code>Aa</code>. Pe telefon, alegerea apare sub buton, nu deasupra.</li>
       <li><strong>Fără serie de proformă</strong> (D-017): butonul e dezactivat și lângă el apare mesajul; linkul spre Serii apare doar pentru Admin.</li>
       <li>Rămân deschise: rotunjirea (Q-007), formatul numărului (Q-008), U.M. „1” (Q-015).</li>
-      <li><strong>Starea EUR</strong> e o factură de test (D-008, D-006): cursul 5.0850 și liniile sunt ilustrative.</li>
+      <li><strong>Starea EUR</strong> e o factură de test (D-008, D-006): cursul 5.0850 și liniile sunt ilustrative. Cazul normal folosește cursul din ziua bancară precedentă emiterii; starea arată cazul de rezervă, când lipsește și acesta și se folosește unul mai vechi.</li>
+      <li><strong>Fără ciorne</strong> (D-018): formularul are doar „Salvează ca proformă” și „Emite factura”.</li>
     </ul>
   </section>
 </div>
@@ -309,7 +310,7 @@ const STATES = {
   long:    { label:'Text lung', client:CLIENT_LONG, lines:[{ ...LINE_S1, desc:'Inchiriere masina 7 zile, cu asigurare CASCO, scaun pentru copil, kilometraj nelimitat, predare si preluare la Aeroportul International Sibiu, in afara programului de lucru' }],
              issue:'10.11.2026', due:'10.11.2026', cur:'RON' },
   eur:     { label:'EUR, curs de rezervă (test)', client:CLIENT_S1, issue:'19.11.2026', due:'19.11.2026', cur:'EUR',
-             rate:{ value:'5.0850', date:'18.11.2026', fallback:true },
+             rate:{ value:'5.0850', date:'17.11.2026', fallback:true, expected:'18.11.2026' },
              lines:[ { desc:'Inchiriere masina 3 zile', um:'1', qty:'1', price:'150.00', disc:'0', cota:'21' },
                      { desc:'Cazare 2 nopti', um:'1', qty:'2', price:'80.00', disc:'10', cota:'11', open:true } ] }
 };
@@ -340,8 +341,8 @@ function docSection(s, ro) {
   let rate = '';
   if (s.cur !== 'RON' && s.rate) {
     rate = s.rate.fallback
-      ? `<div class="rate warn" role="status">${I.warn}<div><strong>Curs de rezervă: 1 ${s.cur} = <span class="num">${s.rate.value}</span> Lei</strong> <span class="muted">(BNR, <span class="num">${s.rate.date}</span>). Cursul din <span class="num">${s.issue}</span> nu a fost încă importat; factura va purta mențiunea.</span></div></div>`
-      : `<div class="rate"><span class="muted">Curs BNR din <span class="num">${s.issue}</span>:</span> <strong class="num">1 ${s.cur} = ${s.rate.value} Lei</strong></div>`;
+      ? `<div class="rate warn" role="status">${I.warn}<div><strong>Curs de rezervă: 1 ${s.cur} = <span class="num">${s.rate.value}</span> Lei</strong> <span class="muted">(BNR, <span class="num">${s.rate.date}</span>). Cursul din ziua bancară precedentă (<span class="num">${s.rate.expected}</span>) lipsește; factura va purta mențiunea.</span></div></div>`
+      : `<div class="rate"><span class="muted">Curs BNR din <span class="num">${s.rate.date}</span>:</span> <strong class="num">1 ${s.cur} = ${s.rate.value} Lei</strong></div>`;
   }
   return `<section aria-labelledby="h-doc">
     <h2 id="h-doc">Document</h2>
@@ -432,7 +433,6 @@ function totalsSection(s) {
 function actionBar(s) {
   if (s.issued) return '';
   return `<div class="actions" role="group" aria-label="Acțiuni factură">
-    <button class="btn quiet" type="button">Salvează ciornă</button>
     ${s.noPf ? `<div class="pf-none">
       <button class="btn quiet" type="button" disabled aria-describedby="pf-none-msg">Salvează ca proformă</button>
       <span class="hint" id="pf-none-msg">Nu există nicio serie de proformă. Adăugați una în ${s.role === 'admin' ? '<a href="#">Serii</a>' : 'Serii'}.</span>
@@ -482,7 +482,7 @@ function loadingScreen() {
     <div class="sk-stack" style="max-width:560px">${sk('w20')}${sk('h32')}${sk('w60')}</div>
     <div class="sk-stack">${sk('w20')}${sk('h32')}${sk('h32')}</div>
     <div class="sk-stack" style="margin-left:auto;width:100%;max-width:360px">${sk('w60')}${sk('w60')}${sk('h32')}</div>
-    <div class="actions"><button class="btn quiet" disabled>Salvează ciornă</button><button class="btn quiet" disabled>Salvează ca proformă</button><span class="spacer"></span><button class="btn primary" disabled>Emite factura</button></div>
+    <div class="actions"><button class="btn quiet" disabled>Salvează ca proformă</button><span class="spacer"></span><button class="btn primary" disabled>Emite factura</button></div>
   </div></div>`;
 }
 let current;

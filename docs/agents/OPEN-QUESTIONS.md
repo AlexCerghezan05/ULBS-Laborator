@@ -15,6 +15,7 @@
 - Q-013 · XML-urile facturilor
 - Q-017 · Numele firmei în repo-ul public
 - Q-018 · Facturile reale S2–S5
+- Q-027 · Clientul persoană fizică · _answered_
 
 ### [Facturare](questions/facturare.md)
 - Q-006 · Proforme
@@ -27,11 +28,18 @@
 - Q-023 · Forma discountului · _answered_
 - Q-024 · Seria proformei · _answered_
 - Q-025 · Nicio serie de proformă · _answered_
+- Q-026 · Ciorne de factură · _answered_
+- Q-028 · Seria de tip storno · _answered_
+- Q-029 · Lista cotelor de TVA · _answered_
+- Q-030 · Linia de factură: catalog sau text liber · _answered_
+- Q-031 · Ce curs BNR folosește factura · _answered_
+- Q-033 · Contabilul confirmă regula cursului BNR
 
 ### [Incasari](questions/incasari.md)
 - Q-012 · Încasări în tranșe
-- Q-016 · Chitanțele în aplicație
+- Q-016 · Chitanțele în aplicație · _answered_
 - Q-019 · Reminder-e de plată
+- Q-032 · Emailul clientului pentru reminder-e · _answered_
 
 ### [Proiect](questions/proiect.md)
 - Q-001 · What will this repo hold, and in which stack? · _answered_

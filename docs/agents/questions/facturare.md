@@ -74,3 +74,50 @@
 - **Blocks:** Butonul „Salvează ca proformă” fără serii de proformă; seed-ul seriilor.
 - **Who answers:** Alexandru Cerghezan
 - **Source:** macheta DS-p21-invoice-form, 19.11.2026; D-005, D-014
+
+## Q-026 · Ciorne de factură
+- **Status:** answered
+- **Answer:** Ciornele nu intră în scope. Butonul „Salvează ciornă” dispare din macheta DS-p21-invoice-form; formularul are doar „Salvează ca proformă” și „Emite factura” (Alexandru Cerghezan, 19.11.2026). Decizia: D-018.
+- **Context:** Macheta aprobată DS-p21-invoice-form are butonul „Salvează ciornă”, dar nicio decizie și nici docs/scope.md nu descriu ciornele (factură salvată fără număr, editabilă până la emitere, cu status propriu în listă).
+- **Blocks:** Butoanele formularului de factură; statusurile din lista de facturi.
+- **Who answers:** Alexandru Cerghezan
+- **Source:** macheta DS-p21-invoice-form, 19.11.2026; docs/scope.md
+
+## Q-028 · Seria de tip storno
+- **Status:** answered
+- **Answer:** Tipul de document „storno” dispare din serii; tipurile rămân factură, proformă și chitanță. Storno-ul ia mereu următorul număr din seria facturii originale (Alexandru Cerghezan, 19.11.2026). Decizia: D-005 (schimbată).
+- **Context:** D-005 dă fiecărei serii un tip de document (factură, proformă, storno, chitanță), dar spune și că storno-ul folosește seria facturii, deci o serie de tip storno nu ar fi folosită.
+- **Blocks:** Tipurile de document ale seriilor (DS-p21-series); numerotarea storno-ului.
+- **Who answers:** Alexandru Cerghezan
+- **Source:** D-005; docs/scope.md; INTERVIEW.md
+
+## Q-029 · Lista cotelor de TVA
+- **Status:** answered
+- **Answer:** Cotele 21%, 11%, scutit (0%), taxare inversă (0%), fiecare cu codul de clasificare TVA pentru XML, stau într-un singur loc: un tabel în baza de date populat printr-o migrare, fără ecran sau setare. O cotă nouă înseamnă o migrare nouă (Alexandru Cerghezan, 19.11.2026; răspunsul inițial „fixă în cod” a fost precizat la aprobare). Decizia: D-020.
+- **Context:** Macheta DS-p21-invoice-form oferă pe linie cotele 21%, 11%, Scutit, Taxare inversă, dar nicio decizie nu spunea de unde vine lista și nu există un ecran pentru cote.
+- **Blocks:** Câmpul „Cotă TVA” din formularul de factură și de produs; codurile de clasificare TVA din XML.
+- **Who answers:** Alexandru Cerghezan
+- **Source:** macheta DS-p21-invoice-form, 19.11.2026; D-006
+
+## Q-030 · Linia de factură: catalog sau text liber
+- **Status:** answered
+- **Answer:** Câmpul liniei caută în catalogul de produse/servicii; la alegere completează denumirea, U.M., prețul și cota, toate modificabile pe linie. Se poate scrie și o denumire care nu e în catalog, cu U.M., preț și cotă completate de mână (Alexandru Cerghezan, 19.11.2026). Decizia: D-021.
+- **Context:** Registry-ul spune „linii (produs, …)” și scope-ul are catalog (DS-p21-products), dar macheta DS-p21-invoice-form arată doar o denumire; pe S1 denumirea pare scrisă pentru factură.
+- **Blocks:** Câmpul „Produs / serviciu” din formularul de factură.
+- **Who answers:** Alexandru Cerghezan
+- **Source:** macheta DS-p21-invoice-form, 19.11.2026; docs/design/registry.yaml; SAMPLES.md (S1)
+
+## Q-031 · Ce curs BNR folosește factura
+- **Status:** answered
+- **Answer:** Factura în EUR/USD folosește ultimul curs comunicat de BNR anterior datei emiterii (în practică, cursul din ziua bancară precedentă), conform art. 290 din Codul fiscal. „Curs de rezervă” și mențiunea apar doar dacă lipsește cursul din ziua bancară precedentă și se folosește unul mai vechi (Alexandru Cerghezan, 19.11.2026; formularea inițială „ultimul curs publicat în momentul emiterii” a fost schimbată la aprobare). Decizia: D-008 (schimbată). Confirmarea contabilului: Q-033.
+- **Context:** BNR publică cursul zilei în jurul orei 13:00. D-008 spunea „cursul BNR din ziua emiterii”, iar macheta DS-p21-invoice-form trata cursul din ziua precedentă ca rezervă.
+- **Blocks:** Alegerea cursului la emitere; marcajul „curs de rezervă” (D-008, D-015); starea EUR din macheta DS-p21-invoice-form.
+- **Who answers:** Alexandru Cerghezan
+- **Source:** D-008; macheta DS-p21-invoice-form, 19.11.2026; docs/brief.md
+
+## Q-033 · Contabilul confirmă regula cursului BNR
+- **Status:** open
+- **Context:** D-008 folosește la facturile în EUR/USD ultimul curs comunicat de BNR anterior datei emiterii (în practică, cursul din ziua bancară precedentă), conform art. 290 din Codul fiscal, iar „curs de rezervă” doar când lipsește și cursul din ziua bancară precedentă. Contabilul confirmă că asta e regula pe care o aplică și că mențiunea pentru cursul de rezervă e potrivită?
+- **Blocks:** Confirmarea regulii din D-008 (construcția merge înainte pe D-008 aprobat).
+- **Who answers:** contabilul clientului, prin Alexandru Cerghezan (contactul: Q-005)
+- **Source:** răspunsul la Q-031, 19.11.2026; D-008

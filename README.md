@@ -4,7 +4,7 @@ Aplicație de facturare cu export e-Factura (UBL 2.1, RO_CIUS) pentru un client 
 o firmă mică din Sibiu (Aura Logistic SRL, transport alternativ de persoane).
 Proiectul P21 din catalogul Web Avansat. Fișa completă: [`docs/brief.md`](docs/brief.md).
 
-> Stadiu (19.11.2026): scope și stack aprobate (D-002…D-010 în
+> Stadiu (19.11.2026): scope și stack aprobate (D-002…D-022 în
 > [`docs/agents/DECISIONS.md`](docs/agents/DECISIONS.md)). Nu există cod încă.
 
 ## Documente
@@ -29,8 +29,8 @@ Proiectul P21 din catalogul Web Avansat. Fișa completă: [`docs/brief.md`](docs
 - Facturi cu discount pe linie, proformă → factură, factură emisă imutabilă, **storno total și parțial** legat de originală.
 - **Încasări** parțiale și multiple, sold client, facturi restante, chitanțe.
 - **Reminder-e de plată pe email**: Admin-ul configurează șablonul și regula de trimitere (după câte zile de la scadență, la câte zile se repetă); istoric al reminder-elor trimise; buton „Trimite reminder” pe facturile restante. Valorile implicite: după Q-019.
-- **Ecrane**: 15, cu ID-uri DS- și roluri, în [`docs/design/registry.yaml`](docs/design/registry.yaml). Nu există încă machete.
-- **Facturi în RON, EUR și USD**: la EUR/USD, cursul BNR din ziua emiterii (import zilnic automat, fallback la ultimul curs, marcat pe factură) și echivalentul în RON. Clientul facturează doar în RON, deci facturile în EUR/USD sunt facturi de test (D-008).
+- **Ecrane**: 15, cu ID-uri DS- și roluri, în [`docs/design/registry.yaml`](docs/design/registry.yaml). Machetă aprobată: DS-p21-invoice-form.
+- **Facturi în RON, EUR și USD**: la EUR/USD, ultimul curs comunicat de BNR anterior datei emiterii (import zilnic automat; un curs mai vechi decât ziua bancară precedentă e marcat pe factură ca „curs de rezervă”) și echivalentul în RON. Clientul facturează doar în RON, deci facturile în EUR/USD sunt facturi de test (D-008).
 - **PDF** după modelul SmartBill al clientului.
 - **Export e-Factura** XML UBL 2.1 RO_CIUS, per factură și în lot, validat cu schematron în CI.
 - **Rapoarte**: jurnal de vânzări, TVA colectat, raport de încasări; export CSV și XLSX.
