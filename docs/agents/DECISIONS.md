@@ -10,7 +10,6 @@
 - D-001 · Servers and databases run in Docker
 - D-002 · Stack: Java 21 + Spring Boot, PostgreSQL, React + TypeScript
 - D-003 · O singură firmă furnizor pe instalare
-- D-004 · Roluri: Admin, Operator, Contabil
 - D-005 · Serii multiple configurabile, numerotare fără goluri
 - D-006 · Toate regimurile de TVA, configurabile; facturi de test separate
 - D-007 · Aritmetică decimală, rotunjire în trei variante configurabile
@@ -18,6 +17,7 @@
 - D-009 · e-Factura: doar export XML, fără trimitere în SPV
 - D-010 · Doar clienți din România
 - D-011 · Design tokens și stil UI din DESIGN.md
+- D-012 · Roluri: Admin, Operator, Contabil, cu drepturile pe ecrane
 
 ---
 
@@ -47,16 +47,6 @@
 - **Why:** Clientul real este o singură firmă (Aura Logistic SRL).
 - **Rejected:** Multi-tenant (mai multe firme furnizor, date separate pe firmă).
 - **Evidence:** interviul de scope, 19.11.2026 (întrebarea 7); INTERVIEW.md.
-- **Source:** user · confidence high
-- **Confirmed:** 2026-11-19
-
-## D-004 · Roluri: Admin, Operator, Contabil
-- **Status:** approved
-- **Date:** 2026-11-19
-- **Rule:** Trei roluri, verificate pe server: Admin (tot: setări firmă, serii, utilizatori și tot ce poate Operatorul), Operator (facturi, proforme, storno, încasări, chitanțe, export XML, reminder-e), Contabil (doar citire, rapoarte, export). Clientul are cont de Admin.
-- **Why:** Fișa cere emitent / contabil / admin; clientul vrea acces la toate operațiunile admin-ului; „emitent” este termen de evitat în CONTEXT.md, deci rolul se numește Operator.
-- **Rejected:** Păstrarea numelui „emitent” pentru rol.
-- **Evidence:** interviul de scope, 19.11.2026 (întrebarea 6); INTERVIEW.md; CONTEXT.md.
 - **Source:** user · confidence high
 - **Confirmed:** 2026-11-19
 
@@ -127,5 +117,19 @@
 - **Why:** Clientul nu are logo sau alt material de brand; accentul vine din PDF-ul SmartBill pe care îl folosește deja (S1), ca aplicația și factura să arate unitar. Utilizatorii lucrează zilnic cu liste dense de facturi.
 - **Rejected:** Altă culoare de accent; UI complet neutru; fonturile sistemului; un font ales separat; stil aerisit cu text de 15–16 px; ton prietenos cu „tu”; font monospace pentru coduri.
 - **Evidence:** interviul de stil, 19.11.2026 (DESIGN.md → Style interview); `samples/factura_Aa0060_anonimizata.pdf`; contrast verificat pentru fiecare pereche de culori, în ambele teme.
+- **Source:** user · confidence high
+- **Confirmed:** 2026-11-19
+
+## D-012 · Roluri: Admin, Operator, Contabil, cu drepturile pe ecrane
+- **Status:** approved
+- **Date:** 2026-11-19
+- **Rule:** Trei roluri, verificate pe server. Clientul are cont de Admin.
+  - Admin: tot (setări firmă, serii, utilizatori, șablonul și regula reminder-elor, rapoarte, cursuri BNR și tot ce poate Operatorul).
+  - Operator: clienți, produse/servicii, facturi, proforme, storno, încasări, chitanțe, export XML; trimite manual un reminder pe o factură restantă; citește istoricul reminder-elor și cursurile BNR. Nu vede rapoartele.
+  - Contabil: doar citire (clienți, produse, facturi, încasări, sold per client, cursuri BNR, istoricul reminder-elor), rapoarte și export (CSV/XLSX, PDF, XML).
+  - Detaliul pe fiecare ecran: `docs/design/registry.yaml` → `roles`.
+- **Why:** Fișa cere emitent / contabil / admin; „emitent” este termen de evitat în CONTEXT.md, deci rolul se numește Operator. Lista ecranelor din 19.11.2026 a stabilit ce vede fiecare rol.
+- **Rejected:** Păstrarea numelui „emitent” pentru rol; Operator cu acces la rapoarte; reminder-e configurabile de Operator.
+- **Evidence:** interviul de scope, 19.11.2026 (întrebarea 6); aprobarea listei de ecrane, 19.11.2026; `docs/design/registry.yaml`; INTERVIEW.md; CONTEXT.md.
 - **Source:** user · confidence high
 - **Confirmed:** 2026-11-19

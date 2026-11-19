@@ -27,7 +27,9 @@ Proiectul P21 din catalogul Web Avansat. Fișa completă: [`docs/brief.md`](docs
 - **Serii multiple**, configurabile (tip document + format număr); seed: `Aa`. Număr secvențial fără goluri sau duplicate sub emiteri simultane; proforma nu consumă număr din seria de facturi.
 - **Toate regimurile de TVA** din fișă, configurabile: plătitor/neplătitor, TVA la încasare, taxare inversă, scutire, cote multiple pe aceeași factură. Cazurile pe care clientul nu le folosește se testează cu facturi de test, separat de facturile reale.
 - Facturi cu discount pe linie, proformă → factură, factură emisă imutabilă, **storno total și parțial** legat de originală.
-- **Încasări** parțiale și multiple, sold client, facturi restante, chitanțe, reminder-e de plată pe email.
+- **Încasări** parțiale și multiple, sold client, facturi restante, chitanțe.
+- **Reminder-e de plată pe email**: Admin-ul configurează șablonul și regula de trimitere (după câte zile de la scadență, la câte zile se repetă); istoric al reminder-elor trimise; buton „Trimite reminder” pe facturile restante. Valorile implicite: după Q-019.
+- **Ecrane**: 15, cu ID-uri DS- și roluri, în [`docs/design/registry.yaml`](docs/design/registry.yaml). Nu există încă machete.
 - **Facturi în RON, EUR și USD**: la EUR/USD, cursul BNR din ziua emiterii (import zilnic automat, fallback la ultimul curs, marcat pe factură) și echivalentul în RON. Clientul facturează doar în RON, deci facturile în EUR/USD sunt facturi de test (D-008).
 - **PDF** după modelul SmartBill al clientului.
 - **Export e-Factura** XML UBL 2.1 RO_CIUS, per factură și în lot, validat cu schematron în CI.

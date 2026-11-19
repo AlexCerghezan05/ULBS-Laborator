@@ -12,7 +12,7 @@ O singură firmă furnizor pe instalare: Aura Logistic SRL (în repo, anonimizat
 „FURNIZOR EXEMPLU S.R.L.”, vezi Q-017). Datele firmei sunt o singură înregistrare,
 editată de Admin. (D-003)
 
-## 2. Roluri (auth pe server, D-004)
+## 2. Roluri (auth pe server, D-012)
 | Rol | Poate |
 |---|---|
 | Admin | tot: setări firmă, serii, utilizatori, plus tot ce poate Operatorul. Clientul primește cont de Admin. |
@@ -54,7 +54,11 @@ editată de Admin. (D-003)
 ### Încasări
 - Încasări parțiale și multiple, numerar sau transfer; sold per client; facturi restante.
 - Chitanțe pentru încasările în numerar, cu numerotare proprie (seria lor). Ce vrea clientul aici rămâne de confirmat (Q-016, Q-012).
-- Reminder-e de plată pe email. Când se trimit și ce text au: Q-019.
+- Reminder-e de plată pe email (cerință „must” din fișă, intră în scope chiar cu Q-019 deschisă):
+  - Admin-ul configurează șablonul de email și regula de trimitere: după câte zile de la scadență și la câte zile se repetă.
+  - Istoricul reminder-elor trimise: Admin, Operator și Contabil îl pot citi.
+  - Pe o factură restantă, Admin-ul și Operatorul pot trimite manual un reminder („Trimite reminder”).
+  - Valorile implicite (zile, text, server de email): după răspunsul la Q-019.
 
 ### PDF
 - După modelul PDF SmartBill al clientului (S1): aceleași câmpuri, în aceeași ordine și în aceleași zone ale paginii, aspect apropiat, fără logo.
@@ -71,7 +75,12 @@ editată de Admin. (D-003)
 ### Ecrane
 Login · setări firmă · serii · utilizatori · clienți · produse/servicii · listă facturi
 (filtre: status, client, perioadă, restante) · creare/vizualizare factură și proformă
-(cu PDF, XML, storno) · încasări (și chitanțe) · sold per client · rapoarte · cursuri BNR.
+(cu PDF, XML, storno) · încasări (și chitanțe) · sold per client · rapoarte · cursuri BNR ·
+reminder-e de plată.
+
+Lista completă, cu ID-uri DS- și rolurile care văd fiecare ecran:
+`docs/design/registry.yaml` (aprobată 19.11.2026). După login se deschide lista de facturi.
+Creare factură, vizualizare factură și storno sunt ecrane separate.
 
 ### Cerințe comune
 API REST documentat (OpenAPI), PostgreSQL cu migrări și seed (min 6 tabele), Docker
