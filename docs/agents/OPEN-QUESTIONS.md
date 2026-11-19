@@ -30,6 +30,7 @@
 - Q-019 · Reminder-e de plată
 - Q-020 · Coloanele jurnalului de vânzări și ale raportului de TVA colectat
 - Q-021 · Unde rulează deploy-ul live HTTPS
+- Q-022 · Cum facem screenshot-urile aplicației
 
 ---
 
@@ -175,3 +176,10 @@
 - **Blocks:** Deploy-ul live; AGENTS.md §5.
 - **Who answers:** Alexandru Cerghezan
 - **Source:** docs/brief.md (cerințe comune); interviul cu Alexandru Cerghezan, 19.11.2026
+
+## Q-022 · Cum facem screenshot-urile aplicației
+- **Status:** open
+- **Context:** Procedura de design cere screenshot-uri light și dark pentru fiecare ecran schimbat (DESIGN.md → Procedure). Încă nu există cod de UI și nici o comandă de screenshot. Pe host nu se instalează unelte native (D-001), deci comanda va rula probabil într-un container (de ex. Playwright în Docker), dar nu e stabilită.
+- **Blocks:** AGENTS.md §2 (comanda de screenshot) și §6 (Definition of Done pentru UI).
+- **Who answers:** Alexandru Cerghezan
+- **Source:** setup-ul de design, 19.11.2026

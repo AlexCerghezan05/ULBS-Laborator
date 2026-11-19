@@ -1,6 +1,6 @@
 ---
 name: build
-description: Build an approved plan (or a small, clear fix) in this repo - tests first where tests exist, then code until they pass, then the definition-of-done checks. Records new practices as candidate patterns. Use after /plan is approved, or when the user says "/build" or "build it".
+description: Build an approved plan (or a small, clear fix) in this repo - tests first where tests exist, then code until they pass, then the definition-of-done checks and, for UI, screenshots compared with the design. Records new practices as candidate patterns. Use after /plan is approved, or when the user says "/build" or "build it".
 ---
 <!-- graffino-agentic:begin v1 -->
 
@@ -55,19 +55,33 @@ No test suite: list each behaviour as "checked by hand" with how you will check 
   it; name it in the report as an observation. Unspecified behaviour or conflicting
   requirements: stop and ask.
 
-## 4. Verify (definition of done)
+## 4. UI changes (visual apps)
+1. A new or changed screen is built only from its **confirmed** mock in
+   `docs/design/mocks/` (DESIGN.md → Procedure), never from the board or Figma. Not
+   confirmed yet: stop and ask. Use only tokens from `docs/design/DESIGN.md`. A new color, size or font is a
+   PROPOSAL, not a code change.
+2. Cover the states: empty, loading, error, long text, many items; light and dark;
+   the smallest and largest supported window/viewport; keyboard focus.
+3. Take screenshots with the command in AGENTS.md section 2, light and dark, of every
+   changed screen. Save them as `docs/design/screens/<DS-id>.<light|dark>.png`.
+4. Compare with the previous screenshots and the design rules. Fix what differs.
+   Add or update the `DS-` entry in `registry.yaml`.
+5. Look at the screenshots yourself before you report. A screen nobody looked at is
+   not done.
+
+## 5. Verify (definition of done)
 Run every check in AGENTS.md section 6. Report each with its result. A failure is
 reported with its output; never call a failed or skipped check done.
 
-## 5. Record
+## 6. Record
 - A reusable practice you established → `candidate` entry in `docs/agents/PATTERNS.md`.
 - A constraint the work settled → decision PROPOSAL to the user.
 - A question that came up and stays open → `Q-` entry.
 - Commit: `<type>(<scope>): <what and why>` with the session's co-author trailer.
 
-## 6. Report
+## 7. Report
 What changed (files), tests (added · passing · assertions changed: must be 0),
-checks run and results, defects fixed on the way (with their
+checks run and results, screenshots (UI), defects fixed on the way (with their
 reproduction), deviations from the plan and why, new abstractions or dependencies
 and their reason, candidate patterns and Q- entries added, observations, what
 remains. Then ask whether to merge

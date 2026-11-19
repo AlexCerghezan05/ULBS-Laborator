@@ -13,7 +13,9 @@ drops. Nothing is built from an unapproved plan.
 1. `git fetch --all --prune`, `git pull --ff-only`; note the branch and any uncommitted work.
 2. `AGENTS.md`, `CONTEXT.md`, `docs/agents/DECISIONS.md`, `PATTERNS.md`, `CONTRACTS.md`,
    `OPEN-QUESTIONS.md`; `ARCHITECTURE.md` for structural changes.
-3. The code: find the **nearest existing example** of what you will build and read it
+3. UI work: `docs/design/DESIGN.md`, `docs/design/registry.yaml`, the screenshots of
+   the screens you will touch.
+4. The code: find the **nearest existing example** of what you will build and read it
    properly. Reuse beats writing.
 
 For a large or multi-part change, spawn the `planner` agent per independent part
@@ -42,6 +44,9 @@ abstraction, dependency, option or broad refactor. Alternatives rejected and why
 
 ## Tests
 | # | Behaviour | Test (file · kind) | Not automated? why |
+
+## Design (UI only)
+<DS- IDs touched or added · mock confirmed, or to draw and confirm first (DESIGN.md) · tokens used · states covered: empty, loading, error, long text · light/dark>
 
 ## Sequencing
 one builder | parallel: <part → files, only for disjoint files, contracts and behaviour>

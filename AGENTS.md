@@ -17,6 +17,7 @@ non-fast-forward or on uncommitted changes you did not make.
 | You rely on an entry | the entry, or its topic file under `docs/agents/<kind>/` |
 | Structural work | `docs/agents/ARCHITECTURE.md` |
 | Old code or a past decision needs explaining | `docs/agents/DECISIONS-SUPERSEDED.md`, `PATTERNS-SUPERSEDED.md` (never obeyed) |
+| UI work | `docs/design/DESIGN.md`, `docs/design/registry.yaml` |
 
 **Flow:** a change to more than a few lines, or one with a design choice, starts with
 `/plan`. The approved plan runs with `/build`. Small fixes go straight to build, with
@@ -86,10 +87,12 @@ Stack: Java 21 + Spring Boot, PostgreSQL + Flyway, REST + OpenAPI, React + TypeS
 # Ledger lint (Python is not installed on the host; runs in Docker):
 MSYS_NO_PATHCONV=1 docker run --rm -v "$(pwd -W):/repo" -w /repo python:3.12-slim python3 docs/agents/tools/ledger-lint.py --fix
 # install / build / run / test: none yet (Q-002)
+# screenshot (UI): none yet, no UI code (Q-022)
 ```
 
 ## 3. Layout
 - `docs/agents/` — the knowledge ledger and the guide for people.
+- `docs/design/` — design guardrails, tokens, screen registry, mocks and screenshots.
 - `.claude/` — the `/plan` and `/build` skills and the planner and builder agents.
 
 ## 4. Rules for this repo
@@ -101,4 +104,5 @@ Default branch: `main`. No release flow yet (Q-003). Push only on the owner's go
 ## 6. Definition of done
 - Tests: none yet (Q-002); list each behaviour as "checked by hand".
 - The ledger lint passes.
+- UI changes: screenshots of every changed screen, light and dark, compared with `docs/design/DESIGN.md` (command: Q-022).
 - New practices recorded as candidate patterns; open points recorded as Q- entries.
