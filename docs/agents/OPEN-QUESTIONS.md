@@ -48,6 +48,7 @@
 - Q-003 · How is work released or handed in?
 - Q-021 · Unde rulează deploy-ul live HTTPS
 - Q-022 · Cum facem screenshot-urile aplicației
+- Q-035 · CSP complet pentru aplicație
 
 ### [Rapoarte](questions/rapoarte.md)
 - Q-014 · Raportul de încasări

@@ -88,7 +88,7 @@ Stack: Java 21 + Spring Boot, PostgreSQL + Flyway, REST + OpenAPI, React + TypeS
 MSYS_NO_PATHCONV=1 docker run --rm -v "$(pwd -W):/repo" -w /repo python:3.12-slim python3 docs/agents/tools/ledger-lint.py --fix
 # Setup (once): copy the example env file and set the password
 cp .env.example .env
-# Run everything (frontend http://localhost:8080, backend http://localhost:8081):
+# Run everything (frontend http://localhost:8090, backend http://localhost:8081):
 docker compose up --build
 # Build the images:
 docker compose build

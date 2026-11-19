@@ -34,7 +34,7 @@ services:
   frontend:
     build: ./frontend
     ports:
-      - "127.0.0.1:8080:80" # D-024: doar local
+      - "127.0.0.1:8090:80" # D-024: doar local; 8080 e ocupat pe host
     depends_on:
       - backend
 

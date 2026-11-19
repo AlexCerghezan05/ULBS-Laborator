@@ -69,7 +69,7 @@ Proiectul P21 din catalogul Web Avansat. Fișa completă: [`docs/brief.md`](docs
 MSYS_NO_PATHCONV=1 docker run --rm -v "$(pwd -W):/repo" -w /repo python:3.12-slim python3 docs/agents/tools/ledger-lint.py --fix
 # O dată: copiați fișierul de mediu și completați parola
 cp .env.example .env
-# Rulare (frontend http://localhost:8080, backend http://localhost:8081):
+# Rulare (frontend http://localhost:8090, backend http://localhost:8081):
 docker compose up --build
 # Build:
 docker compose build

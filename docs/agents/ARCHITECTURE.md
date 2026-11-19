@@ -20,7 +20,7 @@ niciuna; există doar `GET /api/health` și tabelul cotelor de TVA (D-020).
 | CI | `.github/workflows/ci.yml` | la fiecare push: testele (aceeași comandă) și ledger-lint | — |
 
 ## Data flow
-Browser → nginx (`frontend`, port 8080) → `/api/*` → `backend:8080` → PostgreSQL (`db`).
+Browser → nginx (`frontend`, port 8090 pe host) → `/api/*` → `backend:8080` → PostgreSQL (`db`).
 Pagina DS-p21-health cere `GET /api/health` o dată, la deschidere.
 
 ## State and storage
