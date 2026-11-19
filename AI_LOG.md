@@ -1,0 +1,7 @@
+# AI_LOG · P21 Facturare + e-Factura
+
+## 2026-11-19 · Interviu de scope și documentarea deciziilor
+Unealta: Claude Code (prompt liber)
+Ce am cerut: Să salveze fișa P21 în `docs/brief.md`, să citească INTERVIEW.md, SAMPLES.md, CONTEXT.md și OPEN-QUESTIONS.md, apoi să mă intervieveze, câte o întrebare pe rând, despre regimul de TVA, serii, PDF, rotunjire, rapoarte, roluri, date, ecrane, stack și ce nu intră, fără să inventeze nimic despre client. Apoi să scrie ce am stabilit în README.md, CONTEXT.md și OPEN-QUESTIONS.md, să propună deciziile tehnice și să ruleze ledger-lint.
+Ce am primit: 13 întrebări cu variante. A semnalat că scoaterea facturilor în EUR/USD încalcă Definition of Done și că trimiterea în SPV cere un certificat calificat. Au rezultat `docs/brief.md`, `docs/scope.md`, `README.md`, termeni noi în CONTEXT.md, întrebările Q-018..Q-021 și Q-001 marcată răspunsă. Deciziile tehnice au venit ca PROPOSAL-uri și au fost scrise în DECISIONS.md abia după aprobarea mea (D-002…D-010).
+Ce am făcut cu ea: Am ales variantele, inclusiv stack-ul Java 21 + Spring Boot + PostgreSQL + React. Am aprobat așa cum erau D-002…D-007, D-009 și D-010. Am schimbat D-008: propunerea era „doar RON”, iar eu am cerut facturi în RON, EUR și USD, cum cere fișa. La EUR/USD se folosește cursul BNR din ziua emiterii, cu fallback marcat pe factură și echivalent în RON. Sunt facturi de test, pentru că clientul facturează doar în RON. Am cerut să nu se împartă OPEN-QUESTIONS.md, deși trece de 150 de linii.

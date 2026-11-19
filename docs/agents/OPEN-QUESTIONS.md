@@ -9,7 +9,7 @@
 <!-- graffino-agentic:end -->
 
 ## Index
-- Q-001 · What will this repo hold, and in which stack? · _investigating_
+- Q-001 · What will this repo hold, and in which stack? · _answered_
 - Q-002 · Which build, run and test commands does the project use?
 - Q-003 · How is work released or handed in?
 - Q-004 · Cine a răspuns la interviu · _answered_
@@ -26,12 +26,16 @@
 - Q-015 · U.M. „1” vs „buc”
 - Q-016 · Chitanțele în aplicație
 - Q-017 · Numele firmei în repo-ul public
+- Q-018 · Facturile reale S2–S5
+- Q-019 · Reminder-e de plată
+- Q-020 · Coloanele jurnalului de vânzări și ale raportului de TVA colectat
+- Q-021 · Unde rulează deploy-ul live HTTPS
 
 ---
 
 ## Q-001 · What will this repo hold, and in which stack?
-- **Status:** investigating
-- **Proposed answer:** Proiectul P21 din catalogul Web Avansat: aplicație de facturare + export e-Factura (UBL 2.1, RO_CIUS) pentru clientul real Aura Logistic SRL (INTERVIEW.md). Stack-ul nu e ales încă.
+- **Status:** answered
+- **Answer:** Proiectul P21 din catalogul Web Avansat (docs/brief.md): facturare + export e-Factura (UBL 2.1, RO_CIUS) pentru clientul real Aura Logistic SRL. Stack: Java 21 + Spring Boot, PostgreSQL, Flyway, OpenAPI, React + TypeScript (Alexandru Cerghezan, 19.11.2026; D-002).
 - **Blocks:** AGENTS.md sections 1–3, CONTEXT.md terms, ARCHITECTURE.md.
 - **Who answers:** Alexandru Cerghezan
 
@@ -143,3 +147,31 @@
 - **Blocks:** Numele clientului în INTERVIEW.md (repo public).
 - **Who answers:** Alexandru Cerghezan (răspunsul vine de la client, Aura Logistic SRL)
 - **Source:** interviul din 16.11.2026 și factura Aa0060 (INTERVIEW.md, SAMPLES.md)
+
+## Q-018 · Facturile reale S2–S5
+- **Status:** open
+- **Context:** Fișa cere minim 5 facturi reale anonimizate; în SAMPLES.md este doar S1 (Aa0060). Ideal S2–S5 acoperă un storno, o factură cu mai multe linii, una plătită în tranșe și una din alt an. Clientul a refuzat să dea un storno ca exemplu.
+- **Blocks:** Definition of Done: „cele 5 facturi reale produc XML valid”; testele de rotunjire pe facturi reale (Q-007).
+- **Who answers:** Alexandru Cerghezan (facturile vin de la client, Aura Logistic SRL)
+- **Source:** interviul cu Alexandru Cerghezan, 19.11.2026; SAMPLES.md
+
+## Q-019 · Reminder-e de plată
+- **Status:** open
+- **Context:** Fișa cere reminder-e de plată pe email și intră în scope, dar clientul nu trimite reminder-e și n-a dat exemplu de email. Când se trimit (câte zile după scadență, de câte ori), către ce adresă, cu ce text, și prin ce server de email?
+- **Blocks:** Reminder-ele de plată.
+- **Who answers:** Alexandru Cerghezan (cu clientul, Aura Logistic SRL)
+- **Source:** interviul cu Alexandru Cerghezan, 19.11.2026; INTERVIEW.md
+
+## Q-020 · Coloanele jurnalului de vânzări și ale raportului de TVA colectat
+- **Status:** open
+- **Context:** Coloanele jurnalului de vânzări nu s-au discutat cu clientul, iar contabilul nu a fost contactat (Q-005). S-a ales formularul legal standard, dar coloanele exacte și actul normativ după care se fac nu sunt încă verificate. Ce coloane și ce totaluri are fiecare raport?
+- **Blocks:** Rapoartele „jurnal de vânzări” și „TVA colectat”.
+- **Who answers:** Alexandru Cerghezan (din legislație; ideal confirmat de contabil)
+- **Source:** interviul cu Alexandru Cerghezan, 19.11.2026; INTERVIEW.md
+
+## Q-021 · Unde rulează deploy-ul live HTTPS
+- **Status:** open
+- **Context:** Cerințele comune cer deploy live cu HTTPS. Nu s-a stabilit pe ce server sau serviciu, cu ce domeniu și cum se obține certificatul HTTPS.
+- **Blocks:** Deploy-ul live; AGENTS.md §5.
+- **Who answers:** Alexandru Cerghezan
+- **Source:** docs/brief.md (cerințe comune); interviul cu Alexandru Cerghezan, 19.11.2026

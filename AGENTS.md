@@ -76,11 +76,11 @@ without new evidence. A rejected proposal is added there with the reason.
 <!-- graffino-agentic:end -->
 
 ## 1. What this repo is
-ULBS-Laborator. Purpose and content are not decided yet (Q-001).
-It is empty at setup (2026-11-05). Owner: Alexandru Cerghezan.
+ULBS-Laborator. Proiectul P21 (facturare + e-Factura) pentru un client real; vezi `docs/brief.md` și `docs/scope.md` (Q-001 answered).
+It was empty at setup (2026-11-05). Owner: Alexandru Cerghezan.
 
 ## 2. Stack and commands
-Stack: not chosen yet (Q-001). Servers and databases run in Docker (D-001).
+Stack: Java 21 + Spring Boot, PostgreSQL + Flyway, REST + OpenAPI, React + TypeScript (D-002). Servers and databases run in Docker (D-001).
 
 ```bash
 # Ledger lint (Python is not installed on the host; runs in Docker):
