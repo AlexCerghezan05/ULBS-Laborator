@@ -34,6 +34,7 @@
 - Q-030 · Linia de factură: catalog sau text liber · _answered_
 - Q-031 · Ce curs BNR folosește factura · _answered_
 - Q-033 · Contabilul confirmă regula cursului BNR
+- Q-034 · Motivul de scutire pentru XML
 
 ### [Incasari](questions/incasari.md)
 - Q-012 · Încasări în tranșe
@@ -43,7 +44,7 @@
 
 ### [Proiect](questions/proiect.md)
 - Q-001 · What will this repo hold, and in which stack? · _answered_
-- Q-002 · Which build, run and test commands does the project use?
+- Q-002 · Which build, run and test commands does the project use? · _answered_
 - Q-003 · How is work released or handed in?
 - Q-021 · Unde rulează deploy-ul live HTTPS
 - Q-022 · Cum facem screenshot-urile aplicației

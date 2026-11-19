@@ -121,3 +121,10 @@
 - **Blocks:** Confirmarea regulii din D-008 (construcția merge înainte pe D-008 aprobat).
 - **Who answers:** contabilul clientului, prin Alexandru Cerghezan (contactul: Q-005)
 - **Source:** răspunsul la Q-031, 19.11.2026; D-008
+
+## Q-034 · Motivul de scutire pentru XML
+- **Status:** open
+- **Context:** RO_CIUS cere, pentru categoriile TVA `E` (scutit) și `AE` (taxare inversă), un motiv de scutire: cod VATEX (BT-121) sau text (BT-120). Pentru `AE` codul e cunoscut (`VATEX-EU-AE`); pentru `E` depinde de articolul de lege aplicat, pe care nu-l cunoaștem. Tabelul cotelor (D-020) nu are încă motivul.
+- **Blocks:** Exportul XML (D-009) pentru liniile scutite și cu taxare inversă; o eventuală coloană nouă în tabelul cotelor (migrare nouă, D-020).
+- **Who answers:** Alexandru Cerghezan (din legislație; ideal confirmat de contabil, Q-005)
+- **Source:** planul „Scheletul proiectului”, 19.11.2026; D-020

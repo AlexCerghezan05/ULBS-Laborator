@@ -44,3 +44,13 @@
 - **Evidence:** interviul de scope, 19.11.2026 (întrebarea 6); aprobarea listei de ecrane, 19.11.2026; `docs/design/registry.yaml`; INTERVIEW.md; CONTEXT.md.
 - **Source:** user · confidence high
 - **Confirmed:** 2026-11-19
+
+## D-023 · Build și rulare: Maven, testele în profilul `test` din Compose, frontend în nginx
+- **Status:** approved
+- **Date:** 2026-11-19
+- **Rule:** Backend-ul se construiește cu Maven. Testele rulează în profilul `test` din `docker-compose.yml`: un container Maven rulează `mvn -B verify` pe un Postgres separat (`db-test`, date în tmpfs); aceeași comandă local și în CI. Frontend-ul se construiește cu Vite și e servit de nginx, care trimite `/api` spre backend.
+- **Why:** Pe host nu se instalează Java sau Node (D-001); o comandă identică local și în CI, fără acces la socket-ul Docker; nginx seamănă cu ce va rula la deploy.
+- **Rejected:** Gradle; Testcontainers; serverul de dezvoltare Vite în Compose (singur sau ca profil `dev`).
+- **Evidence:** planul „Scheletul proiectului”, aprobat 19.11.2026 (întrebările Build Java, DB în teste, Frontend).
+- **Source:** user · confidence high
+- **Confirmed:** 2026-11-19
