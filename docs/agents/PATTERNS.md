@@ -6,5 +6,7 @@
 <!-- graffino-agentic:end -->
 
 ## Index
+### [Teste](patterns/teste.md)
+- PATTERN-001 · Testele de integrare se numesc *IT și rulează pe db-test · candidate
 
 ---

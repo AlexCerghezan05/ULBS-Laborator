@@ -1,0 +1,24 @@
+# La fiecare push: testele backend-ului (aceeași comandă ca local, D-023) și ledger-lint.
+name: CI
+
+on: push
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - name: Configurare .env din exemplu (fără secrete)
+        run: cp .env.example .env
+      - name: Teste (mvn -B verify pe db-test)
+        run: docker compose --profile test run --rm backend-test
+      - name: Oprire servicii de test
+        if: always()
+        run: docker compose --profile test down
+
+  ledger-lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - name: Ledger lint
+        run: python3 docs/agents/tools/ledger-lint.py
