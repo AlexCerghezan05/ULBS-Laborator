@@ -19,6 +19,6 @@
 ## Q-019 · Reminder-e de plată
 - **Status:** open
 - **Context:** Fișa cere reminder-e de plată pe email și intră în scope, dar clientul nu trimite reminder-e și n-a dat exemplu de email. Când se trimit (câte zile după scadență, de câte ori), către ce adresă, cu ce text, și prin ce server de email?
-- **Blocks:** Reminder-ele de plată.
+- **Blocks:** Valorile implicite ale reminder-elor: după câte zile de la scadență, la câte zile se repetă, textul șablonului, adresa destinatarului, serverul de email. Ecranul și funcția intră în scope (DS-p21-reminders, docs/scope.md).
 - **Who answers:** Alexandru Cerghezan (cu clientul, Aura Logistic SRL)
 - **Source:** interviul cu Alexandru Cerghezan, 19.11.2026; INTERVIEW.md

@@ -1,12 +1,149 @@
 # docs/design/registry.yaml — every screen and shared component, by DS- ID.
 # Plans, commits, mocks and board files use the ID (tickets don't). kind: foundation | component | screen
-# status: draft (mock drawn) | approved (confirmed on the board) | implemented | deprecated (never delete an entry)
-# Empty at setup (2026-11-19): no UI code and no mocks yet. The planned screens are in docs/scope.md → Ecrane.
+# status: planned (listed, no mock yet) | draft (mock drawn) | approved (confirmed on the board) | implemented | deprecated (never delete an entry)
+# summary: what the screen does · roles: who sees it and what they can do (D-012)
+# Screen list approved 2026-11-19 (from docs/scope.md → Ecrane). Nothing is drawn yet.
 # Entry shape:
 #   - id: DS-p21-<name>
 #     kind: screen
-#     source: <path of the code that renders it>
+#     summary: <what the screen does>
+#     roles: <Admin | Operator | Contabil, with what they can do>
+#     source: <path of the code that renders it | none yet>
 #     screenshots: [screens/DS-p21-<name>.light.png, screens/DS-p21-<name>.dark.png]
 #     design_ref: <mocks/DS-p21-<name>.html | none>
-#     status: draft
-designs: []
+#     status: planned
+designs:
+  - id: DS-p21-login
+    kind: screen
+    summary: Autentificare cu email și parolă. După login se deschide lista de facturi (DS-p21-invoice-list).
+    roles: toți (Admin, Operator, Contabil)
+    source: none yet
+    screenshots: []
+    design_ref: none
+    status: planned
+
+  - id: DS-p21-company-settings
+    kind: screen
+    summary: Datele firmei furnizor (CUI, nr. reg. com., adresă, IBAN, bancă), plătitor/neplătitor de TVA, TVA la încasare, regula de rotunjire (D-003, D-006, D-007).
+    roles: Admin (editează)
+    source: none yet
+    screenshots: []
+    design_ref: none
+    status: planned
+
+  - id: DS-p21-series
+    kind: screen
+    summary: Lista seriilor și formularul de serie (tip document, format număr), D-005.
+    roles: Admin (editează)
+    source: none yet
+    screenshots: []
+    design_ref: none
+    status: planned
+
+  - id: DS-p21-users
+    kind: screen
+    summary: Lista utilizatorilor și formularul de utilizator, cu rolul (D-012).
+    roles: Admin (editează)
+    source: none yet
+    screenshots: []
+    design_ref: none
+    status: planned
+
+  - id: DS-p21-clients
+    kind: screen
+    summary: Lista clienților (persoane juridice, PFA, persoane fizice, din România, D-010) și formularul de client.
+    roles: Admin, Operator (editează); Contabil (citire)
+    source: none yet
+    screenshots: []
+    design_ref: none
+    status: planned
+
+  - id: DS-p21-products
+    kind: screen
+    summary: Lista produselor/serviciilor și formularul, cu U.M. și cota de TVA.
+    roles: Admin, Operator (editează); Contabil (citire)
+    source: none yet
+    screenshots: []
+    design_ref: none
+    status: planned
+
+  - id: DS-p21-invoice-list
+    kind: screen
+    summary: Lista facturilor cu filtre (status, client, perioadă, restante), status ca etichetă, export XML în lot (D-009).
+    roles: Admin, Operator (tot); Contabil (citire și export)
+    source: none yet
+    screenshots: []
+    design_ref: none
+    status: planned
+
+  - id: DS-p21-invoice-form
+    kind: screen
+    summary: Crearea unei facturi sau proforme - serie, client, date (emitere, scadență), monedă (RON/EUR/USD, D-008), linii cu discount și cote TVA multiple, totaluri.
+    roles: Admin, Operator
+    source: none yet
+    screenshots: []
+    design_ref: none
+    status: planned
+
+  - id: DS-p21-invoice-view
+    kind: screen
+    summary: Factura sau proforma emisă, read-only, în ordinea SmartBill - descarcă PDF și XML, stornează, proformă → factură, înregistrează încasare, încasările și storno-urile legate. La facturile restante - butonul „Trimite reminder” (Admin, Operator).
+    roles: Admin, Operator (toate acțiunile); Contabil (citire, PDF, XML)
+    source: none yet
+    screenshots: []
+    design_ref: none
+    status: planned
+
+  - id: DS-p21-storno-form
+    kind: screen
+    summary: Storno total sau parțial al unei facturi, legat de originală, pe seria facturii (D-005).
+    roles: Admin, Operator
+    source: none yet
+    screenshots: []
+    design_ref: none
+    status: planned
+
+  - id: DS-p21-payments
+    kind: screen
+    summary: Lista încasărilor și formularul de încasare (parțială, multiplă, numerar sau transfer); chitanța pentru numerar.
+    roles: Admin, Operator (editează); Contabil (citire)
+    source: none yet
+    screenshots: []
+    design_ref: none
+    status: planned
+
+  - id: DS-p21-client-balance
+    kind: screen
+    summary: Soldul per client - facturi, încasări, storno-uri, restante.
+    roles: Admin, Operator; Contabil (citire)
+    source: none yet
+    screenshots: []
+    design_ref: none
+    status: planned
+
+  - id: DS-p21-reports
+    kind: screen
+    summary: Rapoartele pe perioadă (jurnal de vânzări, TVA colectat, raport de încasări), export CSV și XLSX. Coloanele - Q-014, Q-020.
+    roles: Admin, Contabil (citire și export)
+    source: none yet
+    screenshots: []
+    design_ref: none
+    status: planned
+
+  - id: DS-p21-exchange-rates
+    kind: screen
+    summary: Cursurile BNR importate zilnic (EUR, USD), cu data și marcajul de fallback (D-008).
+    roles: Admin; Operator, Contabil (citire)
+    source: none yet
+    screenshots: []
+    design_ref: none
+    status: planned
+
+  - id: DS-p21-reminders
+    kind: screen
+    summary: Reminder-ele de plată pe email - șablonul de email și regula de trimitere (după câte zile de la scadență, la câte zile se repetă), ambele configurabile, plus istoricul reminder-elor trimise. Valorile implicite - după Q-019.
+    roles: Admin (editează șablonul și regula); Operator, Contabil (citesc istoricul)
+    source: none yet
+    screenshots: []
+    design_ref: none
+    status: planned
