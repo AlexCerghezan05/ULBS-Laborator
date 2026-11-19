@@ -54,3 +54,18 @@
 - **Evidence:** planul „Scheletul proiectului”, aprobat 19.11.2026 (întrebările Build Java, DB în teste, Frontend).
 - **Source:** user · confidence high
 - **Confirmed:** 2026-11-19
+
+## D-024 · Securitate de bază: nginx, Docker, CI, fără indexare
+- **Status:** approved
+- **Date:** 2026-11-19
+- **Rule:**
+  - nginx: `server_tokens off`; pe toate răspunsurile `X-Content-Type-Options: nosniff`, `X-Frame-Options: DENY`, `Referrer-Policy: no-referrer`.
+  - Aplicația nu se indexează: `<meta name="robots" content="noindex, nofollow">` în `index.html`, `X-Robots-Tag: noindex, nofollow` din nginx și `robots.txt` cu `Disallow: /`.
+  - Backend-ul rulează în container ca utilizator non-root.
+  - Local, porturile publicate de Compose sunt legate doar la `127.0.0.1`.
+  - CI: `permissions: contents: read`; acțiunile GitHub sunt fixate pe SHA de commit, cu tagul în comentariu.
+- **Why:** Aplicația e internă, cu autentificare (D-012). Review-ul de securitate și SEO/GEO al PR #1 a găsit aceste lipsuri.
+- **Rejected:** none recorded.
+- **Evidence:** review-ul PR #1 cu trei sub-agenți (Performance, Security, SEO & GEO), 19.11.2026; aprobarea owner-ului, 19.11.2026.
+- **Source:** user · confidence high
+- **Confirmed:** 2026-11-19
