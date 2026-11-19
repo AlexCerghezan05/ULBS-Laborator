@@ -139,6 +139,7 @@ textarea.input { resize:none; field-sizing:content; }
 
 /* „Salvează ca proformă”: alegerea seriei (D-014) */
 .pf-anchor { position:relative; }
+.pf-none { display:flex; align-items:center; gap:var(--space-2); flex-wrap:wrap; }
 .popover { position:absolute; bottom:calc(100% + var(--space-2)); left:0; z-index:5; width:296px; display:flex; flex-direction:column; gap:var(--space-3);
   background:var(--color-surface); border:var(--border-width) solid var(--color-border); border-radius:var(--radius-md); box-shadow:var(--shadow-overlay); padding:var(--space-4); }
 .popover h3 { font-size:16px; line-height:24px; font-weight:600; margin:0; }
@@ -231,6 +232,7 @@ tr.more td { padding-top:0; }
   .totals { max-width:none; }
   .actions .btn { flex:1 1 100%; justify-content:center; } .actions .spacer { display:none; }
   .actions .btn.primary { order:-1; }
+  .actions .pf-none { flex:1 1 100%; flex-direction:column; text-align:center; }
   .actions .pf-anchor { flex:1 1 100%; display:flex; flex-direction:column; gap:var(--space-2); }
   .popover { position:static; width:100%; box-shadow:none; }
   .popover .row .btn { flex:1 1 100%; }
@@ -262,8 +264,9 @@ tr.more td { padding-top:0; }
       <li><strong>Totalurile</strong>: valoarea fără TVA, apoi TVA-ul pe fiecare cotă (cu baza lui), apoi totalul de plată.</li>
       <li><strong>Mențiunile legale</strong> apar doar când există. Mențiunea art. 319 alin. 29 vine din setările firmei, deci apare pe orice factură a clientului.</li>
       <li><strong>Discount</strong> ca procent pe linie (D-013).</li>
-      <li><strong>„Salvează ca proformă”</strong> deschide lista seriilor de tip proformă, cu prima preselectată (D-014). Seriile „PF” și „PFE” sunt ilustrative; seed-ul are doar seria de facturi <code>Aa</code>. Ce se întâmplă când nu există nicio serie de proformă: Q-025. Pe telefon, alegerea apare sub buton, nu deasupra.</li>
-      <li>Rămân deschise: rotunjirea (Q-007), formatul numărului (Q-008), U.M. „1” (Q-015), nicio serie de proformă (Q-025).</li>
+      <li><strong>„Salvează ca proformă”</strong> deschide lista seriilor de tip proformă, cu prima preselectată (D-014). Seriile „PF” și „PFE” sunt ilustrative; seed-ul are doar seria de facturi <code>Aa</code>. Pe telefon, alegerea apare sub buton, nu deasupra.</li>
+      <li><strong>Fără serie de proformă</strong> (D-017): butonul e dezactivat și lângă el apare mesajul; linkul spre Serii apare doar pentru Admin.</li>
+      <li>Rămân deschise: rotunjirea (Q-007), formatul numărului (Q-008), U.M. „1” (Q-015).</li>
       <li><strong>Starea EUR</strong> e o factură de test (D-008, D-006): cursul 5.0850 și liniile sunt ilustrative.</li>
     </ul>
   </section>
@@ -300,6 +303,8 @@ const STATES = {
                       due:'Termenul de plată este înaintea datei emiterii. Alegeți 10.11.2026 sau o dată ulterioară.',
                       qty0:'Introduceți o cantitate mai mare decât 0.' } },
   proforma:{ label:'Salvează ca proformă', client:CLIENT_S1, lines:[LINE_S1], issue:'10.11.2026', due:'10.11.2026', cur:'RON', pf:true },
+  nopfA:   { label:'Fără serie de proformă (Admin)', client:CLIENT_S1, lines:[LINE_S1], issue:'10.11.2026', due:'10.11.2026', cur:'RON', noPf:true, role:'admin' },
+  nopfO:   { label:'Fără serie de proformă (Operator)', client:CLIENT_S1, lines:[LINE_S1], issue:'10.11.2026', due:'10.11.2026', cur:'RON', noPf:true, role:'operator' },
   success: { label:'Succes (emisă)', client:CLIENT_S1, lines:[LINE_S1], issue:'10.11.2026', due:'10.11.2026', cur:'RON', issued:'Aa0060' },
   long:    { label:'Text lung', client:CLIENT_LONG, lines:[{ ...LINE_S1, desc:'Inchiriere masina 7 zile, cu asigurare CASCO, scaun pentru copil, kilometraj nelimitat, predare si preluare la Aeroportul International Sibiu, in afara programului de lucru' }],
              issue:'10.11.2026', due:'10.11.2026', cur:'RON' },
@@ -428,10 +433,13 @@ function actionBar(s) {
   if (s.issued) return '';
   return `<div class="actions" role="group" aria-label="Acțiuni factură">
     <button class="btn quiet" type="button">Salvează ciornă</button>
-    <div class="pf-anchor">
+    ${s.noPf ? `<div class="pf-none">
+      <button class="btn quiet" type="button" disabled aria-describedby="pf-none-msg">Salvează ca proformă</button>
+      <span class="hint" id="pf-none-msg">Nu există nicio serie de proformă. Adăugați una în ${s.role === 'admin' ? '<a href="#">Serii</a>' : 'Serii'}.</span>
+    </div>` : `<div class="pf-anchor">
       <button class="btn quiet pf-btn" type="button" aria-expanded="${!!s.pf}" aria-controls="pf-pop">Salvează ca proformă</button>
       ${s.pf ? proformaPopover() : ''}
-    </div>
+    </div>`}
     <span class="spacer"></span>
     <button class="btn primary" type="button">Emite factura</button>
   </div>`;

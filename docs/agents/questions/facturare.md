@@ -68,7 +68,8 @@
 - **Source:** macheta DS-p21-invoice-form, 19.11.2026; D-005
 
 ## Q-025 · Nicio serie de proformă
-- **Status:** open
+- **Status:** answered
+- **Answer:** Butonul „Salvează ca proformă” e dezactivat și lângă el apare mesajul „Nu există nicio serie de proformă. Adaugă una în Serii.”; linkul spre Serii apare doar pentru Admin. Nu se adaugă serie de proformă în seed (Alexandru Cerghezan, 19.11.2026). Decizia: D-017 (mesajul la forma de politețe, D-011).
 - **Context:** D-014: la „Salvează ca proformă” Operatorul alege dintr-o listă cu seriile de tip proformă. Ce se întâmplă când Admin-ul nu a configurat nicio serie de proformă (seed-ul are doar `Aa`)? Butonul e dezactivat, apare un mesaj cu link spre serii, sau seed-ul primește și o serie de proformă?
 - **Blocks:** Butonul „Salvează ca proformă” fără serii de proformă; seed-ul seriilor.
 - **Who answers:** Alexandru Cerghezan

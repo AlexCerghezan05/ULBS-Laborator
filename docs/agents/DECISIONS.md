@@ -22,6 +22,7 @@
 - D-014 · Seria proformei aleasă la salvare
 - D-015 · Mențiunile legale sunt automate și needitabile
 - D-016 · Termenul de plată implicit egal cu data emiterii
+- D-017 · Fără serie de proformă, butonul de proformă e dezactivat
 
 ---
 
@@ -175,5 +176,15 @@
 - **Why:** La client, termenul de plată este aceeași zi cu emiterea (CONTEXT.md „Termen de plată”; S1).
 - **Rejected:** Termen implicit la un număr fix de zile după emitere.
 - **Evidence:** acceptat de user cu macheta DS-p21-invoice-form, 19.11.2026; SAMPLES.md (S1, observația 5).
+- **Source:** user · confidence high
+- **Confirmed:** 2026-11-19
+
+## D-017 · Fără serie de proformă, butonul de proformă e dezactivat
+- **Status:** approved
+- **Date:** 2026-11-19
+- **Rule:** Dacă nu există nicio serie de tip proformă, butonul „Salvează ca proformă” e dezactivat și lângă el apare mesajul „Nu există nicio serie de proformă. Adăugați una în Serii.”. „Serii” e link spre DS-p21-series doar pentru Admin; Operatorul vede același text, fără link. Seed-ul nu conține o serie de proformă (doar `Aa`, D-005).
+- **Why:** D-014 cere alegerea dintr-o listă de serii de proformă; răspunsul la Q-025 acoperă lista goală. Doar Admin-ul configurează seriile (D-012).
+- **Rejected:** O serie de proformă în seed; butonul ascuns.
+- **Evidence:** răspunsul la Q-025, 19.11.2026; `docs/design/mocks/DS-p21-invoice-form.html` (stările „Fără serie de proformă”).
 - **Source:** user · confidence high
 - **Confirmed:** 2026-11-19
