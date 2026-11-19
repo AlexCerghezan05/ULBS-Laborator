@@ -72,5 +72,14 @@ Notițele complete (cu întrebări și răspunsuri) sunt în `docs/interview/Int
 ## Ce am schimbat în proiect pe baza interviului
 _Se completează pe măsură ce iau decizii (link către D- din `docs/agents/DECISIONS.md`)._
 
+- **D-003 · O singură firmă furnizor:** clientul este o singură firmă (Aura Logistic SRL) și emite facturi doar în numele ei → aplicația servește o singură firmă furnizor pe instalare, fără multi-tenant.
+- **D-004 · Roluri Admin, Operator, Contabil:** clientul vrea acces la toate operațiunile pe care le poate face admin-ul, iar contabilul își ia datele din SPV și nu cere nimic la final de lună → clientul primește cont de Admin; Contabilul are un rol separat, doar de citire, rapoarte și export.
+- **D-005 · Serii configurabile:** clientul folosește o singură serie, `Aa`, cu număr din 4 cifre resetat anual, și stornează pe aceeași serie → serii configurabile de Admin, cu `Aa` în seed; storno-ul folosește seria facturii.
+- **D-006 · Toate regimurile de TVA:** clientul e plătitor de TVA, folosește doar 21% și n-a facturat cu TVA la încasare, taxare inversă sau scutire → aplicația le suportă pe toate, cum cere fișa, iar cazurile pe care clientul nu le folosește se testează cu facturi de test.
+- **D-007 · Rotunjire în trei variante:** clientul a spus „nu rotunjesc TVA-ul”, iar pe S1 netul pare calculat din prețul cu TVA → trei variante de rotunjire configurabile și testate; varianta implicită așteaptă Q-007.
+- **D-008 · Facturi în RON, EUR și USD:** clientul facturează doar în RON, dar a menționat cursul BNR din ziua emiterii → aplicația acceptă și EUR/USD, cu curs BNR din ziua emiterii, cum cere fișa, ca facturi de test (Q-009 rămâne deschisă).
+- **D-009 · Doar export XML:** clientul trimite în SPV direct din SmartBill, cu un buton, și n-a primit erori de validare → aplicația exportă XML-ul RO_CIUS, dar nu trimite în SPV.
+- **D-010 · Doar clienți din România:** clientul nu are clienți din străinătate → codul de țară al clientului este mereu RO.
+
 ## Feedback pe aplicație (după 25.11.2026)
 _De completat: data, cine, ce a văzut (PDF, raport de încasări), ce a spus, ce am schimbat._
