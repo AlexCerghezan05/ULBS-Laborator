@@ -18,6 +18,10 @@
 - D-010 · Doar clienți din România
 - D-011 · Design tokens și stil UI din DESIGN.md
 - D-012 · Roluri: Admin, Operator, Contabil, cu drepturile pe ecrane
+- D-013 · Discount ca procent pe linie
+- D-014 · Seria proformei aleasă la salvare
+- D-015 · Mențiunile legale sunt automate și needitabile
+- D-016 · Termenul de plată implicit egal cu data emiterii
 
 ---
 
@@ -131,5 +135,45 @@
 - **Why:** Fișa cere emitent / contabil / admin; „emitent” este termen de evitat în CONTEXT.md, deci rolul se numește Operator. Lista ecranelor din 19.11.2026 a stabilit ce vede fiecare rol.
 - **Rejected:** Păstrarea numelui „emitent” pentru rol; Operator cu acces la rapoarte; reminder-e configurabile de Operator.
 - **Evidence:** interviul de scope, 19.11.2026 (întrebarea 6); aprobarea listei de ecrane, 19.11.2026; `docs/design/registry.yaml`; INTERVIEW.md; CONTEXT.md.
+- **Source:** user · confidence high
+- **Confirmed:** 2026-11-19
+
+## D-013 · Discount ca procent pe linie
+- **Status:** approved
+- **Date:** 2026-11-19
+- **Rule:** Fiecare linie are un discount procentual (implicit 0%), aplicat la valoarea liniei: cantitate × preț unitar fără TVA × (1 − discount/100). TVA-ul se calculează din valoarea după discount. Nu există discount pe total.
+- **Why:** Fișa cere linii cu discount; forma a fost stabilită de user (Q-023).
+- **Rejected:** Discount ca valoare; discount pe total; discount ca linie separată.
+- **Evidence:** răspunsul la Q-023, 19.11.2026; `docs/design/mocks/DS-p21-invoice-form.html` (U.M. și discount la „Mai multe”).
+- **Source:** user · confidence high
+- **Confirmed:** 2026-11-19
+
+## D-014 · Seria proformei aleasă la salvare
+- **Status:** approved
+- **Date:** 2026-11-19
+- **Rule:** La „Salvează ca proformă”, Operatorul alege seria dintr-o listă cu seriile de tip proformă (D-005); prima din listă e preselectată. Cazul fără nicio serie de proformă: Q-025.
+- **Why:** D-005 permite mai multe serii pe tip de document; răspunsul la Q-024.
+- **Rejected:** O singură serie de proformă implicită, fără alegere.
+- **Evidence:** răspunsul la Q-024, 19.11.2026; `docs/design/mocks/DS-p21-invoice-form.html` (starea „Salvează ca proformă”).
+- **Source:** user · confidence high
+- **Confirmed:** 2026-11-19
+
+## D-015 · Mențiunile legale sunt automate și needitabile
+- **Status:** approved
+- **Date:** 2026-11-19
+- **Rule:** Mențiunile legale se adaugă automat din setările firmei (de exemplu art. 319 alin. 29, TVA la încasare), din cotele de pe linii (taxare inversă, scutire) și din cursul de rezervă (D-008). În formular apar doar ca text, sub totaluri, și numai când există; nu se editează.
+- **Why:** D-006 cere mențiunile legale pentru fiecare regim; generarea automată evită o mențiune uitată sau greșită.
+- **Rejected:** Mențiuni scrise sau editate de Operator în formular.
+- **Evidence:** acceptat de user cu macheta DS-p21-invoice-form, 19.11.2026; SAMPLES.md (S1, mențiunea art. 319 alin. 29).
+- **Source:** user · confidence high
+- **Confirmed:** 2026-11-19
+
+## D-016 · Termenul de plată implicit egal cu data emiterii
+- **Status:** approved
+- **Date:** 2026-11-19
+- **Rule:** Termenul de plată e implicit egal cu data emiterii și poate fi modificat. Nu poate fi înaintea datei emiterii (eroare lângă câmp).
+- **Why:** La client, termenul de plată este aceeași zi cu emiterea (CONTEXT.md „Termen de plată”; S1).
+- **Rejected:** Termen implicit la un număr fix de zile după emitere.
+- **Evidence:** acceptat de user cu macheta DS-p21-invoice-form, 19.11.2026; SAMPLES.md (S1, observația 5).
 - **Source:** user · confidence high
 - **Confirmed:** 2026-11-19

@@ -175,6 +175,7 @@ pointer; 44 px on touch widths).
 | `--border-width` | 1px | all borders |
 | `--focus-ring` | 2px solid `--color-accent`, offset 2px | every focusable control |
 | `--shadow-overlay` | `0 4px 12px rgb(0 0 0 / 0.12)` (dark: `0 4px 12px rgb(0 0 0 / 0.5)`) | menus and dialogs only; nothing else has a shadow |
+| `--opacity-disabled` | 0.55 | disabled buttons and controls, with `cursor: not-allowed` |
 | `--duration-fast` | 120ms | hover, focus, menu open |
 | `--duration-base` | 200ms | dialog open/close |
 | `--easing` | `ease-out` | all transitions |
