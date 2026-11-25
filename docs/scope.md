@@ -30,7 +30,7 @@ editată de Admin. (D-003)
 ### Serii și numerotare (D-005)
 - Mai multe serii, configurabile de Admin; fiecare cu tipul de document (factură, proformă, chitanță) și formatul de număr. Seed: seria `Aa`.
 - Număr secvențial, fără goluri și fără duplicate sub emiteri simultane (test).
-- Resetare anuală și comportamentul după 9999: după răspunsul la Q-008.
+- Resetare anuală pe fiecare serie, după anul datei emiterii (D-005). Comportamentul după 9999: după răspunsul la Q-008.
 - Storno-ul nu are serie proprie: ia următorul număr din seria facturii originale (interviu, D-005).
 - Proforma nu consumă număr din seria de facturi (test). Clientul nu folosește proforme; ele rămân în scope și se testează cu date de test (Q-006).
 

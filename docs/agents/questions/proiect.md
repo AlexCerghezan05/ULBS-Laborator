@@ -42,3 +42,13 @@
 - **Blocks:** Headerele de securitate pentru formularele de facturare; o eventuală extindere a D-024.
 - **Who answers:** Alexandru Cerghezan
 - **Source:** review-ul PR #1 (Security), 19.11.2026; owner-ul a amânat CSP-ul
+
+## Q-038 · Utilizatorul Postgres al aplicației în producție
+- **Status:** open
+- **Context:** Trigger-ele de immutabilitate (facturile emise, chitanțele, D-033) și de numerotare pot fi ocolite de un superuser cu `set session_replication_role = replica`, iar proprietarul tabelelor le poate dezactiva (`ALTER TABLE ... DISABLE TRIGGER`) sau înlocui (`CREATE OR REPLACE FUNCTION`). Local și în teste, aplicația se conectează cu `POSTGRES_USER`, care în imaginea Docker este superuser. În producție, aplicația trebuie să folosească un utilizator Postgres fără superuser și fără drept de proprietar pe tabele. Ce utilizator, cu ce drepturi (SELECT/INSERT/UPDATE/DELETE pe tabele, fără TRUNCATE), cine rulează migrările Flyway (un utilizator separat, proprietar al schemei?) și unde se creează (script de inițializare, migrare)?
+- **Condiții de deploy** (review-ul de securitate al PR #2, 25.11.2026; cerute de Alexandru Cerghezan):
+  1. `REVOKE TEMP ON DATABASE <baza> FROM PUBLIC`: utilizatorul aplicației nu poate crea tabele temporare. Funcțiile au deja `search_path` fixat cu `pg_temp` ultimul, deci un tabel temporar numit `invoice` nu mai ocolește blocarea; revocarea e a doua barieră.
+  2. Seed-ul nu rulează în producție: `SPRING_FLYWAY_LOCATIONS` doar `classpath:db/migration`, fără `db/seed`. Compose-ul de acum încarcă seed-ul și pe serviciul `backend`; la deploy, seed-ul ar crea conturile de test `admin`/`operator`/`contabil` și factura S1 (Aa0060), care nu se mai poate șterge și ocupă numerotarea reală a clientului.
+- **Blocks:** Deploy-ul live (Q-021); garanția că factura emisă nu se modifică nici prin SQL direct în producție.
+- **Who answers:** Alexandru Cerghezan
+- **Source:** raportul de build „Schema bazei de date”, 25.11.2026 (observație); review-ul de securitate al PR #2, 25.11.2026 (punctele 1 și 8)

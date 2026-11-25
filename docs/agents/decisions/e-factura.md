@@ -41,3 +41,13 @@
 - **Evidence:** răspunsul la Q-032, 19.11.2026; docs/scope.md; Q-019.
 - **Source:** user · confidence high
 - **Confirmed:** 2026-11-19
+
+## D-032 · Adresa are județul obligatoriu, în cod ISO
+- **Status:** approved
+- **Date:** 2026-11-25
+- **Rule:** Firma, clientul și copiile lor de pe factură au adresă, oraș și județ obligatorii. Județul e codul ISO 3166-2:RO (de ex. `RO-SB`).
+- **Why:** RO_CIUS cere subdiviziunea țării pentru adresele din România (D-009, D-010).
+- **Rejected:** Județ opțional; județul ca text liber.
+- **Evidence:** planul „Schema bazei de date”, aprobat 25.11.2026 (A6); `V2__company_users.sql`, `V3__clients_products.sql`.
+- **Source:** user · confidence high
+- **Confirmed:** 2026-11-25

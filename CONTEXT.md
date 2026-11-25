@@ -14,7 +14,7 @@ Termenii clientului (Aura Logistic SRL), din interviul din 16.11.2026 și din fa
 | PFA | substantiv | Persoană fizică autorizată. Are CIF fără prefix RO și Reg. com. care începe cu F. Se facturează ca B2B. | persoană fizică (e alt tip de client) |
 | Persoană fizică | substantiv | Client fără CIF, identificat prin CNP. CNP-ul e opțional; fără el, XML-ul e-Factura primește 13 zerouri (`0000000000000`). Nu e PFA. | consumator, persoană privată |
 | Serie | substantiv | Literele din fața numărului facturii. Clientul folosește o singură serie: `Aa`. | prefix, cod |
-| Număr factură | substantiv | 4 cifre cu zerouri în față (`0060`). Secvențial, fără goluri, resetat la 1 în fiecare an (Q-008). | id factură |
+| Număr factură | substantiv | 4 cifre cu zerouri în față (`0060`). Secvențial, fără goluri, resetat la 1 în fiecare an, pe serie, după anul datei emiterii (D-005). După 9999: Q-008. | id factură |
 | Factură emisă | substantiv | Factură cu număr alocat. Nu se mai modifică, doar se stornează. | factură finalizată |
 | Storno | substantiv | Factură cu cantități negative, aceeași serie, care anulează o factură emisă. | anulare, credit note |
 | Proformă | substantiv | Nu consumă număr din seria de facturi. Folosirea ei la client e neclară (Q-006). | ofertă |

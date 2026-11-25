@@ -35,12 +35,15 @@
 - Q-031 · Ce curs BNR folosește factura · _answered_
 - Q-033 · Contabilul confirmă regula cursului BNR
 - Q-034 · Motivul de scutire pentru XML
+- Q-037 · Numerele de factură în ordinea cronologică a datei emiterii
+- Q-039 · Contorul inițial al unei serii la deploy (continuarea din SmartBill)
 
 ### [Incasari](questions/incasari.md)
 - Q-012 · Încasări în tranșe
 - Q-016 · Chitanțele în aplicație · _answered_
 - Q-019 · Reminder-e de plată
 - Q-032 · Emailul clientului pentru reminder-e · _answered_
+- Q-036 · Încasări peste totalul facturii
 
 ### [Proiect](questions/proiect.md)
 - Q-001 · What will this repo hold, and in which stack? · _answered_
@@ -49,6 +52,7 @@
 - Q-021 · Unde rulează deploy-ul live HTTPS
 - Q-022 · Cum facem screenshot-urile aplicației
 - Q-035 · CSP complet pentru aplicație
+- Q-038 · Utilizatorul Postgres al aplicației în producție
 
 ### [Rapoarte](questions/rapoarte.md)
 - Q-014 · Raportul de încasări

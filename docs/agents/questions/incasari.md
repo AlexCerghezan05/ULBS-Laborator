@@ -8,6 +8,7 @@
 - **Blocks:** Încasările parțiale și chitanțele.
 - **Who answers:** Alexandru Cerghezan (răspunsul vine de la client, Aura Logistic SRL)
 - **Source:** interviul din 16.11.2026 și factura Aa0060 (INTERVIEW.md, SAMPLES.md)
+- **Confirmed:** 2026-11-25
 
 ## Q-016 · Chitanțele în aplicație
 - **Status:** answered
@@ -23,6 +24,7 @@
 - **Blocks:** Valorile implicite ale reminder-elor: după câte zile de la scadență, la câte zile se repetă, textul șablonului, adresa destinatarului, serverul de email. Ecranul și funcția intră în scope (DS-p21-reminders, docs/scope.md).
 - **Who answers:** Alexandru Cerghezan (cu clientul, Aura Logistic SRL)
 - **Source:** interviul cu Alexandru Cerghezan, 19.11.2026; INTERVIEW.md
+- **Confirmed:** 2026-11-25
 
 ## Q-032 · Emailul clientului pentru reminder-e
 - **Status:** answered
@@ -31,3 +33,10 @@
 - **Blocks:** Formularul de client (DS-p21-clients); trimiterea reminder-elor; butonul „Trimite reminder” (DS-p21-invoice-view).
 - **Who answers:** Alexandru Cerghezan
 - **Source:** docs/scope.md; docs/design/registry.yaml; Q-019
+
+## Q-036 · Încasări peste totalul facturii
+- **Status:** open
+- **Context:** Schema acceptă mai multe încasări pe o factură (V6), dar nu verifică dacă suma lor depășește totalul facturii, nici sub încasări simultane. Se respinge o încasare care trece de sold, se acceptă ca avans sau plată în plus, sau doar se avertizează? Cine verifică: aplicația sau un trigger în baza de date?
+- **Blocks:** Validarea încasărilor (ecranul de încasări, DS-p21-payments); soldul clientului cu plăți în plus.
+- **Who answers:** Alexandru Cerghezan
+- **Source:** planul „Schema bazei de date”, 25.11.2026 (sugestie)

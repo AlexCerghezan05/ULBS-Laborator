@@ -69,3 +69,13 @@
 - **Evidence:** review-ul PR #1 cu trei sub-agenți (Performance, Security, SEO & GEO), 19.11.2026; aprobarea owner-ului, 19.11.2026.
 - **Source:** user · confidence high
 - **Confirmed:** 2026-11-19
+
+## D-029 · Un utilizator are un singur rol
+- **Status:** approved
+- **Date:** 2026-11-25
+- **Rule:** Fiecare utilizator are exact unul din rolurile Admin, Operator, Contabil (D-012), în coloana `app_user.role`.
+- **Why:** Admin-ul include deja tot ce poate Operatorul; nu e nevoie de roluri combinate.
+- **Rejected:** Mai multe roluri pe utilizator.
+- **Evidence:** planul „Schema bazei de date”, aprobat 25.11.2026 (A3); `V2__company_users.sql`.
+- **Source:** user · confidence high
+- **Confirmed:** 2026-11-25
