@@ -37,8 +37,9 @@
 - **Date:** 2026-11-25
 - **Rule:** Încercările greșite de login (D-036) se numără pe numele de utilizator (`app_user.username`). Un login reușit resetează numărătoarea. Blocarea de 15 minute expiră singură; Admin-ul nu poate debloca manual un cont.
 - **Why:** Răspunsul la Q-042: o regulă simplă, fără ecran sau acțiune nouă pentru Admin.
+- **Risc acceptat:** Blocarea pe cont arată că un nume de utilizator există: pentru un nume inexistent răspunsul rămâne 401 `BAD_CREDENTIALS`, iar pentru un cont real, după 5 încercări greșite, vine 429 `LOGIN_LOCKED`. Excepție acceptată de la principiul din D-035 (mesajul nu dezvăluie ce nume există).
 - **Rejected:** Numărarea pe adresa IP sau pe cont și IP; deblocarea manuală de către Admin.
-- **Evidence:** răspunsul la Q-042 (Alexandru Cerghezan, 25.11.2026).
+- **Evidence:** răspunsul la Q-042 (Alexandru Cerghezan, 25.11.2026); riscul semnalat de review-ul de securitate la PR #3 și acceptat de Alexandru Cerghezan, 25.11.2026.
 - **Source:** user · confidence high
 - **Confirmed:** 2026-11-25
 
