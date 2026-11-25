@@ -42,6 +42,13 @@
       <groupId>org.flywaydb</groupId>
       <artifactId>flyway-database-postgresql</artifactId>
     </dependency>
+    <!-- D-002, D-043: specificația OpenAPI și Swagger UI. Versiunea nu e gestionată de Boot:
+         springdoc 3.2.0 e construit pe Spring Boot 4.1.2 (3.2.1 trece pe Boot 4.2). La upgrade de Boot, și aici. -->
+    <dependency>
+      <groupId>org.springdoc</groupId>
+      <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+      <version>3.2.0</version>
+    </dependency>
     <dependency>
       <groupId>org.postgresql</groupId>
       <artifactId>postgresql</artifactId>

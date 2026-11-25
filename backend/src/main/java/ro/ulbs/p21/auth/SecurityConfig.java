@@ -27,7 +27,7 @@ import org.springframework.security.web.savedrequest.NullRequestCache;
 /**
  * D-012, D-039, D-041, C-001: sesiune pe server, CSRF cu cookie (SPA), răspunsuri JSON în loc de
  * redirect. Publice sunt doar rutele de mai jos; restul cer login, iar rolul îl verifică
- * @PreAuthorize pe fiecare rută (PATTERN-004).
+ * @PreAuthorize pe fiecare rută (PATTERN-004). Documentația API (/api/docs) e doar pentru Admin (D-043).
  */
 @Configuration
 @EnableMethodSecurity
@@ -66,6 +66,8 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/api/login").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/csrf", "/api/health").permitAll()
                         .requestMatchers("/error").permitAll()
+                        // D-043: rutele springdoc nu sunt controllerele noastre, deci rolul se cere aici.
+                        .requestMatchers("/api/docs", "/api/docs/**").hasRole("ADMIN")
                         .anyRequest().authenticated())
                 .csrf(c -> c.spa())
                 .securityContext(s -> s.securityContextRepository(contexts))
