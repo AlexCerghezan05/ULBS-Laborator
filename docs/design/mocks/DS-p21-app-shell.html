@@ -1,0 +1,277 @@
+<!doctype html>
+<html lang="ro">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Facturi</title>
+<!-- DS-p21-app-shell · status: draft (25.11.2026) · machetă, nu cod de producție.
+     Cadrul paginilor după login: antetul cu meniul, utilizatorul curent și „Ieșire”.
+     Conținutul de acum: lista de facturi provizorie (DS-p21-invoice-list are machetă proprie mai târziu).
+     Meniul are doar ecranele care există (planul „Autentificare și autorizare”, 25.11.2026).
+     Datele utilizatorului vin din GET /api/me (C-001). Doar tokens din docs/design/DESIGN.md (D-025).
+     Inter vine aici din Google Fonts; în aplicație e self-hosted. -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ---------- Tokens (DESIGN.md → Tokens) ---------- */
+:root {
+  --color-bg:#FAF6F1; --color-surface:#FFFFFF; --color-surface-muted:#F5EFE8;
+  --color-border:#E6DCD1; --color-border-strong:#958678;
+  --color-text:#2D2420; --color-text-muted:#6B5D53;
+  --color-accent:#6B4A3A; --color-accent-hover:#563A2D; --color-on-accent:#FFFFFF; --color-accent-subtle:#F3ECE6;
+  --color-success:#1E7A46; --color-success-bg:#E6F4EC;
+  --color-danger:#B42318; --color-danger-bg:#FDECEA;
+  --color-warning:#8A5A00; --color-warning-bg:#FFF4E0;
+  --color-neutral:#4B5563; --color-neutral-bg:#EEF0F2;
+  --shadow-overlay:0 4px 12px rgb(0 0 0 / 0.12);
+
+  --font-ui: Inter, system-ui, "Segoe UI", Roboto, Arial, sans-serif;
+  --space-1:4px; --space-2:8px; --space-3:12px; --space-4:16px; --space-5:24px; --space-6:32px; --space-7:48px;
+  --radius-sm:4px; --radius-md:6px; --border-width:1px; --opacity-disabled:0.55;
+  --duration-fast:120ms; --duration-base:200ms; --easing:ease-out;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --color-bg:#16120F; --color-surface:#1E1915; --color-surface-muted:#27211C;
+    --color-border:#3A312A; --color-border-strong:#796B60;
+    --color-text:#F0E9E2; --color-text-muted:#B3A69B;
+    --color-accent:#CFAE94; --color-accent-hover:#DEC3AD; --color-on-accent:#16120F; --color-accent-subtle:#2E241D;
+    --color-success:#5CC98A; --color-success-bg:#12291C;
+    --color-danger:#F28B82; --color-danger-bg:#3A1715;
+    --color-warning:#E8B04B; --color-warning-bg:#33270F;
+    --color-neutral:#B0B8C1; --color-neutral-bg:#232A31;
+    --shadow-overlay:0 4px 12px rgb(0 0 0 / 0.5);
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --color-bg:#16120F; --color-surface:#1E1915; --color-surface-muted:#27211C;
+  --color-border:#3A312A; --color-border-strong:#796B60;
+  --color-text:#F0E9E2; --color-text-muted:#B3A69B;
+  --color-accent:#CFAE94; --color-accent-hover:#DEC3AD; --color-on-accent:#16120F; --color-accent-subtle:#2E241D;
+  --color-success:#5CC98A; --color-success-bg:#12291C;
+  --color-danger:#F28B82; --color-danger-bg:#3A1715;
+  --color-warning:#E8B04B; --color-warning-bg:#33270F;
+  --color-neutral:#B0B8C1; --color-neutral-bg:#232A31;
+  --shadow-overlay:0 4px 12px rgb(0 0 0 / 0.5);
+  color-scheme: dark;
+}
+@media (prefers-reduced-motion: reduce) { :root { --duration-fast:0ms; --duration-base:0ms; } }
+
+/* ---------- Base ---------- */
+* { box-sizing: border-box; }
+html, body { margin:0; }
+body { background:var(--color-bg); color:var(--color-text); font-family:var(--font-ui);
+  font-size:14px; line-height:20px; -webkit-font-smoothing:antialiased; }
+h1 { font-size:20px; line-height:28px; font-weight:600; margin:0; }
+h2 { font-size:16px; line-height:24px; font-weight:600; margin:0; }
+.muted { color:var(--color-text-muted); }
+:focus-visible { outline:2px solid var(--color-accent); outline-offset:2px; }
+
+/* ---------- Mock chrome (nu face parte din ecran) ---------- */
+.mockbar { position:sticky; top:0; z-index:10; background:var(--color-surface); border-bottom:var(--border-width) solid var(--color-border);
+  padding:var(--space-2) var(--space-4); display:flex; flex-wrap:wrap; gap:var(--space-2) var(--space-4); align-items:center; }
+.mockbar .tag { font-size:12px; line-height:16px; font-weight:500; color:var(--color-neutral); background:var(--color-neutral-bg); border-radius:var(--radius-sm); padding:2px var(--space-2); }
+.seg { display:inline-flex; flex-wrap:wrap; gap:var(--space-1); }
+.seg button { font:inherit; font-size:13px; line-height:18px; min-height:28px; padding:var(--space-1) var(--space-2); border-radius:var(--radius-sm);
+  border:var(--border-width) solid var(--color-border); background:var(--color-surface); color:var(--color-text); cursor:pointer; }
+.seg button[aria-pressed="true"] { background:var(--color-accent-subtle); border-color:var(--color-accent); font-weight:500; }
+.mocklabel { font-size:12px; line-height:16px; font-weight:500; color:var(--color-text-muted); }
+.stage { padding:var(--space-5) var(--space-4) var(--space-7); }
+.frame { container-type:inline-size; margin:0 auto; max-width:1200px; border:var(--border-width) dashed var(--color-border); }
+.frame.phone { max-width:360px; border-color:var(--color-border-strong); }
+
+/* ---------- Antet ---------- */
+.skip { position:absolute; left:var(--space-4); top:-100px; background:var(--color-surface); color:var(--color-text); padding:var(--space-2) var(--space-3);
+  border:var(--border-width) solid var(--color-border-strong); border-radius:var(--radius-sm); z-index:5; }
+.skip:focus { top:var(--space-2); }
+.app { position:relative; min-height:560px; background:var(--color-bg); display:flex; flex-direction:column; }
+.header { background:var(--color-surface); border-bottom:var(--border-width) solid var(--color-border);
+  display:flex; align-items:center; gap:var(--space-4); padding:0 var(--space-5); min-height:48px; }
+.nav { display:flex; gap:var(--space-1); flex:1; min-width:0; }
+.nav a { font-size:14px; line-height:20px; font-weight:500; color:var(--color-text-muted); text-decoration:none;
+  display:inline-flex; align-items:center; min-height:48px; padding:0 var(--space-2); border-bottom:2px solid transparent;
+  transition:color var(--duration-fast) var(--easing); }
+.nav a:hover { color:var(--color-text); }
+.nav a[aria-current="page"] { color:var(--color-text); border-bottom-color:var(--color-accent); }
+.user { display:flex; align-items:center; gap:var(--space-3); min-width:0; }
+.who { display:flex; align-items:center; gap:var(--space-2); min-width:0; }
+.who .name { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; max-width:240px; }
+.role { flex:none; font-size:12px; line-height:16px; font-weight:500; color:var(--color-neutral); background:var(--color-neutral-bg);
+  border-radius:var(--radius-sm); padding:2px var(--space-2); }
+.btn-secondary { font:inherit; font-size:14px; line-height:20px; font-weight:500; min-height:32px; padding:5px var(--space-3); border-radius:var(--radius-sm);
+  border:var(--border-width) solid var(--color-border-strong); background:var(--color-surface); color:var(--color-text); cursor:pointer;
+  display:inline-flex; align-items:center; gap:var(--space-2); flex:none; transition:background var(--duration-fast) var(--easing); }
+.btn-secondary:hover { background:var(--color-accent-subtle); }
+.btn-secondary:disabled { opacity:var(--opacity-disabled); cursor:not-allowed; }
+.btn-secondary:disabled:hover { background:var(--color-surface); }
+
+/* ---------- Conținut ---------- */
+.content { padding:var(--space-5); display:flex; flex-direction:column; gap:var(--space-4); }
+.empty { background:var(--color-surface); border:var(--border-width) solid var(--color-border); border-radius:var(--radius-md);
+  padding:var(--space-7) var(--space-5); display:flex; flex-direction:column; align-items:center; gap:var(--space-2); text-align:center; }
+.empty svg { color:var(--color-text-muted); }
+.empty p { margin:0; max-width:420px; }
+.banner { display:flex; gap:var(--space-3); align-items:flex-start; border-radius:var(--radius-md); padding:var(--space-3) var(--space-4); border:var(--border-width) solid; }
+.banner > svg { flex:none; margin-top:2px; }
+.banner p { margin:0; }
+.banner strong { display:block; font-weight:600; }
+.banner .actions { margin-top:var(--space-2); }
+.banner.danger { background:var(--color-danger-bg); border-color:var(--color-danger); }
+.banner.danger > svg { color:var(--color-danger); }
+
+/* Skeleton (încărcare /api/me): păstrează forma finală, fără animație */
+.sk { background:var(--color-surface-muted); border-radius:var(--radius-sm); }
+.sk.name { width:120px; height:16px; }
+.sk.role { width:56px; height:20px; }
+.sk.btn { width:64px; height:32px; }
+.sk.title { width:96px; height:24px; }
+.sk.block { width:100%; height:160px; border-radius:var(--radius-md); }
+
+/* Notes */
+.notes { margin:var(--space-5) auto 0; max-width:1200px; background:var(--color-surface); border:var(--border-width) solid var(--color-border); border-radius:var(--radius-md); padding:var(--space-4); }
+.notes ul { margin:var(--space-2) 0 0; padding-left:var(--space-5); }
+.notes li { margin-bottom:var(--space-1); overflow-wrap:anywhere; }
+
+/* ---------- Telefon (sm, 360–767 px) ---------- */
+@container (max-width: 767px) {
+  .header { flex-wrap:wrap; padding:0 var(--space-4); gap:0 var(--space-3); }
+  .nav a { min-height:44px; }
+  .user { flex-basis:100%; justify-content:space-between; padding:var(--space-2) 0; border-top:var(--border-width) solid var(--color-border); }
+  .who .name { max-width:180px; }
+  .btn-secondary { min-height:44px; }
+  .sk.btn { height:44px; }
+  .content { padding:var(--space-4); }
+  .empty { padding:var(--space-6) var(--space-4); }
+}
+</style>
+</head>
+<body>
+
+<div class="mockbar" role="region" aria-label="Comenzi machetă">
+  <span class="tag">Machetă · DS-p21-app-shell · draft</span>
+  <span class="mocklabel" id="lbl-state">Stare</span>
+  <div class="seg" id="seg-state" role="group" aria-labelledby="lbl-state"></div>
+  <span class="mocklabel" id="lbl-role">Rol</span>
+  <div class="seg" id="seg-role" role="group" aria-labelledby="lbl-role"></div>
+  <span class="mocklabel" id="lbl-theme">Temă</span>
+  <div class="seg" id="seg-theme" role="group" aria-labelledby="lbl-theme"></div>
+  <span class="mocklabel" id="lbl-size">Lățime</span>
+  <div class="seg" id="seg-size" role="group" aria-labelledby="lbl-size"></div>
+</div>
+
+<div class="stage">
+  <div class="frame" id="frame"><div id="app"></div></div>
+
+  <section class="notes" aria-labelledby="notes-h">
+    <h2 id="notes-h">Note pentru confirmare (nu fac parte din ecran)</h2>
+    <ul>
+      <li><strong>Cadrul</strong> fiecărei pagini de după login: un antet cu meniul în stânga, iar în dreapta numele utilizatorului, rolul și butonul „Ieșire”. Ecranele următoare intră în același cadru.</li>
+      <li><strong>Meniul</strong> are doar ecranele care există: acum doar „Facturi”. Celelalte intrări (clienți, produse, încasări, rapoarte, setări) apar odată cu ecranele lor, după rolul utilizatorului (D-012). Intrarea paginii curente are <code>aria-current="page"</code> și linia de accent dedesubt.</li>
+      <li><strong>Utilizatorul</strong>: numele complet (<code>app_user.full_name</code>) și rolul ca etichetă cu text (Admin, Operator, Contabil), din <code>GET /api/me</code>. Un nume lung se taie cu „…” și se vede întreg în tooltip (<code>title</code>).</li>
+      <li><strong>Fără numele aplicației sau al firmei în antet</strong>: nu au fost stabilite. Se pot adăuga la cerere.</li>
+      <li><strong>Lista de facturi provizorie</strong>: titlul „Facturi” și un empty state care spune ce va apărea aici. Fără buton „Factură nouă”: formularul de factură (DS-p21-invoice-form) nu e construit încă. Lista reală (DS-p21-invoice-list) are machetă proprie, mai târziu.</li>
+      <li><strong>Încărcare</strong>: cât timp se citește <code>GET /api/me</code>, antetul și pagina arată skeleton-uri în forma finală, fără animație.</li>
+      <li><strong>Eroare</strong> (serverul nu răspunde la <code>/api/me</code>): mesaj cu ce e de făcut și butonul „Reîncercați”. Un răspuns 401 nu e eroare: trimite la login (cu „Sesiunea a expirat” pentru <code>SESSION_EXPIRED</code>, D-034).</li>
+      <li><strong>Ieșire</strong>: butonul devine „Se închide sesiunea…” și e dezactivat până vine răspunsul; apoi ecranul de login, fără mesaj. Dacă cererea pică, sesiunea rămâne deschisă și apare un mesaj deasupra conținutului, cu „Încercați din nou”.</li>
+      <li><strong>Telefon (360 px)</strong>: meniul pe primul rând, utilizatorul și „Ieșire” pe al doilea; zonele de atingere au 44 px.</li>
+      <li>Primul element focusabil e „Sari la conținut”. Totul merge din tastatură, cu focus vizibil. Culoarea nu poartă singură sensul: rolul și mesajele au text.</li>
+    </ul>
+  </section>
+</div>
+
+<script>
+const I = {
+  logout:'<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 14H3.5A1.5 1.5 0 0 1 2 12.5v-9A1.5 1.5 0 0 1 3.5 2H6"/><path d="M10.5 11.5L14 8l-3.5-3.5"/><path d="M14 8H6"/></svg>',
+  err:'<svg width="20" height="20" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><circle cx="8" cy="8" r="6.5"/><path d="M8 4.5v4"/><path d="M8 11.2v.1"/></svg>',
+  doc:'<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/><path d="M9 13h6"/><path d="M9 17h4"/></svg>'
+};
+
+const STATES = {
+  empty:      { label:'Implicit' },
+  loading:    { label:'Încărcare' },
+  error:      { label:'Eroare' },
+  longname:   { label:'Nume lung' },
+  loggingout: { label:'Ieșire în curs' },
+  logoutfail: { label:'Ieșire eșuată' }
+};
+const ROLES = { ADMIN:'Admin', OPERATOR:'Operator', CONTABIL:'Contabil' };
+const NAMES = { ADMIN:'Admin Test', OPERATOR:'Ion Ionescu', CONTABIL:'Contabil Test' };
+const LONG = 'Alexandra-Maria Constantinescu-Dumitrescu';
+
+function header(key, role) {
+  if (key === 'loading' || key === 'error') {
+    return `<header class="header">
+      <nav class="nav" aria-label="Meniu principal"><a href="#" aria-current="page">Facturi</a></nav>
+      <div class="user" aria-hidden="true"><div class="who"><span class="sk name"></span><span class="sk role"></span></div><span class="sk btn"></span></div>
+    </header>`;
+  }
+  const name = key === 'longname' ? LONG : NAMES[role];
+  const out = key === 'loggingout';
+  return `<header class="header">
+    <nav class="nav" aria-label="Meniu principal"><a href="#" aria-current="page">Facturi</a></nav>
+    <div class="user">
+      <div class="who"><span class="name" title="${name}">${name}</span><span class="role">${ROLES[role]}</span></div>
+      <button type="button" class="btn-secondary"${out ? ' disabled aria-busy="true"' : ''}>${I.logout}${out ? 'Se închide sesiunea…' : 'Ieșire'}</button>
+    </div>
+  </header>`;
+}
+
+function content(key) {
+  if (key === 'loading') {
+    return `<main class="content" id="main" aria-busy="true"><p class="muted" role="status" style="margin:0">Se încarcă…</p>
+      <div aria-hidden="true" style="display:flex;flex-direction:column;gap:var(--space-4)"><span class="sk title"></span><span class="sk block"></span></div></main>`;
+  }
+  if (key === 'error') {
+    return `<main class="content" id="main"><div class="banner danger" role="alert">${I.err}<div>
+      <p><strong>Nu am putut încărca datele contului.</strong>
+      Serverul nu răspunde. Verificați conexiunea, apoi încercați din nou.</p>
+      <div class="actions"><button type="button" class="btn-secondary">Reîncercați</button></div></div></div></main>`;
+  }
+  const fail = key === 'logoutfail' ? `<div class="banner danger" role="alert">${I.err}<div>
+      <p><strong>Sesiunea nu s-a putut închide.</strong>
+      Serverul nu a răspuns, așa că sunteți încă autentificat. Încercați din nou.</p>
+      <div class="actions"><button type="button" class="btn-secondary">Încercați din nou</button></div></div></div>` : '';
+  return `<main class="content" id="main">
+    ${fail}
+    <h1>Facturi</h1>
+    <section class="empty" aria-labelledby="empty-h">
+      ${I.doc}
+      <h2 id="empty-h">Lista facturilor va apărea aici</h2>
+      <p class="muted">Aici vor fi facturile emise, cu filtre după client, perioadă și status. Ecranul este în lucru.</p>
+    </section>
+  </main>`;
+}
+
+function render() {
+  document.getElementById('app').innerHTML = `<div class="app">
+    <a class="skip" href="#main">Sari la conținut</a>
+    ${header(current, role)}
+    ${content(current)}
+  </div>`;
+}
+
+/* Mock controls */
+function seg(id, items, cur, onPick) {
+  const el = document.getElementById(id);
+  el.innerHTML = items.map(([k,l]) => `<button type="button" data-k="${k}" aria-pressed="${k===cur}">${l}</button>`).join('');
+  el.onclick = e => { const b = e.target.closest('button'); if (!b) return;
+    el.querySelectorAll('button').forEach(x => x.setAttribute('aria-pressed', x === b)); onPick(b.dataset.k); };
+}
+const params = new URLSearchParams(location.search);
+let current = STATES[params.get('state')] ? params.get('state') : 'empty';
+let role = ROLES[params.get('role')] ? params.get('role') : 'OPERATOR';
+let theme = ['light','dark'].includes(params.get('theme')) ? params.get('theme') : 'system';
+let size  = params.get('size') === 'phone' ? 'phone' : 'desktop';
+const applyTheme = t => { t === 'system' ? document.documentElement.removeAttribute('data-theme') : document.documentElement.setAttribute('data-theme', t); };
+const applySize = z => document.getElementById('frame').classList.toggle('phone', z === 'phone');
+seg('seg-state', Object.entries(STATES).map(([k,v]) => [k, v.label]), current, k => { current = k; render(); });
+seg('seg-role', Object.entries(ROLES), role, k => { role = k; render(); });
+seg('seg-theme', [['system','Sistem'],['light','Light'],['dark','Dark']], theme, applyTheme);
+seg('seg-size', [['desktop','Desktop'],['phone','Telefon 360 px']], size, applySize);
+applyTheme(theme); applySize(size); render();
+</script>
+</body>
+</html>

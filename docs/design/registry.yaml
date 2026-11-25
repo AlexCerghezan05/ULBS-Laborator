@@ -22,6 +22,15 @@ designs:
     design_ref: mocks/DS-p21-login.html
     status: approved
 
+  - id: DS-p21-app-shell
+    kind: component
+    summary: Cadrul paginilor de după login - antetul cu meniul (doar ecranele care există; acum „Facturi”), numele și rolul utilizatorului din GET /api/me (C-001) și butonul „Ieșire”. Stări - încărcare, eroare la /api/me, nume lung, ieșire în curs, ieșire eșuată. Conține deocamdată lista de facturi provizorie (empty state).
+    roles: toți (Admin, Operator, Contabil); intrările din meniu după rol (D-012), odată cu ecranele lor
+    source: none yet
+    screenshots: []
+    design_ref: mocks/DS-p21-app-shell.html
+    status: draft
+
   - id: DS-p21-company-settings
     kind: screen
     summary: Datele firmei furnizor (CUI, nr. reg. com., adresă, IBAN, bancă), plătitor/neplătitor de TVA, TVA la încasare, regula de rotunjire (D-003, D-006, D-007).
