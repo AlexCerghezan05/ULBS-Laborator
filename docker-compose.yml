@@ -72,6 +72,17 @@ services:
       db-test:
         condition: service_healthy
 
+  # D-040: testele frontend-ului (Vitest), fără Node pe host. node_modules stă într-un volum.
+  frontend-test:
+    profiles: [test]
+    image: node:26.13.1-alpine
+    working_dir: /app
+    command: sh -c "npm ci --no-fund --no-audit && npm test"
+    volumes:
+      - ./frontend:/app
+      - frontend-node-modules:/app/node_modules
+
 volumes:
   db-data:
   m2:
+  frontend-node-modules:
