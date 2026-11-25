@@ -1,0 +1,21 @@
+# Patterns · API: acces pe rute, erori
+
+> Topic file. The index is in `../PATTERNS.md`.
+
+## PATTERN-004 · Fiecare rută își declară accesul cu @PreAuthorize, verificat de un test
+- **Status:** candidate
+- **Date:** 2026-11-25
+- **How:** Fiecare metodă de controller din `ro.ulbs.p21` are `@PreAuthorize` cu unul din nivelurile din `Access` (`ADMIN`, `WRITE`, `REPORTS`, `READ`, după D-012). `SecurityConfig` lasă publice doar rutele din lista lui; restul cer login. `RouteSecurityCoverageIT` parcurge toate rutele: pică dacă una n-are `@PreAuthorize` sau dacă lista rutelor publice diferă. O rută publică nouă se adaugă în ambele locuri, cu motiv. Testele de roluri folosesc rute de test într-un `@RestController` imbricat în test, cu `@Import`.
+- **Why:** Rolurile se verifică pe server pe fiecare rută, nu doar în UI (D-012); o rută uitată fără regulă e prinsă de test, nu în producție.
+- **Example:** `backend/src/main/java/ro/ulbs/p21/auth/Access.java`; `SecurityConfig.java`; `backend/src/test/java/ro/ulbs/p21/auth/RouteSecurityCoverageIT.java`; `AuthorizationIT.java`.
+- **Source:** agent · confidence medium
+- **Confirmed:** 2026-11-25
+
+## PATTERN-005 · Erorile API au forma {"error":"COD"}; textul îl pune frontend-ul
+- **Status:** candidate
+- **Date:** 2026-11-25
+- **How:** O eroare pe care frontend-ul o tratează are un status HTTP și un cod stabil în majuscule (`BAD_CREDENTIALS`, `SESSION_EXPIRED`), scris cu `ApiError.response` în controller sau cu `ApiError.write` în filtrele Spring Security. Mesajul pentru utilizator (din machetă, în română) îl alege frontend-ul după cod. Codurile sunt în contract (C-001).
+- **Why:** Textele stau într-un singur loc, lângă machetă; backend-ul nu trimite texte care se pot schimba fără să rupă testele.
+- **Example:** `backend/src/main/java/ro/ulbs/p21/auth/ApiError.java`; `SecurityConfig.java` (entry point, access denied).
+- **Source:** agent · confidence medium
+- **Confirmed:** 2026-11-25

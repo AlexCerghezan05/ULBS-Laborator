@@ -42,6 +42,7 @@
 - **Blocks:** Headerele de securitate pentru formularele de facturare; o eventuală extindere a D-024.
 - **Who answers:** Alexandru Cerghezan
 - **Source:** review-ul PR #1 (Security), 19.11.2026; owner-ul a amânat CSP-ul
+- **Confirmed:** 2026-11-25
 
 ## Q-038 · Utilizatorul Postgres al aplicației în producție
 - **Status:** open
@@ -52,3 +53,11 @@
 - **Blocks:** Deploy-ul live (Q-021); garanția că factura emisă nu se modifică nici prin SQL direct în producție.
 - **Who answers:** Alexandru Cerghezan
 - **Source:** raportul de build „Schema bazei de date”, 25.11.2026 (observație); review-ul de securitate al PR #2, 25.11.2026 (punctele 1 și 8)
+- **Confirmed:** 2026-11-25
+
+## Q-044 · Documentarea OpenAPI a API-ului
+- **Status:** open
+- **Context:** D-002 cere API REST documentat cu OpenAPI, dar niciun endpoint nu e documentat încă (`/api/health` și rutele de autentificare, C-001). Varianta aleasă: springdoc, într-un plan separat, imediat după planul de autentificare; de verificat compatibilitatea cu Spring Boot 4.1 și dacă documentația e publică sau cere login.
+- **Blocks:** D-002 (partea de OpenAPI).
+- **Who answers:** Alexandru Cerghezan
+- **Source:** planul „Autentificare și autorizare”, 25.11.2026

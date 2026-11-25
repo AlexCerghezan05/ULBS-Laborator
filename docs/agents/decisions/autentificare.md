@@ -41,3 +41,33 @@
 - **Evidence:** răspunsul la Q-042 (Alexandru Cerghezan, 25.11.2026).
 - **Source:** user · confidence high
 - **Confirmed:** 2026-11-25
+
+## D-038 · După blocare, numărătoarea începe de la zero; blocarea nu se prelungește
+- **Status:** approved
+- **Date:** 2026-11-25
+- **Rule:** Când începe blocarea de 15 minute (D-036), numărătoarea încercărilor greșite a contului revine la 0: după expirare, utilizatorul are din nou 5 încercări. O încercare făcută în timpul blocării (cu orice parolă) nu prelungește blocarea și nu se numără.
+- **Why:** Blocarea expiră singură (D-037); prelungirea ar permite ținerea contului blocat la nesfârșit cu o încercare la 15 minute.
+- **Rejected:** Numărătoarea continuă după expirare; prelungirea blocării la fiecare încercare.
+- **Evidence:** planul „Autentificare și autorizare”, răspunsul lui Alexandru Cerghezan, 25.11.2026.
+- **Source:** user · confidence high
+- **Confirmed:** 2026-11-25
+
+## D-039 · Sesiune pe server, în memorie, 30 de minute; cookie HttpOnly, SameSite=Lax; CSRF cu cookie
+- **Status:** approved
+- **Date:** 2026-11-25
+- **Rule:** Autentificarea folosește sesiunea servlet, ținută în memoria backend-ului (o singură instanță). Sesiunea expiră după 30 de minute de inactivitate. Cookie-ul de sesiune e `HttpOnly`, `SameSite=Lax` și `Secure` după `P21_COOKIE_SECURE` (implicit `true`; `false` doar local, în Compose). CSRF: cookie-ul `XSRF-TOKEN` citit de frontend și trimis în header-ul `X-XSRF-TOKEN` la fiecare cerere care modifică ceva. Frontend-ul și API-ul sunt pe aceeași origine, prin nginx.
+- **Why:** Cea mai mică variantă pentru o singură instanță; la repornirea backend-ului utilizatorii se loghează din nou (acceptat).
+- **Rejected:** Spring Session JDBC; token JWT în browser; SameSite=Strict (un link din afara aplicației ar arăta login deși sesiunea e validă).
+- **Evidence:** planul „Autentificare și autorizare”, aprobat de Alexandru Cerghezan, 25.11.2026.
+- **Source:** user · confidence high
+- **Confirmed:** 2026-11-25
+
+## D-041 · Contul dezactivat își pierde sesiunea la următoarea cerere
+- **Status:** approved
+- **Date:** 2026-11-25
+- **Rule:** La fiecare cerere autentificată, serverul citește `app_user.active`. Dacă e `false` (sau utilizatorul nu mai există), sesiunea se invalidează și răspunsul e 401.
+- **Why:** Răspunsul la Q-043: dezactivarea unui cont trebuie să-l scoată imediat din aplicație, nu după expirarea sesiunii.
+- **Rejected:** Sesiunea rămâne validă până expiră.
+- **Evidence:** răspunsul la Q-043 (Alexandru Cerghezan, 25.11.2026).
+- **Source:** user · confidence high
+- **Confirmed:** 2026-11-25

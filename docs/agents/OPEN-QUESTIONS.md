@@ -13,6 +13,7 @@
 - Q-040 · Unde duce login-ul după o sesiune expirată · _answered_
 - Q-041 · Când apare mesajul „Contul este dezactivat” · _answered_
 - Q-042 · Pe ce se numără încercările greșite de login · _answered_
+- Q-043 · Dezactivarea unui cont închide sesiunile deschise · _answered_
 
 ### [Date client](questions/date-client.md)
 - Q-004 · Cine a răspuns la interviu · _answered_
@@ -58,6 +59,7 @@
 - Q-022 · Cum facem screenshot-urile aplicației
 - Q-035 · CSP complet pentru aplicație
 - Q-038 · Utilizatorul Postgres al aplicației în producție
+- Q-044 · Documentarea OpenAPI a API-ului
 
 ### [Rapoarte](questions/rapoarte.md)
 - Q-014 · Raportul de încasări
