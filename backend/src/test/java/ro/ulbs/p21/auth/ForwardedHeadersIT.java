@@ -21,7 +21,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
  * În spatele nginx și al proxy-ului Render (D-044): browserul vorbește HTTPS cu adresa
  * frontend-ului, iar backend-ul află asta din X-Forwarded-Proto/Host. Cookie-urile de sesiune și
  * CSRF sunt Secure, fără Domain (rămân pe adresa frontend-ului, D-039), iar documentația API
- * (D-043) arată adresa frontend-ului, nu pe a backend-ului.
+ * (D-043) are adresa serverului relativă, deci rămâne pe adresa frontend-ului.
  */
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class ForwardedHeadersIT {
@@ -89,7 +89,8 @@ class ForwardedHeadersIT {
 
         HttpResponse<String> docs = send("GET", "/api/docs", null, "Cookie", cookies);
         assertThat(docs.statusCode()).isEqualTo(200);
-        assertThat(docs.body()).contains("\"url\":\"https://" + FRONTEND + "\"");
+        // Adresa serverului e relativă (OpenApiConfig), deci Swagger UI trimite cererile tot la frontend.
+        assertThat(docs.body()).contains("\"servers\":[{\"url\":\"/\"}]").doesNotContain("localhost:" + port);
 
         assertThat(send("POST", "/api/logout", null, "Cookie", cookies, "X-XSRF-TOKEN", value(newXsrfCookie)).statusCode())
                 .isEqualTo(204);

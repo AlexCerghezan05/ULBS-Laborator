@@ -12,6 +12,9 @@
 - PATTERN-006 · Contor pe un rând: citire FOR UPDATE și actualizare în aceeași tranzacție · candidate
 - PATTERN-007 · Rutele se documentează pe controller; erorile comune și rutele din filtre în OpenApiConfig · candidate
 
+### [Migrari](patterns/migrari.md)
+- PATTERN-008 · Datele care există doar într-un mediu stau într-o locație Flyway proprie, ca migrare repetabilă idempotentă · candidate
+
 ### [Teste](patterns/teste.md)
 - PATTERN-001 · Testele de integrare se numesc *IT și rulează pe db-test · approved
 - PATTERN-002 · Regulile de integritate stau în baza de date și se testează direct cu SQL · candidate

@@ -181,3 +181,19 @@
 - **Evidence:** planul „Schema bazei de date”, aprobat 25.11.2026 (A7); review-ul de securitate al PR #2, punctul 3, aprobat 25.11.2026; `V6__payments_receipts.sql`; `ReceiptImmutableIT`, `PaymentReceiptIT`.
 - **Source:** user · confidence high
 - **Confirmed:** 2026-11-25
+
+## D-045 · Datele de pornire ale producției: S1, chitanța ei și contoarele 60 și 21
+- **Status:** approved
+- **Date:** 2026-11-26
+- **Rule:** Migrarea repetabilă `db/prod/R__prod_start.sql` rulează doar în producție, prin `SPRING_FLYWAY_LOCATIONS` (D-044), niciodată cu `db/seed`. Ea creează:
+  - firma și clientul din S1, anonimizate ca în SAMPLES.md;
+  - seriile `Aa` (factură și chitanță);
+  - factura S1 (Aa0060, 10.11.2026, 297.52 + 62.48 = 360.00 RON, emisă de Admin), cu încasarea ei în numerar și chitanța Aa 0021 din aceeași zi;
+  - contoarele Aa/2026: 60 la facturi și 21 la chitanțe.
+
+  Numerele sunt alese, deci migrarea rulează ca proprietar al tabelelor și oprește cu `ALTER TABLE … DISABLE TRIGGER` doar `invoice_number`, `receipt_number` și `series_counter_guard`, în tranzacția ei, apoi le repornește. Nu folosește `session_replication_role`. Dacă una din seriile Aa are deja un contor, nu importă nimic și nu schimbă contorul.
+- **Why:** Răspunsul la Q-039, fără superuser (Q-038). Catalogul cere date reale în seed, iar URL-ul live trebuie să arate date, consistente cu contoarele.
+- **Rejected:** Ecran sau funcție „Ultimul număr emis” pentru Admin; doar contoarele, fără S1; `session_replication_role`, care cere superuser.
+- **Evidence:** planul „Deploy pe Render, plan gratuit”, aprobat cu ajustarea S1 de Alexandru Cerghezan, 26.11.2026; `backend/src/test/java/ro/ulbs/p21/db/ProdStartIT.java`.
+- **Source:** user · confidence high
+- **Confirmed:** 2026-11-26

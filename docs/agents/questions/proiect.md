@@ -18,15 +18,16 @@
 - **Status:** open
 - **Blocks:** AGENTS.md section 5 (branches, tags, delivery).
 - **Who answers:** Alexandru Cerghezan
-- **Confirmed:** 2026-11-19
+- **Confirmed:** 2026-11-26
 
 ## Q-021 · Unde rulează deploy-ul live HTTPS
-- **Status:** open
+- **Status:** answered
+- **Answer:** Pe Render, planul gratuit, fără card: Blueprint `render.yaml` cu Postgres Free, backend-ul și frontend-ul ca Docker web services, în `frankfurt`. HTTPS-ul îl dă Render pe adresele `*.onrender.com`; fără domeniu propriu. Browserul vede doar adresa frontend-ului (Alexandru Cerghezan, 26.11.2026, planul „Deploy pe Render”). Decizia: D-044.
 - **Context:** Cerințele comune cer deploy live cu HTTPS. Nu s-a stabilit pe ce server sau serviciu, cu ce domeniu și cum se obține certificatul HTTPS.
 - **Blocks:** Deploy-ul live; AGENTS.md §5.
 - **Who answers:** Alexandru Cerghezan
 - **Source:** docs/brief.md (cerințe comune); interviul cu Alexandru Cerghezan, 19.11.2026
-- **Confirmed:** 2026-11-19
+- **Confirmed:** 2026-11-26
 
 ## Q-022 · Cum facem screenshot-urile aplicației
 - **Status:** open
@@ -45,7 +46,12 @@
 - **Confirmed:** 2026-11-25
 
 ## Q-038 · Utilizatorul Postgres al aplicației în producție
-- **Status:** open
+- **Status:** investigating
+- **Proposed answer:** Pe Render (D-044) aplicația și migrările folosesc utilizatorul dat de Render. Documentația Render nu spune ce drepturi are; ne așteptăm să fie proprietarul bazei, fără superuser. `ProdStartIT` arată că toate migrările plus `db/prod` merg cu un astfel de utilizator. Ce înseamnă pentru trigger-e:
+  - `session_replication_role` cere superuser, deci nu le ocolește;
+  - proprietarul tabelelor le poate opri (`ALTER TABLE … DISABLE TRIGGER`) sau înlocui funcțiile. Asta poate face oricine are parola bazei sau controlează aplicația (o vulnerabilitate de tip SQL injection, de exemplu).
+
+  Bariera completă e un al doilea rol `p21_app`, doar cu SELECT/INSERT/UPDATE/DELETE, cu migrările rulate de proprietar și `REVOKE TEMP`. Ea cere CREATEROLE, care se verifică după primul deploy cu interogarea din `docs/deploy.md`; până atunci rămâne pentru un plan următor. Condiția 2 e îndeplinită: `db/seed` nu rulează pe Render. Datele S1 intră în producție prin `db/prod` (D-045), la cererea userului.
 - **Context:** Trigger-ele de immutabilitate (facturile emise, chitanțele, D-033) și de numerotare pot fi ocolite de un superuser cu `set session_replication_role = replica`, iar proprietarul tabelelor le poate dezactiva (`ALTER TABLE ... DISABLE TRIGGER`) sau înlocui (`CREATE OR REPLACE FUNCTION`). Local și în teste, aplicația se conectează cu `POSTGRES_USER`, care în imaginea Docker este superuser. În producție, aplicația trebuie să folosească un utilizator Postgres fără superuser și fără drept de proprietar pe tabele. Ce utilizator, cu ce drepturi (SELECT/INSERT/UPDATE/DELETE pe tabele, fără TRUNCATE), cine rulează migrările Flyway (un utilizator separat, proprietar al schemei?) și unde se creează (script de inițializare, migrare)?
 - **Condiții de deploy** (review-ul de securitate al PR #2, 25.11.2026; cerute de Alexandru Cerghezan):
   1. `REVOKE TEMP ON DATABASE <baza> FROM PUBLIC`: utilizatorul aplicației nu poate crea tabele temporare. Funcțiile au deja `search_path` fixat cu `pg_temp` ultimul, deci un tabel temporar numit `invoice` nu mai ocolește blocarea; revocarea e a doua barieră.
@@ -53,7 +59,7 @@
 - **Blocks:** Deploy-ul live (Q-021); garanția că factura emisă nu se modifică nici prin SQL direct în producție.
 - **Who answers:** Alexandru Cerghezan
 - **Source:** raportul de build „Schema bazei de date”, 25.11.2026 (observație); review-ul de securitate al PR #2, 25.11.2026 (punctele 1 și 8)
-- **Confirmed:** 2026-11-25
+- **Confirmed:** 2026-11-26
 
 ## Q-044 · Documentarea OpenAPI a API-ului
 - **Status:** answered

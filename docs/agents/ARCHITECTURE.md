@@ -38,27 +38,32 @@ fiecare pagină protejată cere `GET /api/me`; un 401 trimite la `/login?next=�
 | Facturi, storno, proforme | `invoice`, `invoice_line`, `invoice_vat_summary`, `invoice_legal_note` | `V5__invoices.sql` | Copii la emitere, inclusiv procentul și categoria TVA (D-027); trigger-ele blochează orice schimbare pe FACTURA/STORNO după tranzacția care le-a creat; storno pe același client și aceeași monedă; tranzacția de emitere: PATTERN-003 |
 | Încasări, chitanțe | `payment`, `receipt` | `V6__payments_receipts.sql` | D-028; chitanța doar pe numerar; chitanța și încasarea ei nemodificabile (D-033) |
 | Cursuri BNR, reminder-e | `bnr_rate`, `reminder_settings` (un rând), `reminder_log` | `V7__bnr_reminders.sql` | Valorile reminder-elor: Q-019 |
-| Seed local | firma și clientul S1, 3 utilizatori de test, seria `Aa`, factura S1 | `db/seed/R__seed.sql` (repetabilă, idempotentă) | Încărcat doar prin `SPRING_FLYWAY_LOCATIONS` din Compose; S1 își importă numărul 60 cu trigger-ele oprite (superuser); la deploy fără seed (Q-038) |
+| Seed local | firma și clientul S1, 3 utilizatori de test, seria `Aa`, factura S1 | `db/seed/R__seed.sql` (repetabilă, idempotentă) | Încărcat doar prin `SPRING_FLYWAY_LOCATIONS` din Compose; S1 își importă numărul 60 cu trigger-ele oprite (superuser); nu rulează pe Render (D-044) |
+| Pornirea producției | firma și clientul S1, seriile `Aa` (factură, chitanță), S1 cu încasarea și chitanța Aa 0021, contoarele 60 și 21, conturile din variabile secrete | `db/prod/R__prod_start.sql` (repetabilă, idempotentă) | D-045, D-046; doar pe Render; rulează ca proprietar, fără superuser (trigger-ele oprite doar în tranzacția ei); PATTERN-008 |
 | Sesiunile | memoria backend-ului (Tomcat), 30 de minute de inactivitate | Spring Security | D-039: o repornire a backend-ului închide toate sesiunile |
 | Încercările greșite de login | `app_user.failed_login_count`, `app_user.locked_until` | `V8__login_lockout.sql`, `LoginService` | D-036–D-038: pe cont; la a 5-a, blocare 15 minute și numărătoarea la 0 |
 | Istoricul migrărilor | `flyway_schema_history` | Flyway | — |
 
 Banii și cantitățile sunt `numeric` fără scale fix, cu `CHECK (scale(x) <= n)` (D-031).
-Toate funcțiile au `search_path = pg_catalog, public, pg_temp`; TRUNCATE e refuzat pe tabelele cu documente și pe contor. Utilizatorul Postgres din producție: Q-038.
+Toate funcțiile au `search_path = pg_catalog, public, pg_temp`; TRUNCATE e refuzat pe tabelele cu documente și pe contor. Utilizatorul Postgres din producție: cel dat de Render, proprietarul bazei (Q-038, investigating).
 
 ## Configuration
 | Name | Where set | Used by | Notes |
 |---|---|---|---|
 | `POSTGRES_DB`, `POSTGRES_USER`, `POSTGRES_PASSWORD` | `.env` (din `.env.example`, nu intră în git) | `db`, `db-test`, `backend`, `backend-test` | obligatorii: fără ele Compose se oprește |
 | `SPRING_DATASOURCE_URL`, `SPRING_DATASOURCE_USERNAME`, `SPRING_DATASOURCE_PASSWORD` | `docker-compose.yml`, din variabilele de mai sus | backend | — |
-| `SPRING_FLYWAY_LOCATIONS` | `docker-compose.yml` (`x-seed-env`) | backend, backend-test | `db/migration` + `db/seed`; la deploy, fără `db/seed` |
+| `SPRING_FLYWAY_LOCATIONS` | `docker-compose.yml` (`x-seed-env`); `render.yaml` | backend, backend-test | local `db/migration` + `db/seed`; pe Render `db/migration` + `db/prod` |
 | `P21_COOKIE_SECURE` | `docker-compose.yml` (`backend`: `false`) | backend (`server.servlet.session.cookie.secure`) | D-039: implicit `true`; `false` doar local, pe http://localhost |
 | `P21_SEED_PASSWORD_HASH` | `.env` (opțional) | seed-ul, ca placeholder Flyway `seed_password_hash` | hash BCrypt, între ghilimele simple; gol = conturi de test fără login |
+| `P21_ADMIN_USERNAME`, `P21_ADMIN_PASSWORD_HASH`; opționale `P21_OPERATOR_USERNAME`/`_PASSWORD_HASH`, `P21_CONTABIL_USERNAME`/`_PASSWORD_HASH` | Render, variabile secrete (`sync: false`) | `db/prod`, ca placeholder-e Flyway | D-046: doar hash BCrypt; Admin obligatoriu |
+| `DB_HOST`, `DB_PORT`, `DB_NAME` | `render.yaml` (`fromDatabase`) | `SPRING_DATASOURCE_URL` pe Render (`jdbc:postgresql://${DB_HOST}:${DB_PORT}/${DB_NAME}`, rezolvat de Spring) | D-044 |
+| `JAVA_TOOL_OPTIONS`, `SPRING_DATASOURCE_HIKARI_MAXIMUM_POOL_SIZE`, `SERVER_TOMCAT_THREADS_MAX` | `render.yaml` | backend | D-044: 512 MB pe planul gratuit; local nesetate |
+| `P21_BACKEND_URL` | `frontend/Dockerfile` (implicit `http://backend:8080`); Render, `sync: false` | `frontend/nginx.conf.template` | D-044: adresa publică HTTPS a backend-ului pe Render |
 <!-- names only, never values -->
 
 ## Build, deploy, runtime
 Comenzile: AGENTS.md §2 (D-040). Imaginile: `backend/Dockerfile` (Maven → JRE 21),
-`frontend/Dockerfile` (Node → nginx). Deploy: încă nu (Q-021).
+`frontend/Dockerfile` (Node → nginx, cu șablonul `nginx.conf.template`). Deploy: Render, planul gratuit, din `render.yaml` (D-044); pașii, verificările și riscurile: `docs/deploy.md`.
 
 ## Boundaries
 - API-ul de autentificare și `GET /api/health`: C-001. Publice doar `/api/health`, `GET /api/csrf`, `POST /api/login`; restul cer sesiune, iar fiecare rută are `@PreAuthorize` cu un nivel din `Access` (D-012, PATTERN-004).

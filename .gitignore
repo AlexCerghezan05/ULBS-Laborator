@@ -5,3 +5,6 @@
 backend/target/
 frontend/node_modules/
 frontend/dist/
+
+# Backup-urile bazei de pe Render (docs/deploy.md): conțin date, nu intră în git.
+*.dump

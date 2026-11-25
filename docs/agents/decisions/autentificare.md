@@ -61,7 +61,7 @@
 - **Rejected:** Spring Session JDBC; token JWT în browser; SameSite=Strict (un link din afara aplicației ar arăta login deși sesiunea e validă).
 - **Evidence:** planul „Autentificare și autorizare”, aprobat de Alexandru Cerghezan, 25.11.2026.
 - **Source:** user · confidence high
-- **Confirmed:** 2026-11-25
+- **Confirmed:** 2026-11-26
 
 ## D-041 · Contul dezactivat își pierde sesiunea la următoarea cerere
 - **Status:** approved
@@ -82,3 +82,23 @@
 - **Evidence:** acceptat de Alexandru Cerghezan, 25.11.2026; `LoginService.java` (rolul pus în `AppPrincipal` la login), `LoginController.java`.
 - **Source:** user · confidence high
 - **Confirmed:** 2026-11-25
+
+## D-046 · Conturile din producție vin din variabile secrete, doar ca hash BCrypt
+- **Status:** approved
+- **Date:** 2026-11-26
+- **Rule:** `db/prod/R__prod_start.sql` (D-045) creează conturile din variabilele secrete Render, prin placeholder-ele Flyway din `application.properties`:
+  - Admin (`P21_ADMIN_USERNAME`, `P21_ADMIN_PASSWORD_HASH`, nume complet „Administrator”), obligatoriu;
+  - Operator (`P21_OPERATOR_…`, „Operator”) și Contabil (`P21_CONTABIL_…`, „Contabil”), opționale: fără ambele variabile, contul nu se creează.
+
+  Migrarea pică dacă:
+  - lipsește o variabilă a Admin-ului;
+  - un cont opțional are doar una din cele două variabile;
+  - numele nu e de forma `[A-Za-z0-9._-]{1,64}`;
+  - valoarea nu e un hash BCrypt (de ex. parola în clar).
+
+  Un cont existent nu se schimbă. Conturile de test din seed nu există în producție. Parola nu stă nicăieri, nici în repo, nici în Render.
+- **Why:** Cererea userului: primul Admin cu o parolă puternică, dată printr-o variabilă secretă, nu în repo. Hash-ul refolosește mecanismul seed-ului (`P21_SEED_PASSWORD_HASH`).
+- **Rejected:** Parola în clar în variabila de mediu, hash-uită la pornire; conturile de test în producție.
+- **Evidence:** planul „Deploy pe Render, plan gratuit”, aprobat cu ajustarea conturilor opționale de Alexandru Cerghezan, 26.11.2026; `ProdStartIT.java`.
+- **Source:** user · confidence high
+- **Confirmed:** 2026-11-26

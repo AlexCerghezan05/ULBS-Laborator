@@ -16,6 +16,7 @@
 - D-039 · Sesiune pe server, în memorie, 30 de minute; cookie HttpOnly, SameSite=Lax; CSRF cu cookie
 - D-041 · Contul dezactivat își pierde sesiunea la următoarea cerere
 - D-042 · O schimbare de rol se aplică la următorul login
+- D-046 · Conturile din producție vin din variabile secrete, doar ca hash BCrypt
 
 ### [Design](decisions/design.md)
 - D-025 · Design tokens și stil UI din DESIGN.md, paletă caldă
@@ -46,6 +47,7 @@
 - D-030 · Factura reține utilizatorul care a emis-o
 - D-031 · Precizia valorilor, fără rotunjire tăcută în baza de date
 - D-033 · Chitanța emisă și încasarea ei nu se modifică și nu se șterg
+- D-045 · Datele de pornire ale producției: S1, chitanța ei și contoarele 60 și 21
 
 ### [Platforma](decisions/platforma.md)
 - D-001 · Servers and databases run in Docker
@@ -56,4 +58,5 @@
 - D-029 · Un utilizator are un singur rol
 - D-040 · Build și rulare: Maven și Vitest în profilul `test` din Compose, frontend în nginx
 - D-043 · Documentația API e la /api/docs, doar pentru Admin
+- D-044 · Deploy pe Render, planul gratuit, din render.yaml
 
