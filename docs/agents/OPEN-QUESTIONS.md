@@ -9,6 +9,11 @@
 <!-- graffino-agentic:end -->
 
 ## Index
+### [Autentificare](questions/autentificare.md)
+- Q-040 · Unde duce login-ul după o sesiune expirată · _answered_
+- Q-041 · Când apare mesajul „Contul este dezactivat” · _answered_
+- Q-042 · Pe ce se numără încercările greșite de login
+
 ### [Date client](questions/date-client.md)
 - Q-004 · Cine a răspuns la interviu · _answered_
 - Q-005 · Contactul contabilului

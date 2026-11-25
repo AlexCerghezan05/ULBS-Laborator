@@ -15,12 +15,12 @@
 designs:
   - id: DS-p21-login
     kind: screen
-    summary: Autentificare cu email și parolă. După login se deschide lista de facturi (DS-p21-invoice-list).
+    summary: Autentificare cu nume de utilizator și parolă (app_user.username); fără înregistrare și fără „am uitat parola”, conturile le creează Admin-ul (D-012). Mesaje sub câmp pentru câmpuri goale; mesaje pentru date greșite (generic), prea multe încercări (D-036), cont dezactivat (D-035), sesiune expirată. După login: pagina internă de unde a plecat utilizatorul, altfel lista de facturi (DS-p21-invoice-list, D-034).
     roles: toți (Admin, Operator, Contabil)
     source: none yet
     screenshots: []
-    design_ref: none
-    status: planned
+    design_ref: mocks/DS-p21-login.html
+    status: approved
 
   - id: DS-p21-company-settings
     kind: screen
