@@ -69,6 +69,17 @@ Notițele complete (cu întrebări și răspunsuri) sunt în `docs/interview/Int
 - Obligatoriu pe PDF: firma, CIF, suma, cota de TVA, data emiterii, data scadentă, datele clientului (plus IBAN și banca).
 - Nu are logo.
 
+## Follow-up · 25.11.2026 (telefonic)
+
+| Câmp | Valoare |
+|---|---|
+| Cu cine | Clientul (Aura Logistic SRL); separat, profesorul |
+| Data | 25.11.2026 |
+| Cum | Telefonic |
+
+- **Proforme (Q-006):** clientul nu folosește proforme. Proformele rămân în aplicație pentru că le cere fișa și se testează cu date de test.
+- **Alte facturi reale (Q-018):** clientul a refuzat să dea alte facturi în afară de S1. Profesorul a confirmat, pe 25.11.2026, că o singură factură reală e suficientă. Punctul din Definition of Done devine „factura reală S1 produce XML valid”. Storno-ul, EUR, cotele multiple și persoana fizică se acoperă cu facturi de test, marcate clar ca test.
+
 ## Ce am schimbat în proiect pe baza interviului
 _Se completează pe măsură ce iau decizii (link către D- din `docs/agents/DECISIONS.md`)._
 

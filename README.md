@@ -42,6 +42,13 @@ Proiectul P21 din catalogul Web Avansat. Fișa completă: [`docs/brief.md`](docs
 | Clienți din străinătate | Clientul nu are. |
 | Trimiterea directă în SPV | Fișa cere doar export XML; ar cere certificat digital calificat. Rămâne sugestie. |
 
+## Definition of Done (ajustat 25.11.2026)
+Față de fișă, un singur punct se schimbă: clientul a dat o singură factură reală (S1), iar
+profesorul a confirmat pe 25.11.2026 că e suficientă (Q-018).
+- **Factura reală S1 produce XML valid** (raportul validatorului în repo), în locul celor 5 facturi reale.
+- Storno-ul, EUR, cotele multiple și persoana fizică se acoperă cu **facturi de test**, marcate clar ca test ([`SAMPLES.md`](SAMPLES.md) → Facturi de test).
+- Restul punctelor rămân ca în [`docs/brief.md`](docs/brief.md).
+
 ## Stack (D-002)
 | Strat | Alegere |
 |---|---|

@@ -1,6 +1,9 @@
 # SAMPLES · Facturi reale (anonimizate)
 
-Fișa cere minim 5 facturi reale. Fiecare trebuie reprodusă în aplicație și trebuie să producă un XML RO_CIUS valid.
+Fișa cere minim 5 facturi reale. Clientul a refuzat să dea alte facturi în afară de S1, iar
+profesorul a confirmat pe 25.11.2026 că o singură factură reală e suficientă (Q-018).
+**S1 este singura factură reală**: trebuie reprodusă în aplicație și trebuie să producă un
+XML RO_CIUS valid.
 
 ## Cum am anonimizat
 Am înlocuit doar datele care identifică persoane și firme:
@@ -18,12 +21,13 @@ Originalele nu sunt în repo.
 | # | Factură | Data | Tip | Linii | Cote TVA | Monedă | Total | Fișier | XML valid |
 |---|---|---|---|---|---|---|---|---|---|
 | S1 | Aa0060 | 10.11.2026 | Factură + chitanță (numerar) | 1 | 21% | RON | 360.00 | `samples/factura_Aa0060_anonimizata.pdf` | ☐ |
-| S2 | | | | | | | | | ☐ |
-| S3 | | | | | | | | | ☐ |
-| S4 | | | | | | | | | ☐ |
-| S5 | | | | | | | | | ☐ |
+S2–S5 nu există: clientul nu a dat alte facturi (Q-018, 25.11.2026).
 
-Ideal, S2–S5 acoperă: un storno, o factură cu mai multe linii, o factură plătită în tranșe, o factură din alt an (pentru resetarea numerotării).
+## Facturi de test
+Cazurile pe care S1 nu le acoperă se testează cu **facturi de test construite de noi**,
+marcate clar ca test și ținute separat de factura reală (D-006, D-008): storno, factură
+în EUR, cote de TVA multiple pe aceeași factură, client persoană fizică și proformă
+(clientul nu folosește proforme, Q-006). Nu sunt facturi reale și nu apar în tabelul de mai sus.
 
 ## S1 · Aa0060
 

@@ -14,11 +14,11 @@
 - Q-005 · Contactul contabilului
 - Q-013 · XML-urile facturilor
 - Q-017 · Numele firmei în repo-ul public
-- Q-018 · Facturile reale S2–S5
+- Q-018 · Facturile reale S2–S5 · _answered_
 - Q-027 · Clientul persoană fizică · _answered_
 
 ### [Facturare](questions/facturare.md)
-- Q-006 · Proforme
+- Q-006 · Proforme · _answered_
 - Q-007 · Regula de rotunjire
 - Q-008 · Formatul numărului
 - Q-009 · Cursul BNR
