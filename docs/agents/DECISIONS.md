@@ -15,6 +15,7 @@
 - D-038 · După blocare, numărătoarea începe de la zero; blocarea nu se prelungește
 - D-039 · Sesiune pe server, în memorie, 30 de minute; cookie HttpOnly, SameSite=Lax; CSRF cu cookie
 - D-041 · Contul dezactivat își pierde sesiunea la următoarea cerere
+- D-042 · O schimbare de rol se aplică la următorul login
 
 ### [Design](decisions/design.md)
 - D-025 · Design tokens și stil UI din DESIGN.md, paletă caldă

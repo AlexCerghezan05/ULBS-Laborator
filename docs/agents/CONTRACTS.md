@@ -29,6 +29,7 @@
 - **Consumers:** `frontend/src/api.ts`, `frontend/src/pages/LoginPage.tsx`, `frontend/src/auth.tsx`.
 - **Evidence:** planul „Autentificare și autorizare”, aprobat 25.11.2026; `companyName` cerut de Alexandru Cerghezan pentru antet, 25.11.2026; `backend/src/main/java/ro/ulbs/p21/auth/LoginController.java`, `SecurityConfig.java`; testele din `backend/src/test/java/ro/ulbs/p21/auth/`.
 - **Source:** agent · confidence high
+- **Confirmed:** 2026-11-25
 
 ## Consumed
 

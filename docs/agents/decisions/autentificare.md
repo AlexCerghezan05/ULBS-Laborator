@@ -71,3 +71,13 @@
 - **Evidence:** răspunsul la Q-043 (Alexandru Cerghezan, 25.11.2026).
 - **Source:** user · confidence high
 - **Confirmed:** 2026-11-25
+
+## D-042 · O schimbare de rol se aplică la următorul login
+- **Status:** approved
+- **Date:** 2026-11-25
+- **Rule:** Rolul utilizatorului (`app_user.role`) se citește la login și rămâne în sesiune (D-039). Dacă Admin-ul schimbă rolul unui cont, sesiunile deschise păstrează rolul vechi până la logout sau expirare; rolul nou se aplică la următorul login. Dezactivarea contului e diferită: scoate imediat utilizatorul (D-041).
+- **Why:** Cea mai mică variantă: sesiunea ține rolul de la login; recitirea rolului la fiecare cerere nu a fost cerută.
+- **Rejected:** Rolul recitit din baza de date la fiecare cerere.
+- **Evidence:** acceptat de Alexandru Cerghezan, 25.11.2026; `LoginService.java` (rolul pus în `AppPrincipal` la login), `LoginController.java`.
+- **Source:** user · confidence high
+- **Confirmed:** 2026-11-25
