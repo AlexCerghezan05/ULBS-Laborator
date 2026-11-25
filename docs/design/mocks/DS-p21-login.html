@@ -164,10 +164,10 @@ form { display:flex; flex-direction:column; gap:var(--space-4); margin:0; }
       <li><strong>Câmpuri goale</strong>: la „Autentificare” cu un câmp gol, cererea nu pleacă; sub fiecare câmp gol apare mesajul („Introduceți numele de utilizator.” / „Introduceți parola.”), cu icon, chenarul câmpului devine roșu, iar focus-ul trece pe primul câmp gol.</li>
       <li><strong>Încărcare</strong>: butonul devine „Se autentifică…” (fără animație: nu există un token de durată pentru ea), câmpurile și butonul sunt dezactivate până vine răspunsul.</li>
       <li><strong>Date greșite</strong>: un singur mesaj, deasupra formularului, care nu spune care câmp e greșit; ambele câmpuri au chenarul de eroare. Numele de utilizator rămâne completat, parola se golește și focus-ul trece pe ea.</li>
-      <li><strong>Prea multe încercări</strong>: după 5 încercări greșite, autentificarea e blocată 15 minute (D-036, propusă). Mesajul apare la orice încercare din perioada blocării, chiar cu parola corectă. Pe ce se numără încercările (cont, adresă IP): Q-042.</li>
-      <li><strong>Cont dezactivat</strong> (<code>active = false</code>): mesaj separat, cu ce e de făcut (contactați administratorul). Apare doar după nume de utilizator și parolă corecte; altfel, mesajul generic (Q-041, D-035 propusă).</li>
-      <li><strong>Sesiune expirată</strong>: după redirect, mesajul de avertizare apare deasupra formularului, câmpurile goale. După login, utilizatorul revine la pagina de unde a plecat (Q-040, D-034 propusă).</li>
-      <li><strong>Succes</strong>: redirect la pagina de unde a plecat utilizatorul, doar dacă e o cale internă (începe cu „/”, nu cu „//”, nu e URL extern); altfel la lista de facturi (DS-p21-invoice-list, încă fără machetă) (D-034, propusă); ecranul de login nu arată un mesaj propriu. În machetă, chenarul punctat ține locul listei.</li>
+      <li><strong>Prea multe încercări</strong>: după 5 încercări greșite, autentificarea e blocată 15 minute (D-036). Încercările se numără pe numele de utilizator; un login reușit resetează numărătoarea; blocarea expiră singură, fără deblocare de către Admin (D-037). Mesajul apare la orice încercare din perioada blocării, chiar cu parola corectă.</li>
+      <li><strong>Cont dezactivat</strong> (<code>active = false</code>): mesaj separat, cu ce e de făcut (contactați administratorul). Apare doar după nume de utilizator și parolă corecte; altfel, mesajul generic (D-035).</li>
+      <li><strong>Sesiune expirată</strong>: după redirect, mesajul de avertizare apare deasupra formularului, câmpurile goale. După login, utilizatorul revine la pagina de unde a plecat (D-034).</li>
+      <li><strong>Succes</strong>: redirect la pagina de unde a plecat utilizatorul, doar dacă e o cale internă (începe cu „/”, nu cu „//”, nu e URL extern); altfel la lista de facturi (DS-p21-invoice-list, încă fără machetă) (D-034); ecranul de login nu arată un mesaj propriu. În machetă, chenarul punctat ține locul listei.</li>
       <li>Culoarea nu poartă singură sensul: fiecare mesaj are icon și text. Mesajele au <code>role="alert"</code> (eroare) sau <code>role="status"</code> (sesiune expirată).</li>
     </ul>
   </section>
@@ -202,7 +202,7 @@ function banner(key) {
       Verificați-le și încercați din nou.</p></div>`;
   if (key === 'locked') return `<div class="banner danger" role="alert">${I.clock}<p>
       <strong>Prea multe încercări greșite.</strong>
-      Autentificarea este blocată 15 minute. Încercați din nou după aceea sau contactați administratorul aplicației.</p></div>`;
+      Autentificarea este blocată 15 minute. Încercați din nou după aceea.</p></div>`;
   if (key === 'disabled') return `<div class="banner danger" role="alert">${I.lock}<p>
       <strong>Contul este dezactivat.</strong>
       Pentru reactivare, contactați administratorul aplicației.</p></div>`;
