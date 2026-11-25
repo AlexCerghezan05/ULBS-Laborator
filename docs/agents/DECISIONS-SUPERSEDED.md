@@ -10,6 +10,9 @@
 ## Index
 - D-004 · Roluri: Admin, Operator, Contabil · _superseded-by D-012_
 
+### [Design](decisions/design.md)
+- D-011 · Design tokens și stil UI din DESIGN.md · _superseded-by D-025_
+
 ---
 
 ## D-004 · Roluri: Admin, Operator, Contabil

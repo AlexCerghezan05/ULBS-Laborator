@@ -98,17 +98,18 @@ them; a ticket with UI has a design subtask instead (team addon).
 ## Source
 - Design board: none yet (published from `mocks/`, never pulled)
 - Figma: none
-- Token source in code: none yet (no UI code; frontend React + TypeScript, D-002)
+- Token source in code: `frontend/src/tokens.css` (copy of the table below; frontend React + TypeScript, D-002)
 - PDF model: the client's SmartBill invoice, `samples/factura_Aa0060_anonimizata.pdf` (S1, `SAMPLES.md`). The client has no logo.
 
 ## Tokens
 
-> **Status: approved** (D-011). **Confirmed:** 2026-11-19 by Alexandru Cerghezan.
-> Source: the style interview of 2026-11-19 (below). A change to a token is a
+> **Status: approved** (D-025, supersedes D-011). **Confirmed:** 2026-11-25 by Alexandru Cerghezan.
+> Source: the style interview of 2026-11-19 (below), palette changed on 2026-11-25. A change to a token is a
 > PROPOSAL (AGENTS.md → The gate).
 
 ### Style interview (2026-11-19, Alexandru Cerghezan)
-- **Color:** accent from the client's SmartBill PDF (slate blue, ~`#3E6A87`) on a neutral grey base. The client has no logo and no other brand material.
+- **Color (2026-11-19, superseded on 2026-11-25 by D-025):** accent from the client's SmartBill PDF (slate blue, ~`#3E6A87`) on a neutral grey base. The client has no logo and no other brand material.
+- **Color (2026-11-25, D-025):** warm palette, brown accent `#6B4A3A` on a beige base: "paleta caldă mi se pare mai prietenoasă și mai ușor de citit decât albastrul-gri". It no longer comes from the SmartBill PDF.
 - **Font:** Inter for the UI, tabular figures for amounts. The PDF keeps Helvetica/Arial, like the SmartBill model.
 - **Tone and density:** sober and compact; a work tool. 14 px in tables. Plain, direct copy, formal address, no jokes.
 - **References:** Stripe Dashboard (4–6 px radius, thin borders instead of shadows, dense tables, amounts right-aligned, statuses as small colored labels); Linear (uncluttered, no decoration, everything reachable by keyboard); SmartBill (invoice field order: supplier left, client right, total at the bottom); GOV.UK (a label on every field, explicit error next to the field).
@@ -116,21 +117,21 @@ them; a ticket with UI has a design subtask instead (team addon).
 - **Confirmed by the owner:** desktop first, and it must work on a phone; no monospace font (CIF, IBAN and invoice numbers use Inter with tabular figures); "uncluttered" means no decoration and clear grouping, not looser rows.
 
 ### Color
-All text pairs below were checked: text ≥ 4.5:1, input borders and focus ≥ 3:1, in both themes.
+All pairs below were checked on 2026-11-25, in both themes: text ≥ 4.5:1 on `bg`, `surface` and `surface-muted` (status labels on their `-bg`); input borders and the focus ring ≥ 3:1 on `bg`, `surface` and `surface-muted`. `--color-border` is decorative only (no minimum).
 
 | Token | Light | Dark | Use |
 |---|---|---|---|
-| `--color-bg` | `#F6F8FA` | `#0F1419` | page background |
-| `--color-surface` | `#FFFFFF` | `#161C22` | cards, tables, forms, dialogs |
-| `--color-surface-muted` | `#F1F3F5` | `#1D252D` | totals row, table header, footer (as in the PDF) |
-| `--color-border` | `#D8DEE4` | `#2C3640` | table rules, card borders (decorative) |
-| `--color-border-strong` | `#8592A0` | `#5E6B78` | input borders (3.2:1) |
-| `--color-text` | `#1F2933` | `#E6EAEE` | body text, amounts |
-| `--color-text-muted` | `#5B6672` | `#9AA6B2` | labels, secondary text, hints |
-| `--color-accent` | `#3E6A87` | `#7FA9C7` | primary button, links, active nav, focus ring |
-| `--color-accent-hover` | `#335A73` | `#9BBDD6` | primary button hover/active |
-| `--color-on-accent` | `#FFFFFF` | `#0F1419` | text on the accent |
-| `--color-accent-subtle` | `#E8F0F5` | `#1B2B38` | selected row, "proformă" label background |
+| `--color-bg` | `#FAF6F1` | `#16120F` | page background |
+| `--color-surface` | `#FFFFFF` | `#1E1915` | cards, tables, forms, dialogs |
+| `--color-surface-muted` | `#F5EFE8` | `#27211C` | totals row, table header, footer (as in the PDF) |
+| `--color-border` | `#E6DCD1` | `#3A312A` | table rules, card borders (decorative) |
+| `--color-border-strong` | `#958678` | `#796B60` | input borders (light 3.52 / 3.28 / 3.09:1, dark 3.39 / 3.62 / 3.09:1 on surface / bg / surface-muted) |
+| `--color-text` | `#2D2420` | `#F0E9E2` | body text, amounts |
+| `--color-text-muted` | `#6B5D53` | `#B3A69B` | labels, secondary text, hints |
+| `--color-accent` | `#6B4A3A` | `#CFAE94` | primary button, links, active nav, focus ring |
+| `--color-accent-hover` | `#563A2D` | `#DEC3AD` | primary button hover/active |
+| `--color-on-accent` | `#FFFFFF` | `#16120F` | text on the accent |
+| `--color-accent-subtle` | `#F3ECE6` | `#2E241D` | selected row, "proformă" label background |
 | `--color-success` / `-bg` | `#1E7A46` / `#E6F4EC` | `#5CC98A` / `#12291C` | label "plătită", success messages |
 | `--color-danger` / `-bg` | `#B42318` / `#FDECEA` | `#F28B82` / `#3A1715` | label "restantă", field errors, destructive actions |
 | `--color-warning` / `-bg` | `#8A5A00` / `#FFF4E0` | `#E8B04B` / `#33270F` | warnings, e.g. the BNR fallback rate (D-008) |
