@@ -14,7 +14,8 @@ create table payment (
 );
 
 -- Chitanța: o încasare în numerar are cel mult o chitanță (Q-012). Seria e de tip CHITANTA,
--- numărul vine din allocate_number, ca la facturi (D-005). Suma e cea a încasării.
+-- numărul îl pune trigger-ul la INSERT, ca la facturi (D-005). Suma, factura și data sunt cele
+-- ale încasării, care devine nemodificabilă odată ce are chitanță (D-033).
 create table receipt (
     id             bigint     generated always as identity primary key,
     payment_id     bigint     not null unique,
@@ -29,9 +30,14 @@ create table receipt (
     constraint receipt_number_unique unique (series_id, fiscal_year, number)
 );
 
+create trigger receipt_number before insert on receipt
+    for each row execute function assign_document_number();
+
 -- D-033: chitanța emisă nu se modifică și nu se șterge (numerotare fără goluri).
 create function forbid_receipt_change() returns trigger
-language plpgsql as $$
+language plpgsql
+set search_path = pg_catalog, public, pg_temp
+as $$
 begin
     raise exception 'Chitanța % e emisă: nu se modifică și nu se șterge.', old.id
         using errcode = 'restrict_violation';
@@ -40,3 +46,29 @@ $$;
 
 create trigger receipt_immutable before update or delete on receipt
     for each row execute function forbid_receipt_change();
+
+-- D-033: încasarea care are chitanță nu se modifică și nu se șterge, altfel chitanța ar arăta
+-- retroactiv altă sumă, altă factură sau altă dată.
+create function forbid_receipted_payment_change() returns trigger
+language plpgsql
+set search_path = pg_catalog, public, pg_temp
+as $$
+begin
+    if exists (select 1 from receipt where payment_id = old.id) then
+        raise exception 'Încasarea % are chitanță: nu se modifică și nu se șterge.', old.id
+            using errcode = 'restrict_violation';
+    end if;
+    if tg_op = 'DELETE' then
+        return old;
+    end if;
+    return new;
+end;
+$$;
+
+create trigger payment_receipted_immutable before update or delete on payment
+    for each row execute function forbid_receipted_payment_change();
+
+create trigger payment_no_truncate before truncate on payment
+    for each statement execute function forbid_truncate();
+create trigger receipt_no_truncate before truncate on receipt
+    for each statement execute function forbid_truncate();

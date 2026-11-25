@@ -4,10 +4,15 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.math.BigDecimal;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.sql.Statement;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -25,6 +30,15 @@ class IssuedInvoiceImmutableIT {
 
     @Autowired
     private TransactionTemplate tx;
+
+    @Value("${spring.datasource.url}")
+    private String url;
+
+    @Value("${spring.datasource.username}")
+    private String username;
+
+    @Value("${spring.datasource.password}")
+    private String password;
 
     private long seriesId;
     private long invoiceId;
@@ -102,6 +116,27 @@ class IssuedInvoiceImmutableIT {
     void changingTheLegalNotesIsRejected() {
         assertThatThrownBy(() -> jdbc.update("delete from invoice_legal_note where invoice_id = ?", invoiceId))
                 .isInstanceOf(DataIntegrityViolationException.class);
+    }
+
+    /**
+     * Sesiune nouă, în afara pool-ului (ca un atacator): tabelul temporar e creat înainte ca
+     * funcțiile să fie planificate în sesiune. Fără search_path fixat, invoice_is_locked ar citi
+     * tabelul temporar gol și ar lăsa UPDATE-ul să treacă.
+     */
+    @Test
+    void aTemporaryTableNamedInvoiceDoesNotBypassTheLock() throws SQLException {
+        try (Connection c = DriverManager.getConnection(url, username, password)) {
+            c.setAutoCommit(false);
+            try (Statement st = c.createStatement()) {
+                st.execute("create temp table invoice (id bigint, doc_type varchar(8)) on commit drop");
+                assertThatThrownBy(() -> st.executeUpdate(
+                        "update public.invoice set due_date = due_date + 1 where id = " + invoiceId))
+                        .isInstanceOf(SQLException.class)
+                        .extracting(e -> ((SQLException) e).getSQLState()).isEqualTo("23001");
+            } finally {
+                c.rollback();
+            }
+        }
     }
 
     @Test

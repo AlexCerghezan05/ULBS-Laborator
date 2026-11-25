@@ -2,11 +2,12 @@
 -- STORNO din tabel e emis, deci nemodificabil (trigger-ele de mai jos).
 --
 -- Numerotarea (D-005):
--- - number vine din allocate_number(series_id, fiscal_year), în tranzacția insert-ului;
+-- - number îl pune trigger-ul invoice_number la INSERT (assign_document_number, V4);
 -- - unique (series_id, fiscal_year, number) e plasa de siguranță contra duplicatelor;
 -- - series_type + FK compus: FACTURA și STORNO stau pe o serie FACTURA, PROFORMA pe o serie
 --   PROFORMA, deci proforma nu consumă număr din seria de facturi;
--- - storno-ul referă o FACTURA din aceeași serie (FK compus pe id, doc_type, series_id).
+-- - storno-ul referă o FACTURA din aceeași serie, pentru același client și în aceeași monedă
+--   (FK compus pe id, doc_type, series_id, client_id, currency).
 --
 -- Datele clientului și ale furnizorului se copiază la emitere (D-027); issued_by (D-030).
 -- Sumele au cel mult 2 zecimale, cursul cel mult 4, fără rotunjire tăcută (D-031).
@@ -64,12 +65,12 @@ create table invoice (
     constraint invoice_series_fk foreign key (series_id, series_type) references series (id, doc_type),
     constraint invoice_number_unique unique (series_id, fiscal_year, number),
     constraint invoice_id_type_unique unique (id, doc_type),
-    constraint invoice_id_type_series_unique unique (id, doc_type, series_id),
+    constraint invoice_storno_target_unique unique (id, doc_type, series_id, client_id, currency),
     constraint invoice_storno_has_original check (
         (doc_type = 'STORNO') = (original_invoice_id is not null)
         and (original_invoice_id is null) = (original_doc_type is null)),
-    constraint invoice_storno_same_series foreign key (original_invoice_id, original_doc_type, series_id)
-        references invoice (id, doc_type, series_id),
+    constraint invoice_storno_same_series foreign key (original_invoice_id, original_doc_type, series_id, client_id, currency)
+        references invoice (id, doc_type, series_id, client_id, currency),
     constraint invoice_due_date check (due_date >= issue_date),
     constraint invoice_rate_by_currency check (
         (currency = 'RON' and exchange_rate is null and exchange_rate_date is null and not fallback_rate)
@@ -81,31 +82,36 @@ create table invoice (
 );
 
 -- D-021: linia poate veni din catalog (product_id) sau poate fi scrisă liber; valorile sunt
--- copiate pe linie. D-013: discount procentual pe linie. D-020: cota din vat_rate.
+-- copiate pe linie. D-013: discount procentual pe linie. D-020: cota din vat_rate; procentul și
+-- categoria cotei se copiază pe linie (D-027) de trigger-ul copy_vat_rate.
 -- quantity e negativă pe storno. net_amount e valoarea liniei după discount.
 create table invoice_line (
-    id               bigint       generated always as identity primary key,
-    invoice_id       bigint       not null references invoice (id),
-    position         smallint     not null check (position >= 1),
-    product_id       bigint       references product (id),
-    name             varchar(300) not null,
-    unit             varchar(16)  not null,
-    quantity         numeric      not null check (quantity <> 0 and scale(quantity) <= 4),
-    unit_price       numeric      not null check (unit_price >= 0 and scale(unit_price) <= 4),
-    discount_percent numeric      not null default 0
-                                  check (discount_percent between 0 and 100 and scale(discount_percent) <= 2),
-    vat_rate_code    varchar(8)   not null references vat_rate (code),
-    net_amount       numeric      not null check (scale(net_amount) <= 2),
+    id                bigint       generated always as identity primary key,
+    invoice_id        bigint       not null references invoice (id),
+    position          smallint     not null check (position >= 1),
+    product_id        bigint       references product (id),
+    name              varchar(300) not null,
+    unit              varchar(16)  not null,
+    quantity          numeric      not null check (quantity <> 0 and scale(quantity) <= 4),
+    unit_price        numeric      not null check (unit_price >= 0 and scale(unit_price) <= 4),
+    discount_percent  numeric      not null default 0
+                                   check (discount_percent between 0 and 100 and scale(discount_percent) <= 2),
+    vat_rate_code     varchar(8)   not null references vat_rate (code),
+    vat_percent       numeric      not null check (scale(vat_percent) <= 2),
+    vat_category_code varchar(2)   not null,
+    net_amount        numeric      not null check (scale(net_amount) <= 2),
     unique (invoice_id, position)
 );
 
 -- TVA-ul pe cote, calculat la emitere după regula de rotunjire a firmei (D-007), pentru XML
--- și rapoarte.
+-- și rapoarte; procentul și categoria se copiază ca pe linie (D-027).
 create table invoice_vat_summary (
-    invoice_id     bigint     not null references invoice (id),
-    vat_rate_code  varchar(8) not null references vat_rate (code),
-    taxable_amount numeric    not null check (scale(taxable_amount) <= 2),
-    vat_amount     numeric    not null check (scale(vat_amount) <= 2),
+    invoice_id        bigint     not null references invoice (id),
+    vat_rate_code     varchar(8) not null references vat_rate (code),
+    vat_percent       numeric    not null check (scale(vat_percent) <= 2),
+    vat_category_code varchar(2) not null,
+    taxable_amount    numeric    not null check (scale(taxable_amount) <= 2),
+    vat_amount        numeric    not null check (scale(vat_amount) <= 2),
     primary key (invoice_id, vat_rate_code)
 );
 
@@ -117,18 +123,44 @@ create table invoice_legal_note (
     primary key (invoice_id, position)
 );
 
+create trigger invoice_number before insert on invoice
+    for each row execute function assign_document_number();
+
+-- D-027: procentul și categoria vin din vat_rate la scriere; o valoare dată de apelant se ignoră.
+create function copy_vat_rate() returns trigger
+language plpgsql
+set search_path = pg_catalog, public, pg_temp
+as $$
+begin
+    select percent, category_code into new.vat_percent, new.vat_category_code
+    from vat_rate where code = new.vat_rate_code;
+    return new;
+end;
+$$;
+
+create trigger invoice_line_vat before insert or update on invoice_line
+    for each row execute function copy_vat_rate();
+create trigger invoice_vat_summary_vat before insert or update on invoice_vat_summary
+    for each row execute function copy_vat_rate();
+
 -- Factura emisă nu se modifică și nu se șterge (CONTEXT.md „Factură emisă”). Excepție:
 -- tranzacția care a creat-o, ca să poată adăuga liniile, TVA-ul pe cote și mențiunile.
--- Proforma nu e blocată aici (regulile ei de editare nu sunt stabilite).
+-- Excepția compară xmin cu tranzacția de vârf, deci nu merge dacă factura e inserată într-un
+-- savepoint (PATTERN-003). Proforma rămâne editabilă (regulile ei nu sunt stabilite), dar nu-și
+-- schimbă tipul, seria, numărul sau anul.
 create function invoice_is_locked(p_invoice_id bigint) returns boolean
-language sql as $$
+language sql
+set search_path = pg_catalog, public, pg_temp
+as $$
     select coalesce((
         select doc_type in ('FACTURA', 'STORNO') and not (xmin = pg_current_xact_id()::xid)
         from invoice where id = p_invoice_id), false);
 $$;
 
 create function forbid_issued_invoice_change() returns trigger
-language plpgsql as $$
+language plpgsql
+set search_path = pg_catalog, public, pg_temp
+as $$
 begin
     if invoice_is_locked(old.id) then
         raise exception 'Factura % e emisă: nu se modifică și nu se șterge, doar se stornează.', old.id
@@ -137,12 +169,19 @@ begin
     if tg_op = 'DELETE' then
         return old;
     end if;
+    if (new.doc_type, new.series_id, new.series_type, new.number, extract(year from new.issue_date)::smallint)
+       is distinct from (old.doc_type, old.series_id, old.series_type, old.number, old.fiscal_year) then
+        raise exception 'Documentul % nu-și schimbă tipul, seria, numărul sau anul.', old.id
+            using errcode = 'restrict_violation';
+    end if;
     return new;
 end;
 $$;
 
 create function forbid_issued_invoice_child_change() returns trigger
-language plpgsql as $$
+language plpgsql
+set search_path = pg_catalog, public, pg_temp
+as $$
 begin
     if tg_op <> 'INSERT' then
         if invoice_is_locked(old.invoice_id) then
@@ -169,3 +208,12 @@ create trigger invoice_vat_summary_immutable before insert or update or delete o
     for each row execute function forbid_issued_invoice_child_change();
 create trigger invoice_legal_note_immutable before insert or update or delete on invoice_legal_note
     for each row execute function forbid_issued_invoice_child_change();
+
+create trigger invoice_no_truncate before truncate on invoice
+    for each statement execute function forbid_truncate();
+create trigger invoice_line_no_truncate before truncate on invoice_line
+    for each statement execute function forbid_truncate();
+create trigger invoice_vat_summary_no_truncate before truncate on invoice_vat_summary
+    for each statement execute function forbid_truncate();
+create trigger invoice_legal_note_no_truncate before truncate on invoice_legal_note
+    for each statement execute function forbid_truncate();

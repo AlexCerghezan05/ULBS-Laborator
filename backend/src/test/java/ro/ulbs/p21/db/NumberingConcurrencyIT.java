@@ -3,7 +3,6 @@ package ro.ulbs.p21.db;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
-import java.util.UUID;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
@@ -20,8 +19,8 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.transaction.support.TransactionTemplate;
 
 /**
- * D-005: emiteri simultane pe aceeași serie primesc numere fără goluri și fără duplicate,
- * chiar dacă unele tranzacții fac rollback. Tranzacțiile sunt reale (commit), deci testul își
+ * D-005: facturi emise simultan pe aceeași serie primesc numere fără goluri și fără duplicate,
+ * chiar dacă unele emiteri fac rollback. Tranzacțiile sunt reale (commit), deci testul își
  * creează propria serie și o șterge la final.
  */
 @SpringBootTest
@@ -39,18 +38,22 @@ class NumberingConcurrencyIT {
 
     @BeforeEach
     void createSeries() {
-        seriesId = jdbc.queryForObject("insert into series (name, doc_type) values (?, 'FACTURA') returning id",
-                Long.class, "C" + UUID.randomUUID().toString().substring(0, 8));
+        seriesId = new DbFixtures(jdbc).series("FACTURA");
     }
 
+    /** Curățenie de test: doar un superuser poate ocoli trigger-ele, cu session_replication_role. */
     @AfterEach
     void dropSeries() {
-        jdbc.update("delete from series_counter where series_id = ?", seriesId);
-        jdbc.update("delete from series where id = ?", seriesId);
+        tx.executeWithoutResult(s -> {
+            jdbc.execute("set local session_replication_role = replica");
+            jdbc.update("delete from invoice where series_id = ?", seriesId);
+            jdbc.update("delete from series_counter where series_id = ?", seriesId);
+            jdbc.update("delete from series where id = ?", seriesId);
+        });
     }
 
     @Test
-    void concurrentAllocationsWithRollbacksLeaveNoGapsAndNoDuplicates() throws Exception {
+    void concurrentIssuesWithRollbacksLeaveNoGapsAndNoDuplicates() throws Exception {
         List<Integer> committed = new CopyOnWriteArrayList<>();
         CountDownLatch start = new CountDownLatch(1);
         ExecutorService pool = Executors.newFixedThreadPool(THREADS);
@@ -58,7 +61,8 @@ class NumberingConcurrencyIT {
             List<Future<?>> futures = IntStream.range(0, THREADS).<Future<?>>mapToObj(i -> pool.submit(() -> {
                 start.await();
                 Integer number = tx.execute(status -> {
-                    int n = jdbc.queryForObject("select allocate_number(?, 2026)", Integer.class, seriesId);
+                    DbFixtures fx = new DbFixtures(jdbc);
+                    int n = fx.numberOf(fx.invoice(seriesId));
                     try {
                         Thread.sleep(20); // ține lock-ul cât timp celelalte fire așteaptă
                     } catch (InterruptedException e) {
@@ -86,8 +90,7 @@ class NumberingConcurrencyIT {
         int expected = (int) IntStream.range(0, THREADS).filter(i -> i % 3 != 0).count();
         assertThat(committed).hasSize(expected);
         assertThat(committed).containsExactlyInAnyOrderElementsOf(IntStream.rangeClosed(1, expected).boxed().toList());
-        assertThat(jdbc.queryForObject(
-                "select last_number from series_counter where series_id = ? and year = 2026", Integer.class, seriesId))
-                .isEqualTo(expected);
+        assertThat(jdbc.queryForList("select number from invoice where series_id = ? order by number", Integer.class, seriesId))
+                .containsExactlyElementsOf(IntStream.rangeClosed(1, expected).boxed().toList());
     }
 }

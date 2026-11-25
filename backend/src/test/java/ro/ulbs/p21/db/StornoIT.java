@@ -28,8 +28,12 @@ class StornoIT {
         fx = new DbFixtures(jdbc);
     }
 
-    private static Map<String, Object> storno(Long originalId) {
+    /** Un storno total pe factura dată, pentru același client (D-005). */
+    private Map<String, Object> storno(Long originalId) {
         Map<String, Object> v = new HashMap<>();
+        if (originalId != null) {
+            v.put("client_id", jdbc.queryForObject("select client_id from invoice where id = ?", Long.class, originalId));
+        }
         v.put("doc_type", "STORNO");
         v.put("original_invoice_id", originalId);
         v.put("original_doc_type", originalId == null ? null : "FACTURA");
@@ -82,6 +86,29 @@ class StornoIT {
         assertThatThrownBy(() -> fx.invoice(series,
                 Map.of("original_invoice_id", original, "original_doc_type", "FACTURA")))
                 .isInstanceOf(DataIntegrityViolationException.class);
+    }
+
+    @Test
+    void stornoForAnotherClientIsRejected() {
+        long series = fx.series("FACTURA");
+        long original = fx.invoice(series);
+        Map<String, Object> v = storno(original);
+        v.put("client_id", fx.client());
+        assertThatThrownBy(() -> fx.invoice(series, v)).isInstanceOf(DataIntegrityViolationException.class);
+    }
+
+    @Test
+    void stornoInAnotherCurrencyIsRejected() {
+        long series = fx.series("FACTURA");
+        long original = fx.invoice(series);
+        Map<String, Object> v = storno(original);
+        v.put("currency", "EUR");
+        v.put("exchange_rate", new BigDecimal("5.0912"));
+        v.put("exchange_rate_date", java.time.LocalDate.of(2026, 11, 9));
+        v.put("net_total_ron", new BigDecimal("-1514.75"));
+        v.put("vat_total_ron", new BigDecimal("-318.10"));
+        v.put("total_ron", new BigDecimal("-1832.85"));
+        assertThatThrownBy(() -> fx.invoice(series, v)).isInstanceOf(DataIntegrityViolationException.class);
     }
 
     @Test

@@ -91,6 +91,19 @@ class SeedIT {
     @Test
     void nextNumberInSeriesAaFor2026Is61() {
         Long aa = jdbc.queryForObject("select id from series where name = 'Aa' and doc_type = 'FACTURA'", Long.class);
-        assertThat(jdbc.queryForObject("select allocate_number(?, 2026)", Integer.class, aa)).isEqualTo(61);
+        DbFixtures fx = new DbFixtures(jdbc);
+        assertThat(fx.numberOf(fx.invoice(aa))).isEqualTo(61);
+    }
+
+    @Test
+    void invoiceS1LineAndVatSummaryCarryThe21PercentRate() {
+        assertThat(jdbc.queryForList("""
+                select x.vat_percent::text || ' ' || x.vat_category_code from (
+                    select l.invoice_id, l.vat_percent, l.vat_category_code from invoice_line l
+                    union all
+                    select v.invoice_id, v.vat_percent, v.vat_category_code from invoice_vat_summary v) x
+                join invoice i on i.id = x.invoice_id join series s on s.id = i.series_id
+                where s.name = 'Aa' and i.number = 60 and i.fiscal_year = 2026""", String.class))
+                .containsExactly("21.00 S", "21.00 S");
     }
 }

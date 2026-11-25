@@ -1,5 +1,6 @@
 package ro.ulbs.p21.db;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.math.BigDecimal;
@@ -95,6 +96,30 @@ class InvoiceConstraintsIT {
                 insert into invoice_line (invoice_id, position, name, unit, quantity, unit_price, discount_percent, vat_rate_code, net_amount)
                 values (?, 2, 'X', 'buc', 1, 100, 101, 'S21', 0)""", invoice))
                 .isInstanceOf(DataIntegrityViolationException.class);
+    }
+
+    @Test
+    void lineAndVatSummaryCopyThePercentAndCategoryOfTheRate() {
+        long invoice = fx.invoice(series);
+        fx.line(invoice, 1, "1", "297.52");
+        jdbc.update("""
+                insert into invoice_vat_summary (invoice_id, vat_rate_code, taxable_amount, vat_amount)
+                values (?, 'S21', 297.52, 62.48)""", invoice);
+        assertThat(jdbc.queryForObject("""
+                select l.vat_percent::text || ' ' || l.vat_category_code || ' / ' || v.vat_percent::text || ' ' || v.vat_category_code
+                from invoice_line l join invoice_vat_summary v on v.invoice_id = l.invoice_id where l.invoice_id = ?""",
+                String.class, invoice)).isEqualTo("21.00 S / 21.00 S");
+    }
+
+    @Test
+    void aPercentGivenByTheCallerIsReplacedByTheRate() {
+        long invoice = fx.invoice(series);
+        jdbc.update("""
+                insert into invoice_line (invoice_id, position, name, unit, quantity, unit_price, vat_rate_code,
+                                          vat_percent, vat_category_code, net_amount)
+                values (?, 1, 'X', 'buc', 1, 100, 'AE', 19.00, 'S', 100)""", invoice);
+        assertThat(jdbc.queryForObject("select vat_percent::text || ' ' || vat_category_code from invoice_line where invoice_id = ?",
+                String.class, invoice)).isEqualTo("0.00 AE");
     }
 
     @Test

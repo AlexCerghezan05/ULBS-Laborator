@@ -42,6 +42,12 @@ begin
         return;
     end if;
 
+    -- S1 a fost numerotată în SmartBill: numărul 60 și contorul se importă așa cum sunt. Trigger-ele
+    -- de numerotare și de contor ar refuza un număr ales, deci se opresc doar pentru acest bloc
+    -- (session_replication_role, permis doar unui superuser), apoi se repornesc. Cu trigger-ele
+    -- oprite, procentul și categoria TVA se scriu explicit.
+    perform set_config('session_replication_role', 'replica', true);
+
     insert into series_counter (series_id, year, last_number) values (v_series, 2026, 60)
     on conflict (series_id, year) do nothing;
 
@@ -61,14 +67,16 @@ begin
 
     -- U.M. „1”, ca pe factura reală (Q-015).
     insert into invoice_line (invoice_id, position, name, unit, quantity, unit_price, discount_percent,
-                              vat_rate_code, net_amount)
-    values (v_invoice, 1, 'Inchiriere masina 7 zile', '1', 1, 297.52, 0, 'S21', 297.52);
+                              vat_rate_code, vat_percent, vat_category_code, net_amount)
+    values (v_invoice, 1, 'Inchiriere masina 7 zile', '1', 1, 297.52, 0, 'S21', 21.00, 'S', 297.52);
 
-    insert into invoice_vat_summary (invoice_id, vat_rate_code, taxable_amount, vat_amount)
-    values (v_invoice, 'S21', 297.52, 62.48);
+    insert into invoice_vat_summary (invoice_id, vat_rate_code, vat_percent, vat_category_code, taxable_amount, vat_amount)
+    values (v_invoice, 'S21', 21.00, 'S', 297.52, 62.48);
 
     insert into invoice_legal_note (invoice_id, position, text)
     values (v_invoice, 1,
             'Factura este valabila fara semnatura si stampila, conform art. 319 alin. 29 din legea 227/2015.');
+
+    perform set_config('session_replication_role', 'origin', true);
 end;
 $$;

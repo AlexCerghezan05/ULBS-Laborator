@@ -8,7 +8,10 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 import org.springframework.jdbc.core.JdbcTemplate;
 
-/** Date de pornire pentru testele de integrare pe schemă: utilizator, client, serie, factură. */
+/**
+ * Date de pornire pentru testele de integrare pe schemă: utilizator, client, serie, factură.
+ * Numărul documentelor îl pune trigger-ul de la INSERT (D-005), deci fixture-urile nu-l dau.
+ */
 final class DbFixtures {
 
     private final JdbcTemplate jdbc;
@@ -35,10 +38,6 @@ final class DbFixtures {
     long series(String docType) {
         return jdbc.queryForObject("insert into series (name, doc_type) values (?, ?) returning id",
                 Long.class, unique("T"), docType);
-    }
-
-    int allocate(long seriesId, int year) {
-        return jdbc.queryForObject("select allocate_number(?, ?)", Integer.class, seriesId, year);
     }
 
     /** O factură RON de 297.52 + 62.48 = 360.00 pe seria dată; overrides înlocuiesc coloane. */
@@ -71,10 +70,6 @@ final class DbFixtures {
         v.put("total_ron", new BigDecimal("360.00"));
         v.put("issued_by", user());
         v.putAll(overrides);
-        if (!v.containsKey("number")) {
-            int year = ((LocalDate) v.get("issue_date")).getYear();
-            v.put("number", allocate(seriesId, year));
-        }
         String cols = String.join(", ", v.keySet());
         String marks = v.keySet().stream().map(k -> "?").collect(Collectors.joining(", "));
         return jdbc.queryForObject("insert into invoice (" + cols + ") values (" + marks + ") returning id",
@@ -85,10 +80,26 @@ final class DbFixtures {
         return invoice(seriesId, Map.of());
     }
 
+    int numberOf(long invoiceId) {
+        return jdbc.queryForObject("select number from invoice where id = ?", Integer.class, invoiceId);
+    }
+
     void line(long invoiceId, int position, String quantity, String netAmount) {
         jdbc.update("""
                 insert into invoice_line (invoice_id, position, name, unit, quantity, unit_price, vat_rate_code, net_amount)
                 values (?, ?, 'Inchiriere masina 7 zile', '1', ?, 297.52, 'S21', ?)""",
                 invoiceId, position, new BigDecimal(quantity), new BigDecimal(netAmount));
+    }
+
+    long payment(long invoiceId, String amount, String method) {
+        return jdbc.queryForObject("""
+                insert into payment (invoice_id, paid_on, amount, method)
+                values (?, date '2026-11-10', ?, ?) returning id""", Long.class, invoiceId, new BigDecimal(amount), method);
+    }
+
+    long receipt(long paymentId, long seriesId) {
+        return jdbc.queryForObject("""
+                insert into receipt (payment_id, series_id, issue_date)
+                values (?, ?, date '2026-11-10') returning id""", Long.class, paymentId, seriesId);
     }
 }

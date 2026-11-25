@@ -34,13 +34,8 @@ class ReceiptImmutableIT {
             invoiceSeries = fx.series("FACTURA");
             receiptSeries = fx.series("CHITANTA");
             invoiceId = fx.invoice(invoiceSeries);
-            paymentId = jdbc.queryForObject("""
-                    insert into payment (invoice_id, paid_on, amount, method)
-                    values (?, date '2026-11-10', 360.00, 'NUMERAR') returning id""", Long.class, invoiceId);
-            receiptId = jdbc.queryForObject("""
-                    insert into receipt (payment_id, series_id, issue_date, number)
-                    values (?, ?, date '2026-11-10', allocate_number(?, 2026)) returning id""",
-                    Long.class, paymentId, receiptSeries, receiptSeries);
+            paymentId = fx.payment(invoiceId, "360.00", "NUMERAR");
+            receiptId = fx.receipt(paymentId, receiptSeries);
         });
     }
 
