@@ -172,12 +172,12 @@
 - **Source:** user · confidence high
 - **Confirmed:** 2026-11-25
 
-## D-033 · Chitanța emisă nu se modifică și nu se șterge
+## D-033 · Chitanța emisă și încasarea ei nu se modifică și nu se șterg
 - **Status:** approved
 - **Date:** 2026-11-25
-- **Rule:** Ca factura emisă, chitanța nu se mai modifică și nu se șterge (trigger pe `receipt`), ca numerotarea ei să rămână fără goluri (D-005).
-- **Why:** Chitanța are numerotare proprie, cu aceleași reguli ca facturile.
-- **Rejected:** Chitanță editabilă sau ștearsă după emitere.
-- **Evidence:** planul „Schema bazei de date”, aprobat 25.11.2026 (A7); `V6__payments_receipts.sql`; `ReceiptImmutableIT`.
+- **Rule:** Ca factura emisă, chitanța nu se mai modifică și nu se șterge (trigger pe `receipt`), ca numerotarea ei să rămână fără goluri (D-005). Încasarea care are chitanță nu se mai modifică și nu se șterge (trigger pe `payment`): chitanța nu are suma, factura și data ei, ci le ia de la încasare.
+- **Why:** Chitanța are numerotare proprie, cu aceleași reguli ca facturile. Review-ul de securitate al PR #2 (25.11.2026) a arătat că un UPDATE pe încasare schimba retroactiv suma, factura și data chitanței.
+- **Rejected:** Chitanță editabilă sau ștearsă după emitere; încasare cu chitanță editabilă.
+- **Evidence:** planul „Schema bazei de date”, aprobat 25.11.2026 (A7); review-ul de securitate al PR #2, punctul 3, aprobat 25.11.2026; `V6__payments_receipts.sql`; `ReceiptImmutableIT`, `PaymentReceiptIT`.
 - **Source:** user · confidence high
 - **Confirmed:** 2026-11-25

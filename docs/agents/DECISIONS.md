@@ -35,7 +35,7 @@
 - D-028 · Încasarea e în moneda facturii
 - D-030 · Factura reține utilizatorul care a emis-o
 - D-031 · Precizia valorilor, fără rotunjire tăcută în baza de date
-- D-033 · Chitanța emisă nu se modifică și nu se șterge
+- D-033 · Chitanța emisă și încasarea ei nu se modifică și nu se șterg
 
 ### [Platforma](decisions/platforma.md)
 - D-001 · Servers and databases run in Docker

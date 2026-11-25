@@ -36,6 +36,7 @@
 - Q-033 · Contabilul confirmă regula cursului BNR
 - Q-034 · Motivul de scutire pentru XML
 - Q-037 · Numerele de factură în ordinea cronologică a datei emiterii
+- Q-039 · Contorul inițial al unei serii la deploy (continuarea din SmartBill)
 
 ### [Incasari](questions/incasari.md)
 - Q-012 · Încasări în tranșe
