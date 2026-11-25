@@ -18,6 +18,7 @@
 - **Why:** Codul Java care va veni nu poate ocoli regula; testele rulează pe aceeași bază reală local și în CI.
 - **Example:** `backend/src/main/resources/db/migration/V5__invoices.sql`; `backend/src/test/java/ro/ulbs/p21/db/DbFixtures.java`; `IssuedInvoiceImmutableIT.java`; `NumberingConcurrencyIT.java`.
 - **Source:** agent · confidence medium
+- **Confirmed:** 2026-11-25
 
 ## PATTERN-003 · Tranzacția de emitere: documentul inserat la final, fără I/O, fără savepoint-uri
 - **Status:** candidate
@@ -30,3 +31,4 @@
 - **Why:** Review-ul PR #2 (Performance: lock-ul pe contor e intenționat, dar serializează emiterile; Security 6: excepția din `invoice_is_locked` nu vede subtranzacțiile).
 - **Example:** `backend/src/main/resources/db/migration/V4__series_numbering.sql` (assign_document_number, allocate_number); `V5__invoices.sql` (invoice_is_locked); `NumberingConcurrencyIT.java`.
 - **Source:** agent · confidence medium
+- **Confirmed:** 2026-11-25

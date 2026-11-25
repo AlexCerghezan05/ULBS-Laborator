@@ -31,6 +31,8 @@ services:
       SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/${POSTGRES_DB}
       SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER}
       SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD}
+      # D-039: local aplicația merge pe http://localhost, deci cookie-ul de sesiune fără Secure.
+      P21_COOKIE_SECURE: "false"
       <<: *seed-env
     ports:
       - "127.0.0.1:8081:8080" # D-024: doar local
@@ -70,6 +72,17 @@ services:
       db-test:
         condition: service_healthy
 
+  # D-040: testele frontend-ului (Vitest), fără Node pe host. node_modules stă într-un volum.
+  frontend-test:
+    profiles: [test]
+    image: node:26.13.1-alpine
+    working_dir: /app
+    command: sh -c "npm ci --no-fund --no-audit && npm test"
+    volumes:
+      - ./frontend:/app
+      - frontend-node-modules:/app/node_modules
+
 volumes:
   db-data:
   m2:
+  frontend-node-modules:

@@ -26,3 +26,18 @@
 - **Blocks:** Planul de autentificare (backend).
 - **Who answers:** Alexandru Cerghezan
 - **Source:** macheta DS-p21-login, 25.11.2026
+
+## Q-043 · Dezactivarea unui cont închide sesiunile deschise
+- **Status:** answered
+- **Answer:** Da: la fiecare cerere autentificată se verifică `app_user.active`; dacă e `false`, sesiunea se invalidează și răspunsul e 401 (Alexandru Cerghezan, 25.11.2026). Decizia: D-041.
+- **Context:** Fără verificare, un cont dezactivat de Admin rămâne logat până expiră sesiunea (30 de minute de inactivitate, D-039).
+- **Blocks:** Planul de autentificare.
+- **Who answers:** Alexandru Cerghezan
+- **Source:** planul „Autentificare și autorizare”, 25.11.2026
+
+## Q-045 · Cât așteaptă un login lock-ul pe rândul contului (lock_timeout)
+- **Status:** open
+- **Context:** Login-ul ține lock pe rândul contului cât durează BCrypt (~100 ms), ca încercările simultane să se facă una după alta (PATTERN-006, review-ul PR #3). Fiecare cerere care așteaptă ține o conexiune din pool-ul Hikari (implicit 10): un val de cereri pe un singur cont poate întârzia și login-urile altor utilizatori. De ales dacă e nevoie de un `lock_timeout` (și ce răspuns primește cererea care depășește timpul) sau de o limită a pool-ului ori a cererilor.
+- **Blocks:** nimic acum; riscul e acceptat până la răspuns.
+- **Who answers:** Alexandru Cerghezan
+- **Source:** planul „Login serializat pe cont”, 25.11.2026

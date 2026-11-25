@@ -12,6 +12,10 @@
 - D-035 · Mesajul „Cont dezactivat” doar după date corecte
 - D-036 · Blocarea autentificării după 5 încercări greșite, 15 minute
 - D-037 · Încercările greșite se numără pe cont; blocarea expiră singură
+- D-038 · După blocare, numărătoarea începe de la zero; blocarea nu se prelungește
+- D-039 · Sesiune pe server, în memorie, 30 de minute; cookie HttpOnly, SameSite=Lax; CSRF cu cookie
+- D-041 · Contul dezactivat își pierde sesiunea la următoarea cerere
+- D-042 · O schimbare de rol se aplică la următorul login
 
 ### [Design](decisions/design.md)
 - D-025 · Design tokens și stil UI din DESIGN.md, paletă caldă
@@ -48,7 +52,7 @@
 - D-002 · Stack: Java 21 + Spring Boot, PostgreSQL, React + TypeScript
 - D-003 · O singură firmă furnizor pe instalare
 - D-012 · Roluri: Admin, Operator, Contabil, cu drepturile pe ecrane
-- D-023 · Build și rulare: Maven, testele în profilul `test` din Compose, frontend în nginx
 - D-024 · Securitate de bază: nginx, Docker, CI, fără indexare
 - D-029 · Un utilizator are un singur rol
+- D-040 · Build și rulare: Maven și Vitest în profilul `test` din Compose, frontend în nginx
 

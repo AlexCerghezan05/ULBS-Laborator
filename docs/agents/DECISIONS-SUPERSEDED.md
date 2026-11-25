@@ -13,6 +13,9 @@
 ### [Design](decisions/design.md)
 - D-011 · Design tokens și stil UI din DESIGN.md · _superseded-by D-025_
 
+### [Platforma](decisions/platforma.md)
+- D-023 · Build și rulare: Maven, testele în profilul `test` din Compose, frontend în nginx · _superseded-by D-040_
+
 ---
 
 ## D-004 · Roluri: Admin, Operator, Contabil

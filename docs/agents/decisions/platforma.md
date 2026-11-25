@@ -46,14 +46,13 @@
 - **Confirmed:** 2026-11-19
 
 ## D-023 · Build și rulare: Maven, testele în profilul `test` din Compose, frontend în nginx
-- **Status:** approved
+- **Status:** superseded-by D-040
 - **Date:** 2026-11-19
 - **Rule:** Backend-ul se construiește cu Maven. Testele rulează în profilul `test` din `docker-compose.yml`: un container Maven rulează `mvn -B verify` pe un Postgres separat (`db-test`, date în tmpfs); aceeași comandă local și în CI. Frontend-ul se construiește cu Vite și e servit de nginx, care trimite `/api` spre backend.
 - **Why:** Pe host nu se instalează Java sau Node (D-001); o comandă identică local și în CI, fără acces la socket-ul Docker; nginx seamănă cu ce va rula la deploy.
 - **Rejected:** Gradle; Testcontainers; serverul de dezvoltare Vite în Compose (singur sau ca profil `dev`).
 - **Evidence:** planul „Scheletul proiectului”, aprobat 19.11.2026 (întrebările Build Java, DB în teste, Frontend).
 - **Source:** user · confidence high
-- **Confirmed:** 2026-11-19
 
 ## D-024 · Securitate de bază: nginx, Docker, CI, fără indexare
 - **Status:** approved
@@ -77,5 +76,15 @@
 - **Why:** Admin-ul include deja tot ce poate Operatorul; nu e nevoie de roluri combinate.
 - **Rejected:** Mai multe roluri pe utilizator.
 - **Evidence:** planul „Schema bazei de date”, aprobat 25.11.2026 (A3); `V2__company_users.sql`.
+- **Source:** user · confidence high
+- **Confirmed:** 2026-11-25
+
+## D-040 · Build și rulare: Maven și Vitest în profilul `test` din Compose, frontend în nginx
+- **Status:** approved
+- **Date:** 2026-11-25
+- **Rule:** Backend-ul se construiește cu Maven. Testele rulează în profilul `test` din `docker-compose.yml`: `backend-test` (container Maven) rulează `mvn -B verify` pe un Postgres separat (`db-test`, date în tmpfs); `frontend-test` (container Node) rulează `npm ci` și `vitest run`. Aceleași comenzi local și în CI. Frontend-ul se construiește cu Vite și e servit de nginx, care trimite `/api` spre backend.
+- **Why:** Ca D-023, plus testele de frontend cerute de planul de autentificare (redirectul sigur, D-034), fără Node pe host (D-001).
+- **Rejected:** Gradle; Testcontainers; serverul de dezvoltare Vite în Compose; verificarea frontend-ului doar de mână.
+- **Evidence:** planul „Autentificare și autorizare”, aprobat de Alexandru Cerghezan, 25.11.2026 (D-023 → superseded-by D-040).
 - **Source:** user · confidence high
 - **Confirmed:** 2026-11-25

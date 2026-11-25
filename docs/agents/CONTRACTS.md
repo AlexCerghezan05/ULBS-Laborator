@@ -9,12 +9,27 @@
 <!-- graffino-agentic:end -->
 
 ## Index
+- C-001 · API-ul de autentificare (backend → frontend) · provided
 
 ---
 
 ## Provided
 
-_None yet._
+### C-001 · API-ul de autentificare (backend → frontend)
+- **Status:** approved
+- **Date:** 2026-11-25
+- **Interface:** Aceeași origine, prin nginx (`/api/`). Erorile au corpul `{"error":"<COD>"}`; textul pentru utilizator îl alege frontend-ul după cod (PATTERN-005).
+  - `GET /api/csrf` (public) → 204 și cookie-ul `XSRF-TOKEN` (citibil din JS).
+  - `POST /api/login` (public, cere CSRF) cu `{"username","password"}` → 200 `{"username","fullName","role","companyName"}` (`role`: `ADMIN` | `OPERATOR` | `CONTABIL`; `companyName`: `company.name`, `null` dacă firma nu e completată), cookie `JSESSIONID` nou și `XSRF-TOKEN` nou · 401 `BAD_CREDENTIALS` · 403 `ACCOUNT_DISABLED` (doar cu parola corectă, D-035) · 429 `LOGIN_LOCKED` (D-036–D-038).
+  - `GET /api/me` → 200, aceeași formă ca răspunsul la login (antetul DS-p21-app-shell).
+  - `POST /api/logout` (cere CSRF) → 204; sesiunea invalidată, `JSESSIONID` șters.
+  - `GET /api/health` (public) → 200 `{"status":"UP"}`.
+  - Orice rută protejată: 401 `SESSION_EXPIRED` (cookie de sesiune care nu mai e valid) sau 401 `UNAUTHENTICATED` (fără sesiune, după logout, cont dezactivat: D-041) · 403 `FORBIDDEN` (rol greșit, D-012) · 403 `CSRF` (token CSRF lipsă sau greșit).
+  - CSRF: orice POST/PUT/PATCH/DELETE trimite header-ul `X-XSRF-TOKEN` cu valoarea cookie-ului `XSRF-TOKEN` (D-039).
+- **Consumers:** `frontend/src/api.ts`, `frontend/src/pages/LoginPage.tsx`, `frontend/src/auth.tsx`.
+- **Evidence:** planul „Autentificare și autorizare”, aprobat 25.11.2026; `companyName` cerut de Alexandru Cerghezan pentru antet, 25.11.2026; `backend/src/main/java/ro/ulbs/p21/auth/LoginController.java`, `SecurityConfig.java`; testele din `backend/src/test/java/ro/ulbs/p21/auth/`.
+- **Source:** agent · confidence high
+- **Confirmed:** 2026-11-25
 
 ## Consumed
 
