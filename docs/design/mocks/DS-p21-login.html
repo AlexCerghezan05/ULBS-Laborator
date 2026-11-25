@@ -1,0 +1,290 @@
+<!doctype html>
+<html lang="ro">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Autentificare</title>
+<!-- DS-p21-login · status: approved (25.11.2026) · machetă, nu cod de producție.
+     Conturile le creează Admin-ul (D-012): fără înregistrare, fără „am uitat parola”.
+     Câmpul de login este app_user.username (V2__company_users.sql); contul inactiv: app_user.active = false.
+     Doar tokens din docs/design/DESIGN.md (D-025). Inter vine aici din Google Fonts;
+     în aplicație e self-hosted. -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ---------- Tokens (DESIGN.md → Tokens) ---------- */
+:root {
+  --color-bg:#FAF6F1; --color-surface:#FFFFFF; --color-surface-muted:#F5EFE8;
+  --color-border:#E6DCD1; --color-border-strong:#958678;
+  --color-text:#2D2420; --color-text-muted:#6B5D53;
+  --color-accent:#6B4A3A; --color-accent-hover:#563A2D; --color-on-accent:#FFFFFF; --color-accent-subtle:#F3ECE6;
+  --color-success:#1E7A46; --color-success-bg:#E6F4EC;
+  --color-danger:#B42318; --color-danger-bg:#FDECEA;
+  --color-warning:#8A5A00; --color-warning-bg:#FFF4E0;
+  --color-neutral:#4B5563; --color-neutral-bg:#EEF0F2;
+  --shadow-overlay:0 4px 12px rgb(0 0 0 / 0.12);
+
+  --font-ui: Inter, system-ui, "Segoe UI", Roboto, Arial, sans-serif;
+  --space-1:4px; --space-2:8px; --space-3:12px; --space-4:16px; --space-5:24px; --space-6:32px; --space-7:48px;
+  --radius-sm:4px; --radius-md:6px; --border-width:1px; --opacity-disabled:0.55;
+  --duration-fast:120ms; --duration-base:200ms; --easing:ease-out;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --color-bg:#16120F; --color-surface:#1E1915; --color-surface-muted:#27211C;
+    --color-border:#3A312A; --color-border-strong:#796B60;
+    --color-text:#F0E9E2; --color-text-muted:#B3A69B;
+    --color-accent:#CFAE94; --color-accent-hover:#DEC3AD; --color-on-accent:#16120F; --color-accent-subtle:#2E241D;
+    --color-success:#5CC98A; --color-success-bg:#12291C;
+    --color-danger:#F28B82; --color-danger-bg:#3A1715;
+    --color-warning:#E8B04B; --color-warning-bg:#33270F;
+    --color-neutral:#B0B8C1; --color-neutral-bg:#232A31;
+    --shadow-overlay:0 4px 12px rgb(0 0 0 / 0.5);
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --color-bg:#16120F; --color-surface:#1E1915; --color-surface-muted:#27211C;
+  --color-border:#3A312A; --color-border-strong:#796B60;
+  --color-text:#F0E9E2; --color-text-muted:#B3A69B;
+  --color-accent:#CFAE94; --color-accent-hover:#DEC3AD; --color-on-accent:#16120F; --color-accent-subtle:#2E241D;
+  --color-success:#5CC98A; --color-success-bg:#12291C;
+  --color-danger:#F28B82; --color-danger-bg:#3A1715;
+  --color-warning:#E8B04B; --color-warning-bg:#33270F;
+  --color-neutral:#B0B8C1; --color-neutral-bg:#232A31;
+  --shadow-overlay:0 4px 12px rgb(0 0 0 / 0.5);
+  color-scheme: dark;
+}
+@media (prefers-reduced-motion: reduce) { :root { --duration-fast:0ms; --duration-base:0ms; } }
+
+/* ---------- Base ---------- */
+* { box-sizing: border-box; }
+html, body { margin:0; }
+body { background:var(--color-bg); color:var(--color-text); font-family:var(--font-ui);
+  font-size:14px; line-height:20px; -webkit-font-smoothing:antialiased; }
+h1 { font-size:20px; line-height:28px; font-weight:600; margin:0; }
+h2 { font-size:16px; line-height:24px; font-weight:600; margin:0; }
+.muted { color:var(--color-text-muted); }
+:focus-visible { outline:2px solid var(--color-accent); outline-offset:2px; }
+
+/* ---------- Mock chrome (nu face parte din ecran) ---------- */
+.mockbar { position:sticky; top:0; z-index:10; background:var(--color-surface); border-bottom:var(--border-width) solid var(--color-border);
+  padding:var(--space-2) var(--space-4); display:flex; flex-wrap:wrap; gap:var(--space-2) var(--space-4); align-items:center; }
+.mockbar .tag { font-size:12px; line-height:16px; font-weight:500; color:var(--color-neutral); background:var(--color-neutral-bg); border-radius:var(--radius-sm); padding:2px var(--space-2); }
+.seg { display:inline-flex; flex-wrap:wrap; gap:var(--space-1); }
+.seg button { font:inherit; font-size:13px; line-height:18px; min-height:28px; padding:var(--space-1) var(--space-2); border-radius:var(--radius-sm);
+  border:var(--border-width) solid var(--color-border); background:var(--color-surface); color:var(--color-text); cursor:pointer; }
+.seg button[aria-pressed="true"] { background:var(--color-accent-subtle); border-color:var(--color-accent); font-weight:500; }
+.mocklabel { font-size:12px; line-height:16px; font-weight:500; color:var(--color-text-muted); }
+.stage { padding:var(--space-5) var(--space-4) var(--space-7); }
+.frame { container-type:inline-size; margin:0 auto; max-width:1200px; border:var(--border-width) dashed var(--color-border); }
+.frame.phone { max-width:360px; border-color:var(--color-border-strong); }
+
+/* ---------- Ecran ---------- */
+.screen { background:var(--color-bg); min-height:560px; display:flex; align-items:center; justify-content:center; padding:var(--space-7) var(--space-4); }
+.card { width:100%; max-width:360px; background:var(--color-surface); border:var(--border-width) solid var(--color-border); border-radius:var(--radius-md);
+  padding:var(--space-6) var(--space-5); display:flex; flex-direction:column; gap:var(--space-5); }
+form { display:flex; flex-direction:column; gap:var(--space-4); margin:0; }
+.field { display:flex; flex-direction:column; gap:var(--space-1); }
+.field > label { font-size:13px; line-height:18px; font-weight:500; }
+.input { font:inherit; font-size:14px; line-height:20px; color:var(--color-text); background:var(--color-surface);
+  border:var(--border-width) solid var(--color-border-strong); border-radius:var(--radius-sm); min-height:32px; padding:5px var(--space-2); width:100%;
+  transition:border-color var(--duration-fast) var(--easing); }
+.input:disabled { background:var(--color-surface-muted); cursor:not-allowed; }
+.input.has-error { border-color:var(--color-danger); }
+.err { display:flex; gap:var(--space-1); align-items:flex-start; font-size:13px; line-height:18px; color:var(--color-danger); margin:0; }
+.err svg { flex:none; margin-top:1px; }
+.pw { position:relative; }
+.pw .input { padding-right:40px; }
+.pw .toggle { position:absolute; right:var(--space-1); top:50%; transform:translateY(-50%); width:24px; height:24px; padding:0;
+  display:inline-flex; align-items:center; justify-content:center; border:0; border-radius:var(--radius-sm);
+  background:transparent; color:var(--color-text-muted); cursor:pointer; transition:background var(--duration-fast) var(--easing); }
+.pw .toggle:hover { background:var(--color-accent-subtle); color:var(--color-text); }
+.pw .toggle:disabled { opacity:var(--opacity-disabled); cursor:not-allowed; }
+.btn { font:inherit; font-size:14px; line-height:20px; font-weight:500; min-height:32px; padding:5px var(--space-3); border-radius:var(--radius-sm);
+  border:var(--border-width) solid var(--color-accent); background:var(--color-accent); color:var(--color-on-accent); cursor:pointer; width:100%;
+  display:inline-flex; align-items:center; justify-content:center; gap:var(--space-2); transition:background var(--duration-fast) var(--easing); }
+.btn:hover { background:var(--color-accent-hover); border-color:var(--color-accent-hover); }
+.btn:disabled { opacity:var(--opacity-disabled); cursor:not-allowed; }
+.btn:disabled:hover { background:var(--color-accent); border-color:var(--color-accent); }
+.banner { display:flex; gap:var(--space-3); align-items:flex-start; border-radius:var(--radius-md); padding:var(--space-3) var(--space-4); border:var(--border-width) solid; }
+.banner > svg { flex:none; margin-top:2px; }
+.banner p { margin:0; }
+.banner strong { display:block; font-weight:600; }
+.banner.danger { background:var(--color-danger-bg); border-color:var(--color-danger); }
+.banner.danger > svg { color:var(--color-danger); }
+.banner.warning { background:var(--color-warning-bg); border-color:var(--color-warning); }
+.banner.warning > svg { color:var(--color-warning); }
+.foot { margin:0; font-size:13px; line-height:18px; color:var(--color-text-muted); }
+
+/* Succes: locul ecranului următor (mock) */
+.redirect { width:100%; max-width:480px; text-align:center; display:flex; flex-direction:column; gap:var(--space-2); align-items:center;
+  border:var(--border-width) dashed var(--color-border-strong); border-radius:var(--radius-md); padding:var(--space-6) var(--space-5); background:var(--color-surface); }
+.redirect code { font-size:13px; }
+
+/* Notes */
+.notes { margin:var(--space-5) auto 0; max-width:1200px; background:var(--color-surface); border:var(--border-width) solid var(--color-border); border-radius:var(--radius-md); padding:var(--space-4); }
+.notes ul { margin:var(--space-2) 0 0; padding-left:var(--space-5); }
+.notes li { margin-bottom:var(--space-1); overflow-wrap:anywhere; }
+
+/* ---------- Telefon (sm, 360–767 px) ---------- */
+@container (max-width: 767px) {
+  .screen { align-items:flex-start; padding:var(--space-6) var(--space-4); min-height:520px; }
+  .card { padding:var(--space-5) var(--space-4); }
+  .input, .btn { min-height:44px; }
+  .pw .toggle { width:44px; height:44px; right:0; }
+  .pw .input { padding-right:48px; }
+}
+</style>
+</head>
+<body>
+
+<div class="mockbar" role="region" aria-label="Comenzi machetă">
+  <span class="tag">Machetă · DS-p21-login · approved</span>
+  <span class="mocklabel" id="lbl-state">Stare</span>
+  <div class="seg" id="seg-state" role="group" aria-labelledby="lbl-state"></div>
+  <span class="mocklabel" id="lbl-theme">Temă</span>
+  <div class="seg" id="seg-theme" role="group" aria-labelledby="lbl-theme"></div>
+  <span class="mocklabel" id="lbl-size">Lățime</span>
+  <div class="seg" id="seg-size" role="group" aria-labelledby="lbl-size"></div>
+</div>
+
+<div class="stage">
+  <div class="frame" id="frame"><div id="app"></div></div>
+
+  <section class="notes" aria-labelledby="notes-h">
+    <h2 id="notes-h">Note pentru confirmare (nu fac parte din ecran)</h2>
+    <ul>
+      <li>Un singur ecran, fără meniu: titlul „Autentificare”, două câmpuri și butonul „Autentificare”. Fără înregistrare și fără „am uitat parola”: conturile le creează Admin-ul (D-012). Textul de jos trimite la administrator.</li>
+      <li>Câmpul de login este <strong>numele de utilizator</strong> (<code>app_user.username</code> din <code>V2__company_users.sql</code>). Registry-ul spunea „email”; l-am corectat după cod.</li>
+      <li><strong>Afișarea parolei</strong>: butonul-icon din câmp are numele accesibil „Afișează parola” / „Ascunde parola” și <code>aria-pressed</code>. Se poate apăsa în machetă. Pe telefon zona lui e de 44 × 44 px.</li>
+      <li><strong>Gol</strong>: câmpurile goale, focus pe numele de utilizator. Câmpurile au <code>autocomplete="username"</code> / <code>"current-password"</code>.</li>
+      <li><strong>Câmpuri goale</strong>: la „Autentificare” cu un câmp gol, cererea nu pleacă; sub fiecare câmp gol apare mesajul („Introduceți numele de utilizator.” / „Introduceți parola.”), cu icon, chenarul câmpului devine roșu, iar focus-ul trece pe primul câmp gol.</li>
+      <li><strong>Încărcare</strong>: butonul devine „Se autentifică…” (fără animație: nu există un token de durată pentru ea), câmpurile și butonul sunt dezactivate până vine răspunsul.</li>
+      <li><strong>Date greșite</strong>: un singur mesaj, deasupra formularului, care nu spune care câmp e greșit; ambele câmpuri au chenarul de eroare. Numele de utilizator rămâne completat, parola se golește și focus-ul trece pe ea.</li>
+      <li><strong>Prea multe încercări</strong>: după 5 încercări greșite, autentificarea e blocată 15 minute (D-036, propusă). Mesajul apare la orice încercare din perioada blocării, chiar cu parola corectă. Pe ce se numără încercările (cont, adresă IP): Q-042.</li>
+      <li><strong>Cont dezactivat</strong> (<code>active = false</code>): mesaj separat, cu ce e de făcut (contactați administratorul). Apare doar după nume de utilizator și parolă corecte; altfel, mesajul generic (Q-041, D-035 propusă).</li>
+      <li><strong>Sesiune expirată</strong>: după redirect, mesajul de avertizare apare deasupra formularului, câmpurile goale. După login, utilizatorul revine la pagina de unde a plecat (Q-040, D-034 propusă).</li>
+      <li><strong>Succes</strong>: redirect la pagina de unde a plecat utilizatorul, doar dacă e o cale internă (începe cu „/”, nu cu „//”, nu e URL extern); altfel la lista de facturi (DS-p21-invoice-list, încă fără machetă) (D-034, propusă); ecranul de login nu arată un mesaj propriu. În machetă, chenarul punctat ține locul listei.</li>
+      <li>Culoarea nu poartă singură sensul: fiecare mesaj are icon și text. Mesajele au <code>role="alert"</code> (eroare) sau <code>role="status"</code> (sesiune expirată).</li>
+    </ul>
+  </section>
+</div>
+
+<script>
+const I = {
+  eye:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>',
+  eyeOff:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3l18 18"/><path d="M10.6 5.1A10.8 10.8 0 0 1 12 5c6.5 0 10 7 10 7a17 17 0 0 1-3.2 4.1"/><path d="M6.6 6.6C3.7 8.4 2 12 2 12s3.5 7 10 7c1.9 0 3.5-.6 4.9-1.4"/><path d="M9.9 9.9a3 3 0 0 0 4.2 4.2"/></svg>',
+  err:'<svg width="20" height="20" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><circle cx="8" cy="8" r="6.5"/><path d="M8 4.5v4"/><path d="M8 11.2v.1"/></svg>',
+  lock:'<svg width="20" height="20" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="7" width="10" height="7" rx="1.5"/><path d="M5.5 7V5a2.5 2.5 0 0 1 5 0v2"/></svg>',
+  errSm:'<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><circle cx="8" cy="8" r="6.5"/><path d="M8 4.5v4"/><path d="M8 11.2v.1"/></svg>',
+  clock:'<svg width="20" height="20" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><circle cx="8" cy="8" r="6.5"/><path d="M8 4.5V8l2.5 1.5"/></svg>'
+};
+
+const STATES = {
+  empty:    { label:'Gol' },
+  required: { label:'Câmpuri goale' },
+  loading:  { label:'Încărcare' },
+  error:    { label:'Date greșite' },
+  locked:   { label:'Prea multe încercări' },
+  disabled: { label:'Cont dezactivat' },
+  expired:  { label:'Sesiune expirată' },
+  success:  { label:'Succes' }
+};
+
+let showPw = false;
+
+function banner(key) {
+  if (key === 'error') return `<div class="banner danger" role="alert">${I.err}<p>
+      <strong>Numele de utilizator sau parola nu sunt corecte.</strong>
+      Verificați-le și încercați din nou.</p></div>`;
+  if (key === 'locked') return `<div class="banner danger" role="alert">${I.clock}<p>
+      <strong>Prea multe încercări greșite.</strong>
+      Autentificarea este blocată 15 minute. Încercați din nou după aceea sau contactați administratorul aplicației.</p></div>`;
+  if (key === 'disabled') return `<div class="banner danger" role="alert">${I.lock}<p>
+      <strong>Contul este dezactivat.</strong>
+      Pentru reactivare, contactați administratorul aplicației.</p></div>`;
+  if (key === 'expired') return `<div class="banner warning" role="status">${I.clock}<p>
+      <strong>Sesiunea a expirat.</strong>
+      Autentificați-vă din nou pentru a continua.</p></div>`;
+  return '';
+}
+
+function form(key) {
+  const busy = key === 'loading';
+  const filled = key === 'loading' || key === 'error' || key === 'disabled' || key === 'locked';
+  const user = filled ? 'operator' : '';
+  const pw = (key === 'loading' || key === 'disabled') ? 'parola-exemplu' : '';
+  const errCls = key === 'error' || key === 'required' ? ' has-error' : '';
+  const inv = key === 'error' || key === 'required' ? ' aria-invalid="true"' : '';
+  const dis = busy ? ' disabled' : '';
+  const descr = (key === 'error' || key === 'disabled' || key === 'expired' || key === 'locked') ? ' aria-describedby="login-msg"' : '';
+  const req = key === 'required';
+  return `
+  <form novalidate onsubmit="return false"${descr}>
+    <div class="field">
+      <label for="username">Nume de utilizator</label>
+      <input class="input${errCls}" id="username" name="username" type="text" autocomplete="username"
+        autocapitalize="none" spellcheck="false" required value="${user}"${dis}${inv}${req?' aria-describedby="username-err"':''}>
+      ${req ? `<p class="err" id="username-err">${I.errSm}Introduceți numele de utilizator.</p>` : ''}
+    </div>
+    <div class="field">
+      <label for="password">Parolă</label>
+      <div class="pw">
+        <input class="input${errCls}" id="password" name="password" type="${showPw?'text':'password'}" autocomplete="current-password"
+          required value="${pw}"${dis}${inv}${req?' aria-describedby="password-err"':''}>
+        <button type="button" class="toggle" id="pw-toggle" aria-controls="password" aria-pressed="${showPw}"
+          aria-label="${showPw?'Ascunde parola':'Afișează parola'}"${dis}>${showPw?I.eyeOff:I.eye}</button>
+      </div>
+      ${req ? `<p class="err" id="password-err">${I.errSm}Introduceți parola.</p>` : ''}
+    </div>
+    <button type="submit" class="btn"${dis}${busy?' aria-busy="true"':''}>
+      ${busy ? 'Se autentifică…' : 'Autentificare'}
+    </button>
+  </form>`;
+}
+
+function render(key) {
+  const app = document.getElementById('app');
+  if (key === 'success') {
+    app.innerHTML = `<main class="screen"><div class="redirect" role="status">
+      <h2>Lista de facturi</h2>
+      <p class="muted" style="margin:0">Succes: redirect la pagina de unde a plecat utilizatorul, dacă e o cale internă; altfel la <code>DS-p21-invoice-list</code> (fără machetă încă).</p></div></main>`;
+    return;
+  }
+  const b = banner(key);
+  app.innerHTML = `<main class="screen"><div class="card">
+    <h1>Autentificare</h1>
+    ${b ? b.replace('<div class="banner', '<div id="login-msg" class="banner') : ''}
+    ${form(key)}
+    <p class="foot">Contul îl creează administratorul aplicației. Dacă nu aveți cont sau ați uitat parola, contactați-l.</p>
+  </div></main>`;
+  const t = document.getElementById('pw-toggle');
+  t.onclick = () => { showPw = !showPw; const v = document.getElementById('password').value; const u = document.getElementById('username').value;
+    render(current); document.getElementById('password').value = v; document.getElementById('username').value = u; document.getElementById('pw-toggle').focus(); };
+  if (key === 'empty' || key === 'expired' || key === 'required') document.getElementById('username').focus({ preventScroll:true });
+  if (key === 'error') document.getElementById('password').focus({ preventScroll:true });
+}
+
+/* Mock controls */
+function seg(id, items, cur, onPick) {
+  const el = document.getElementById(id);
+  el.innerHTML = items.map(([k,l]) => `<button type="button" data-k="${k}" aria-pressed="${k===cur}">${l}</button>`).join('');
+  el.onclick = e => { const b = e.target.closest('button'); if (!b) return;
+    el.querySelectorAll('button').forEach(x => x.setAttribute('aria-pressed', x === b)); onPick(b.dataset.k); };
+}
+const params = new URLSearchParams(location.search);
+let current = STATES[params.get('state')] ? params.get('state') : 'empty';
+let theme = ['light','dark'].includes(params.get('theme')) ? params.get('theme') : 'system';
+let size  = params.get('size') === 'phone' ? 'phone' : 'desktop';
+const applyTheme = t => { t === 'system' ? document.documentElement.removeAttribute('data-theme') : document.documentElement.setAttribute('data-theme', t); };
+const applySize = z => document.getElementById('frame').classList.toggle('phone', z === 'phone');
+seg('seg-state', Object.entries(STATES).map(([k,v]) => [k, v.label]), current, k => { current = k; showPw = false; render(k); });
+seg('seg-theme', [['system','Sistem'],['light','Light'],['dark','Dark']], theme, applyTheme);
+seg('seg-size', [['desktop','Desktop'],['phone','Telefon 360 px']], size, applySize);
+applyTheme(theme); applySize(size); render(current);
+</script>
+</body>
+</html>
