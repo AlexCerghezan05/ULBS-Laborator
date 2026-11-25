@@ -46,7 +46,13 @@ class LoginIT {
         MockHttpSession before = new MockHttpSession();
         String idBefore = before.getId();
 
+        // Ca browserul: cookie-ul trimite id-ul sesiunii existente (fără el, MockMvc o vede ca nevalidă).
         MvcResult result = mvc.perform(post("/api/login").with(csrf()).session(before)
+                        .with(r -> {
+                            r.setRequestedSessionId(idBefore);
+                            r.setRequestedSessionIdValid(true);
+                            return r;
+                        })
                         .contentType("application/json").content(AuthFixtures.body(username, PASSWORD)))
                 .andExpect(status().isOk())
                 .andExpect(content().json("{\"username\":\"" + username + "\",\"fullName\":\"Test OPERATOR\",\"role\":\"OPERATOR\"}", true))

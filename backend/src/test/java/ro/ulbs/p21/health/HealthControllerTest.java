@@ -7,13 +7,22 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
+import org.springframework.context.annotation.Import;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
+import ro.ulbs.p21.auth.AppUserRepository;
+import ro.ulbs.p21.auth.SecurityConfig;
 
-@WebMvcTest
+/** Cu regulile de securitate reale: /api/health e public (C-001). */
+@WebMvcTest(HealthController.class)
+@Import(SecurityConfig.class)
 class HealthControllerTest {
 
     @Autowired
     private MockMvc mvc;
+
+    @MockitoBean
+    private AppUserRepository users;
 
     @Test
     void healthRespondsOkWithStatusUp() throws Exception {

@@ -94,7 +94,9 @@ class SessionCookieIT {
 
         HttpResponse<String> logout = send("POST", "/api/logout", null, "Cookie", cookies, "X-XSRF-TOKEN", newXsrf);
         assertThat(logout.statusCode()).isEqualTo(204);
-        assertThat(setCookie(logout, "JSESSIONID").orElseThrow()).containsIgnoringCase("Max-Age=0");
+        // Cookie-ul de sesiune e șters: valoare goală și expirat (Tomcat folosește Expires în 1970).
+        assertThat(setCookie(logout, "JSESSIONID").orElseThrow())
+                .matches("(?i)JSESSIONID=;.*(Max-Age=0|Expires=Thu, 01 Jan 1970).*");
 
         HttpResponse<String> stale = send("GET", "/api/me", null, "Cookie", "JSESSIONID=" + sessionId);
         assertThat(stale.statusCode()).isEqualTo(401);
