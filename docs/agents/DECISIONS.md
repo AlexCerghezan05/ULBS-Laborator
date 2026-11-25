@@ -8,9 +8,10 @@
 
 ## Index
 ### [Autentificare](decisions/autentificare.md)
-- D-034 · După login, revenire la pagina internă de unde a plecat utilizatorul · _proposed_
-- D-035 · Mesajul „Cont dezactivat” doar după date corecte · _proposed_
-- D-036 · Blocarea autentificării după 5 încercări greșite, 15 minute · _proposed_
+- D-034 · După login, revenire la pagina internă de unde a plecat utilizatorul
+- D-035 · Mesajul „Cont dezactivat” doar după date corecte
+- D-036 · Blocarea autentificării după 5 încercări greșite, 15 minute
+- D-037 · Încercările greșite se numără pe cont; blocarea expiră singură
 
 ### [Design](decisions/design.md)
 - D-025 · Design tokens și stil UI din DESIGN.md, paletă caldă
