@@ -5,12 +5,12 @@
 ## D-005 · Serii multiple configurabile, numerotare fără goluri
 - **Status:** approved
 - **Date:** 2026-11-19
-- **Rule:** Admin-ul configurează serii; fiecare are tipul de document (factură, proformă, chitanță) și formatul de număr. Seed: seria `Aa`. Storno-ul nu are serie proprie: ia mereu următorul număr din seria facturii originale. Numărul este secvențial, fără goluri și fără duplicate sub emiteri simultane. Proforma nu consumă număr din seria de facturi. Resetarea anuală și formatul după 9999 așteaptă Q-008.
-- **Why:** Fișa (twist) cere numerotare sigură sub concurență și proforme fără număr de factură; clientul folosește seria `Aa` și stornează pe aceeași serie, deci un tip de serie „storno” nu ar fi folosit (Q-028).
-- **Rejected:** Doar seria `Aa` fixă, cu o serie de proforme separată și fixă; tipul de serie „storno”, obligatoriu sau opțional.
-- **Evidence:** interviul de scope, 19.11.2026 (întrebarea 2); INTERVIEW.md; docs/brief.md; răspunsul la Q-028, 19.11.2026.
+- **Rule:** Admin-ul configurează serii; fiecare are tipul de document (factură, proformă, chitanță) și formatul de număr. Seed: seria `Aa`. Storno-ul nu are serie proprie: ia mereu următorul număr din seria facturii originale. Numărul este secvențial, fără goluri și fără duplicate sub emiteri simultane. Proforma nu consumă număr din seria de facturi. Numărul se resetează la 1 la începutul fiecărui an, pe fiecare serie; anul vine din data emiterii, iar unicitatea e pe (serie, an, număr). Formatul după 9999 așteaptă Q-008.
+- **Why:** Fișa (twist) cere numerotare sigură sub concurență și proforme fără număr de factură; clientul folosește seria `Aa` și stornează pe aceeași serie, deci un tip de serie „storno” nu ar fi folosit (Q-028). Clientul resetează numerele anual (INTERVIEW.md); userul a confirmat resetarea la planul schemei, 25.11.2026.
+- **Rejected:** Doar seria `Aa` fixă, cu o serie de proforme separată și fixă; tipul de serie „storno”, obligatoriu sau opțional; un singur contor per serie, fără an.
+- **Evidence:** interviul de scope, 19.11.2026 (întrebarea 2); INTERVIEW.md; docs/brief.md; răspunsul la Q-028, 19.11.2026; planul „Schema bazei de date”, aprobat 25.11.2026; `backend/src/main/resources/db/migration/V4__series_numbering.sql`.
 - **Source:** user · confidence high
-- **Confirmed:** 2026-11-19
+- **Confirmed:** 2026-11-25
 
 ## D-006 · Toate regimurile de TVA, configurabile; facturi de test separate
 - **Status:** approved
@@ -129,5 +129,55 @@
 - **Why:** Clientul a refuzat să dea alte facturi în afară de S1 și nu folosește proforme; profesorul a confirmat pe 25.11.2026 că o singură factură reală e suficientă (Q-018, Q-006).
 - **Rejected:** Cinci facturi reale, cum cere fișa.
 - **Evidence:** răspunsurile la Q-018 și Q-006, 25.11.2026; INTERVIEW.md (follow-up 25.11.2026); SAMPLES.md.
+- **Source:** user · confidence high
+- **Confirmed:** 2026-11-25
+
+## D-027 · Factura copiază la emitere datele clientului, ale furnizorului, totalurile și mențiunile
+- **Status:** approved
+- **Date:** 2026-11-25
+- **Rule:** La emitere, factura (și storno-ul, proforma) primește o copie a datelor clientului (tip, denumire, CIF, Reg. com., CNP, adresă, oraș, județ) și ale furnizorului (denumire, CIF, Reg. com., adresă, oraș, județ, IBAN, bancă), totalurile în monedă și în RON, TVA-ul pe cote (`invoice_vat_summary`) și mențiunile legale (`invoice_legal_note`). Liniile copiază denumirea, U.M., prețul și cota. O editare ulterioară a clientului, a firmei sau a catalogului nu schimbă factura.
+- **Why:** Factura emisă nu se mai modifică (CONTEXT.md „Factură emisă”); PDF-ul și XML-ul trebuie să arate datele de la emitere.
+- **Rejected:** Factura citește datele curente ale clientului și ale firmei prin FK.
+- **Evidence:** planul „Schema bazei de date”, aprobat 25.11.2026 (A1); `V5__invoices.sql`.
+- **Source:** user · confidence high
+- **Confirmed:** 2026-11-25
+
+## D-028 · Încasarea e în moneda facturii
+- **Status:** approved
+- **Date:** 2026-11-25
+- **Rule:** Suma unei încasări (`payment.amount`) e în moneda facturii pe care o încasează. Nu există curs pe încasare.
+- **Why:** Clientul real facturează doar în RON (Q-009); facturile în EUR/USD sunt facturi de test (D-008).
+- **Rejected:** Încasare într-o altă monedă decât factura, cu curs propriu.
+- **Evidence:** planul „Schema bazei de date”, aprobat 25.11.2026 (A2); `V6__payments_receipts.sql`.
+- **Source:** user · confidence high
+- **Confirmed:** 2026-11-25
+
+## D-030 · Factura reține utilizatorul care a emis-o
+- **Status:** approved
+- **Date:** 2026-11-25
+- **Rule:** Fiecare factură, storno sau proformă are `issued_by`, utilizatorul care a emis-o (obligatoriu). Pe S1 (seed) este Operatorul de test „Ion Ionescu”, numele anonimizat de la „Întocmit de”.
+- **Why:** PDF-ul SmartBill al clientului (S1) are „Întocmit de”.
+- **Rejected:** none recorded.
+- **Evidence:** planul „Schema bazei de date”, aprobat 25.11.2026 (A4); `samples/factura_Aa0060_anonimizata.pdf`.
+- **Source:** user · confidence high
+- **Confirmed:** 2026-11-25
+
+## D-031 · Precizia valorilor, fără rotunjire tăcută în baza de date
+- **Status:** approved
+- **Date:** 2026-11-25
+- **Rule:** Valorile zecimale sunt `numeric` fără scale fix, cu `CHECK (scale(x) <= n)`: sumele de bani cel mult 2 zecimale, cantitatea și prețul unitar cel mult 4, cursul BNR cel mult 4, discountul cel mult 2. Baza respinge o valoare cu mai multe zecimale în loc s-o rotunjească; rotunjirea se face explicit în cod (D-007). Nicio coloană `real` sau `double precision`. Excepție: `vat_rate.percent` (V1, `numeric(5,2)`).
+- **Why:** `numeric(15,2)` ar rotunji în tăcere o valoare cu 3 zecimale și ar ascunde o rotunjire uitată în cod.
+- **Rejected:** `numeric(p,s)` cu scale fix.
+- **Evidence:** planul „Schema bazei de date”, aprobat 25.11.2026 (A5 și ajustarea 2); `MoneyColumnsIT`.
+- **Source:** user · confidence high
+- **Confirmed:** 2026-11-25
+
+## D-033 · Chitanța emisă nu se modifică și nu se șterge
+- **Status:** approved
+- **Date:** 2026-11-25
+- **Rule:** Ca factura emisă, chitanța nu se mai modifică și nu se șterge (trigger pe `receipt`), ca numerotarea ei să rămână fără goluri (D-005).
+- **Why:** Chitanța are numerotare proprie, cu aceleași reguli ca facturile.
+- **Rejected:** Chitanță editabilă sau ștearsă după emitere.
+- **Evidence:** planul „Schema bazei de date”, aprobat 25.11.2026 (A7); `V6__payments_receipts.sql`; `ReceiptImmutableIT`.
 - **Source:** user · confidence high
 - **Confirmed:** 2026-11-25

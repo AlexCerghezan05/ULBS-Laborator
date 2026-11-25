@@ -15,6 +15,7 @@
 - D-010 · Doar clienți din România
 - D-019 · Persoana fizică se identifică prin CNP, opțional
 - D-022 · Email opțional la client; fără email, fără reminder
+- D-032 · Adresa are județul obligatoriu, în cod ISO
 
 ### [Facturare](decisions/facturare.md)
 - D-005 · Serii multiple configurabile, numerotare fără goluri
@@ -30,6 +31,11 @@
 - D-020 · Cotele de TVA într-un tabel populat prin migrare
 - D-021 · Linia de factură din catalog, cu text liber permis
 - D-026 · O singură factură reală (S1); restul cazurilor cu facturi de test
+- D-027 · Factura copiază la emitere datele clientului, ale furnizorului, totalurile și mențiunile
+- D-028 · Încasarea e în moneda facturii
+- D-030 · Factura reține utilizatorul care a emis-o
+- D-031 · Precizia valorilor, fără rotunjire tăcută în baza de date
+- D-033 · Chitanța emisă nu se modifică și nu se șterge
 
 ### [Platforma](decisions/platforma.md)
 - D-001 · Servers and databases run in Docker
@@ -38,4 +44,5 @@
 - D-012 · Roluri: Admin, Operator, Contabil, cu drepturile pe ecrane
 - D-023 · Build și rulare: Maven, testele în profilul `test` din Compose, frontend în nginx
 - D-024 · Securitate de bază: nginx, Docker, CI, fără indexare
+- D-029 · Un utilizator are un singur rol
 

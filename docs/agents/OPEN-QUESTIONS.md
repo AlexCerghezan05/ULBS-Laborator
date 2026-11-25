@@ -35,12 +35,14 @@
 - Q-031 · Ce curs BNR folosește factura · _answered_
 - Q-033 · Contabilul confirmă regula cursului BNR
 - Q-034 · Motivul de scutire pentru XML
+- Q-037 · Numerele de factură în ordinea cronologică a datei emiterii
 
 ### [Incasari](questions/incasari.md)
 - Q-012 · Încasări în tranșe
 - Q-016 · Chitanțele în aplicație · _answered_
 - Q-019 · Reminder-e de plată
 - Q-032 · Emailul clientului pentru reminder-e · _answered_
+- Q-036 · Încasări peste totalul facturii
 
 ### [Proiect](questions/proiect.md)
 - Q-001 · What will this repo hold, and in which stack? · _answered_

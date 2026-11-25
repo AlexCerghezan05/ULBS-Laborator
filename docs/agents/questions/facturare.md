@@ -16,11 +16,12 @@
 - **Blocks:** Calculul TVA și testele de rotunjire.
 - **Who answers:** Alexandru Cerghezan (răspunsul vine de la client, Aura Logistic SRL)
 - **Source:** interviul din 16.11.2026 și factura Aa0060 (INTERVIEW.md, SAMPLES.md)
+- **Confirmed:** 2026-11-25
 
 ## Q-008 · Formatul numărului
 - **Status:** open
-- **Context:** Ce se întâmplă după factura 99 (`Aa0100`?) și după 9999? Seria `Aa` rămâne aceeași în fiecare an: cum se deosebește `Aa0001` din 2025 de `Aa0001` din 2026?
-- **Blocks:** Formatul numărului de factură și resetarea anuală.
+- **Context:** Ce se întâmplă după 9999 (5 cifre? altă serie?). Resetarea anuală e stabilită (D-005, 25.11.2026): numărul pornește de la 1 în fiecare an, pe serie, iar anul din data emiterii deosebește `Aa0001` din 2025 de `Aa0001` din 2026. Rămâne deschis doar formatul după 9999.
+- **Blocks:** Formatul numărului după 9999 (`series.number_width`, afișarea).
 - **Who answers:** Alexandru Cerghezan (răspunsul vine de la client, Aura Logistic SRL)
 - **Source:** interviul din 16.11.2026 și factura Aa0060 (INTERVIEW.md, SAMPLES.md)
 
@@ -37,6 +38,7 @@
 - **Blocks:** Storno parțial.
 - **Who answers:** Alexandru Cerghezan (răspunsul vine de la client, Aura Logistic SRL)
 - **Source:** interviul din 16.11.2026 și factura Aa0060 (INTERVIEW.md, SAMPLES.md)
+- **Confirmed:** 2026-11-25
 
 ## Q-011 · Ce înseamnă o „bucată”
 - **Status:** open
@@ -44,6 +46,7 @@
 - **Blocks:** Liniile de factură și U.M. implicită.
 - **Who answers:** Alexandru Cerghezan (răspunsul vine de la client, Aura Logistic SRL)
 - **Source:** interviul din 16.11.2026 și factura Aa0060 (INTERVIEW.md, SAMPLES.md)
+- **Confirmed:** 2026-11-25
 
 ## Q-015 · U.M. „1” vs „buc”
 - **Status:** open
@@ -51,6 +54,7 @@
 - **Blocks:** U.M. implicită.
 - **Who answers:** Alexandru Cerghezan (răspunsul vine de la client, Aura Logistic SRL)
 - **Source:** interviul din 16.11.2026 și factura Aa0060 (INTERVIEW.md, SAMPLES.md)
+- **Confirmed:** 2026-11-25
 
 ## Q-023 · Forma discountului
 - **Status:** answered
@@ -129,3 +133,11 @@
 - **Blocks:** Exportul XML (D-009) pentru liniile scutite și cu taxare inversă; o eventuală coloană nouă în tabelul cotelor (migrare nouă, D-020).
 - **Who answers:** Alexandru Cerghezan (din legislație; ideal confirmat de contabil, Q-005)
 - **Source:** planul „Scheletul proiectului”, 19.11.2026; D-020
+- **Confirmed:** 2026-11-25
+
+## Q-037 · Numerele de factură în ordinea cronologică a datei emiterii
+- **Status:** open
+- **Context:** Numerotarea (D-005) garantează numere fără goluri și fără duplicate, dar schema nu împiedică o factură cu număr mai mare și dată de emitere mai veche decât precedenta din aceeași serie (de ex. Aa0061 din 09.11 după Aa0060 din 10.11). Trebuie ca data emiterii să nu scadă odată cu numărul? Se verifică în baza de date sau în aplicație, și ce se întâmplă cu o factură emisă cu dată în trecut?
+- **Blocks:** Validarea datei emiterii în formularul de factură; o eventuală constrângere pe `invoice`.
+- **Who answers:** Alexandru Cerghezan (ideal confirmat de contabil, Q-005)
+- **Source:** planul „Schema bazei de date”, 25.11.2026 (sugestie)

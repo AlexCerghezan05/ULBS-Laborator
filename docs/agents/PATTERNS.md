@@ -7,6 +7,7 @@
 
 ## Index
 ### [Teste](patterns/teste.md)
-- PATTERN-001 · Testele de integrare se numesc *IT și rulează pe db-test · candidate
+- PATTERN-001 · Testele de integrare se numesc *IT și rulează pe db-test · approved
+- PATTERN-002 · Regulile de integritate stau în baza de date și se testează direct cu SQL · candidate
 
 ---
