@@ -5,6 +5,12 @@ x-db-env: &db-env
   POSTGRES_USER: ${POSTGRES_USER:?Setați POSTGRES_USER în .env (vezi .env.example)}
   POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Setați POSTGRES_PASSWORD în .env (vezi .env.example)}
 
+# Schema (db/migration) plus seed-ul local (db/seed). La deploy, seed-ul se scoate din listă.
+# P21_SEED_PASSWORD_HASH: hash-ul BCrypt al parolei utilizatorilor de test (gol = fără login).
+x-seed-env: &seed-env
+  SPRING_FLYWAY_LOCATIONS: classpath:db/migration,classpath:db/seed
+  P21_SEED_PASSWORD_HASH: ${P21_SEED_PASSWORD_HASH:-}
+
 x-db-healthcheck: &db-healthcheck
   test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
   interval: 2s
@@ -25,6 +31,7 @@ services:
       SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/${POSTGRES_DB}
       SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER}
       SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD}
+      <<: *seed-env
     ports:
       - "127.0.0.1:8081:8080" # D-024: doar local
     depends_on:
@@ -55,6 +62,7 @@ services:
       SPRING_DATASOURCE_URL: jdbc:postgresql://db-test:5432/${POSTGRES_DB}
       SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER}
       SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD}
+      <<: *seed-env
     volumes:
       - ./backend:/app
       - m2:/root/.m2
