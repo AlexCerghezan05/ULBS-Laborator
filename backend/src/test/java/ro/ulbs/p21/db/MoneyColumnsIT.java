@@ -59,4 +59,22 @@ class MoneyColumnsIT {
                 "insert into product (name, unit, unit_price, vat_rate_code) values ('P', 'buc', 297.52066, 'S21')"))
                 .isInstanceOf(DataIntegrityViolationException.class);
     }
+
+    @Test
+    void amountWithMoreThan2DecimalsIsRejectedNotRounded() {
+        DbFixtures fx = new DbFixtures(jdbc);
+        long invoice = fx.invoice(fx.series("FACTURA"));
+        fx.line(invoice, 1, "1", "297.52");
+        assertThatThrownBy(() -> fx.line(invoice, 2, "1", "297.525"))
+                .isInstanceOf(DataIntegrityViolationException.class);
+    }
+
+    @Test
+    void amountsAreStoredExactly() {
+        DbFixtures fx = new DbFixtures(jdbc);
+        long invoice = fx.invoice(fx.series("FACTURA"));
+        assertThat(jdbc.queryForObject(
+                "select net_total::text || '+' || vat_total::text || '=' || total::text from invoice where id = ?",
+                String.class, invoice)).isEqualTo("297.52+62.48=360.00");
+    }
 }
