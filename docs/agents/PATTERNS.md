@@ -9,5 +9,6 @@
 ### [Teste](patterns/teste.md)
 - PATTERN-001 · Testele de integrare se numesc *IT și rulează pe db-test · approved
 - PATTERN-002 · Regulile de integritate stau în baza de date și se testează direct cu SQL · candidate
+- PATTERN-003 · Tranzacția de emitere: documentul inserat la final, fără I/O, fără savepoint-uri · candidate
 
 ---

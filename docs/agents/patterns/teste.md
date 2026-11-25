@@ -18,3 +18,15 @@
 - **Why:** Codul Java care va veni nu poate ocoli regula; testele rulează pe aceeași bază reală local și în CI.
 - **Example:** `backend/src/main/resources/db/migration/V5__invoices.sql`; `backend/src/test/java/ro/ulbs/p21/db/DbFixtures.java`; `IssuedInvoiceImmutableIT.java`; `NumberingConcurrencyIT.java`.
 - **Source:** agent · confidence medium
+
+## PATTERN-003 · Tranzacția de emitere: documentul inserat la final, fără I/O, fără savepoint-uri
+- **Status:** candidate
+- **Date:** 2026-11-25
+- **How:** Serviciul care emite o factură, un storno, o proformă sau o chitanță:
+  1. Calculează totul înainte (totaluri, TVA după regula de rotunjire, curs BNR, mențiuni), apoi face INSERT-ul documentului cât mai târziu în tranzacție: trigger-ul de numerotare ține lock pe contorul seriei până la commit și blochează toate celelalte emiteri pe aceeași serie și același an.
+  2. Nu pune în tranzacție nicio operație externă: PDF, email, apel BNR, upload. Se fac după commit.
+  3. Când o tranzacție numerotează două documente (de ex. factura și chitanța încasării în numerar), ordinea e mereu aceeași: întâi documentul din seria facturii, apoi chitanța. Altfel două emiteri simultane pot intra în deadlock pe contoare.
+  4. Factura și liniile, TVA-ul pe cote și mențiunile ei se scriu în aceeași tranzacție, fără savepoint-uri (`Propagation.NESTED`, pgjdbc `autosave`): excepția „factura e modificabilă în tranzacția care a creat-o” compară `xmin` cu tranzacția de vârf, deci într-un savepoint factura ar apărea deja blocată.
+- **Why:** Review-ul PR #2 (Performance: lock-ul pe contor e intenționat, dar serializează emiterile; Security 6: excepția din `invoice_is_locked` nu vede subtranzacțiile).
+- **Example:** `backend/src/main/resources/db/migration/V4__series_numbering.sql` (assign_document_number, allocate_number); `V5__invoices.sql` (invoice_is_locked); `NumberingConcurrencyIT.java`.
+- **Source:** agent · confidence medium

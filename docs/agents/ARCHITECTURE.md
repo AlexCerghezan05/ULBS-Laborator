@@ -32,14 +32,15 @@ Pagina DS-p21-health cere `GET /api/health` o dată, la deschidere.
 | Cotele de TVA | tabelul `vat_rate` | migrarea `V1__vat_rate.sql` | D-020: o cotă nouă = o migrare nouă; motivul de scutire lipsește (Q-034) |
 | Firma, utilizatorii | `company` (un rând, D-003), `app_user` (D-012, D-029) | `V2__company_users.sql` | `rounding_rule` null până la Q-007 |
 | Clienți, produse | `client` (PJ/PFA/PF), `product` | `V3__clients_products.sql` | D-010, D-019, D-021, D-022, D-032 |
-| Serii și numerotare | `series`, `series_counter`, funcția `allocate_number` | `V4__series_numbering.sql` | D-005: contor pe (serie, an), lock pe rând până la commit, fără goluri și fără duplicate |
-| Facturi, storno, proforme | `invoice`, `invoice_line`, `invoice_vat_summary`, `invoice_legal_note` | `V5__invoices.sql` | Copii la emitere (D-027); trigger-ele blochează orice schimbare pe FACTURA/STORNO după tranzacția care le-a creat |
-| Încasări, chitanțe | `payment`, `receipt` | `V6__payments_receipts.sql` | D-028; chitanța doar pe numerar, nemodificabilă (D-033) |
+| Serii și numerotare | `series`, `series_counter`, funcțiile `allocate_number` și `assign_document_number` | `V4__series_numbering.sql` | D-005: numărul îl pune trigger-ul la INSERT; contor pe (serie, an), lock pe rând până la commit, fără goluri și fără duplicate; contorul se schimbă doar din trigger; seria folosită nu-și mai schimbă numele sau formatul |
+| Facturi, storno, proforme | `invoice`, `invoice_line`, `invoice_vat_summary`, `invoice_legal_note` | `V5__invoices.sql` | Copii la emitere, inclusiv procentul și categoria TVA (D-027); trigger-ele blochează orice schimbare pe FACTURA/STORNO după tranzacția care le-a creat; storno pe același client și aceeași monedă; tranzacția de emitere: PATTERN-003 |
+| Încasări, chitanțe | `payment`, `receipt` | `V6__payments_receipts.sql` | D-028; chitanța doar pe numerar; chitanța și încasarea ei nemodificabile (D-033) |
 | Cursuri BNR, reminder-e | `bnr_rate`, `reminder_settings` (un rând), `reminder_log` | `V7__bnr_reminders.sql` | Valorile reminder-elor: Q-019 |
-| Seed local | firma și clientul S1, 3 utilizatori de test, seria `Aa`, factura S1 | `db/seed/R__seed.sql` (repetabilă, idempotentă) | Încărcat doar prin `SPRING_FLYWAY_LOCATIONS` din Compose |
+| Seed local | firma și clientul S1, 3 utilizatori de test, seria `Aa`, factura S1 | `db/seed/R__seed.sql` (repetabilă, idempotentă) | Încărcat doar prin `SPRING_FLYWAY_LOCATIONS` din Compose; S1 își importă numărul 60 cu trigger-ele oprite (superuser); la deploy fără seed (Q-038) |
 | Istoricul migrărilor | `flyway_schema_history` | Flyway | — |
 
 Banii și cantitățile sunt `numeric` fără scale fix, cu `CHECK (scale(x) <= n)` (D-031).
+Toate funcțiile au `search_path = pg_catalog, public, pg_temp`; TRUNCATE e refuzat pe tabelele cu documente și pe contor. Utilizatorul Postgres din producție: Q-038.
 
 ## Configuration
 | Name | Where set | Used by | Notes |
