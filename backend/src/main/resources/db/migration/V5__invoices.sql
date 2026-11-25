@@ -81,6 +81,13 @@ create table invoice (
     constraint invoice_total_sign check (case when doc_type = 'STORNO' then total <= 0 else total >= 0 end)
 );
 
+-- Indexuri pentru căutări (Postgres nu indexează automat FK-urile): storno-urile unei facturi,
+-- filtrele „client”, „perioadă” și „restante” din lista de facturi.
+create index invoice_original_idx on invoice (original_invoice_id) where original_invoice_id is not null;
+create index invoice_client_idx on invoice (client_id, issue_date);
+create index invoice_issue_idx on invoice (issue_date);
+create index invoice_due_idx on invoice (due_date) where doc_type = 'FACTURA';
+
 -- D-021: linia poate veni din catalog (product_id) sau poate fi scrisă liber; valorile sunt
 -- copiate pe linie. D-013: discount procentual pe linie. D-020: cota din vat_rate; procentul și
 -- categoria cotei se copiază pe linie (D-027) de trigger-ul copy_vat_rate.

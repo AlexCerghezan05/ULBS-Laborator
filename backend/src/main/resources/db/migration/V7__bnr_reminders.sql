@@ -32,3 +32,6 @@ create table reminder_log (
     constraint reminder_log_invoice_fk foreign key (invoice_id, invoice_doc_type) references invoice (id, doc_type),
     constraint reminder_log_sender check ((kind = 'MANUAL') = (sent_by is not null))
 );
+
+-- Istoricul unei facturi și ultimul reminder trimis (pentru repeat_every_days).
+create index reminder_log_invoice_idx on reminder_log (invoice_id, sent_at);

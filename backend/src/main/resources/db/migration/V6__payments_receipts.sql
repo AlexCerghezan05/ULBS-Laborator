@@ -13,6 +13,10 @@ create table payment (
     constraint payment_id_method_unique unique (id, method)
 );
 
+-- Încasările unei facturi (sold, restante) și raportul de încasări pe perioadă.
+create index payment_invoice_idx on payment (invoice_id);
+create index payment_paid_on_idx on payment (paid_on);
+
 -- Chitanța: o încasare în numerar are cel mult o chitanță (Q-012). Seria e de tip CHITANTA,
 -- numărul îl pune trigger-ul la INSERT, ca la facturi (D-005). Suma, factura și data sunt cele
 -- ale încasării, care devine nemodificabilă odată ce are chitanță (D-033).
