@@ -42,3 +42,10 @@
 - **Blocks:** Headerele de securitate pentru formularele de facturare; o eventuală extindere a D-024.
 - **Who answers:** Alexandru Cerghezan
 - **Source:** review-ul PR #1 (Security), 19.11.2026; owner-ul a amânat CSP-ul
+
+## Q-038 · Utilizatorul Postgres al aplicației în producție
+- **Status:** open
+- **Context:** Trigger-ele de immutabilitate (facturile emise, chitanțele, D-033) pot fi ocolite de un superuser cu `set session_replication_role = replica` sau cu `TRUNCATE`. Local și în teste, aplicația se conectează cu `POSTGRES_USER`, care în imaginea Docker este superuser. În producție, aplicația trebuie să folosească un utilizator Postgres fără superuser (și fără drept de proprietar pe tabele), ca trigger-ele să nu poată fi ocolite. Ce utilizator, cu ce drepturi (SELECT/INSERT/UPDATE/DELETE pe tabele, EXECUTE pe `allocate_number`, fără TRUNCATE), cine rulează migrările Flyway (un utilizator separat, proprietar al schemei?) și unde se creează (script de inițializare, migrare)?
+- **Blocks:** Deploy-ul live (Q-021); garanția că factura emisă nu se modifică nici prin SQL direct în producție.
+- **Who answers:** Alexandru Cerghezan
+- **Source:** raportul de build „Schema bazei de date”, 25.11.2026 (observație)

@@ -51,6 +51,7 @@
 - Q-021 · Unde rulează deploy-ul live HTTPS
 - Q-022 · Cum facem screenshot-urile aplicației
 - Q-035 · CSP complet pentru aplicație
+- Q-038 · Utilizatorul Postgres al aplicației în producție
 
 ### [Rapoarte](questions/rapoarte.md)
 - Q-014 · Raportul de încasări
