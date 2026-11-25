@@ -9,6 +9,7 @@
 - **Why:** Rolurile se verifică pe server pe fiecare rută, nu doar în UI (D-012); o rută uitată fără regulă e prinsă de test, nu în producție.
 - **Example:** `backend/src/main/java/ro/ulbs/p21/auth/Access.java`; `SecurityConfig.java`; `backend/src/test/java/ro/ulbs/p21/auth/RouteSecurityCoverageIT.java`; `AuthorizationIT.java`.
 - **Source:** agent · confidence medium
+- **Confirmed:** 2026-11-25
 
 ## PATTERN-005 · Erorile API au forma {"error":"COD"}; textul îl pune frontend-ul
 - **Status:** candidate
@@ -18,3 +19,11 @@
 - **Example:** `backend/src/main/java/ro/ulbs/p21/auth/ApiError.java`; `SecurityConfig.java` (entry point, access denied).
 - **Source:** agent · confidence medium
 - **Confirmed:** 2026-11-25
+
+## PATTERN-006 · Contor pe un rând: citire FOR UPDATE și actualizare în aceeași tranzacție
+- **Status:** candidate
+- **Date:** 2026-11-25
+- **How:** Când o regulă depinde de o stare dintr-un rând care se schimbă la fiecare cerere (de ex. încercările greșite și blocarea contului, D-036–D-038), serviciul e `@Transactional` și citește rândul cu `SELECT ... FOR UPDATE`; verificarea și UPDATE-ul se fac sub același lock, ca cererile simultane pe același rând să se facă una după alta. Un test `*ConcurrencyIT`, fără `@Transactional`, pornește cererile deodată și verifică rezultatul final.
+- **Why:** Review-ul de securitate PR #3: o citire fără lock urmată de UPDATE lăsa 20 de cereri simultane să verifice parola de 20 de ori în loc de 5.
+- **Example:** `backend/src/main/java/ro/ulbs/p21/auth/LoginService.java` (login); `AppUserRepository.java` (findForLogin); `backend/src/test/java/ro/ulbs/p21/auth/LoginConcurrencyIT.java`.
+- **Source:** agent · confidence medium

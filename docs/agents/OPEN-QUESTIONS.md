@@ -14,6 +14,7 @@
 - Q-041 · Când apare mesajul „Contul este dezactivat” · _answered_
 - Q-042 · Pe ce se numără încercările greșite de login · _answered_
 - Q-043 · Dezactivarea unui cont închide sesiunile deschise · _answered_
+- Q-045 · Cât așteaptă un login lock-ul pe rândul contului (lock_timeout)
 
 ### [Date client](questions/date-client.md)
 - Q-004 · Cine a răspuns la interviu · _answered_

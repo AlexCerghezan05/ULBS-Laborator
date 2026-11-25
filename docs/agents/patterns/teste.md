@@ -31,3 +31,4 @@
 - **Why:** Review-ul PR #2 (Performance: lock-ul pe contor e intenționat, dar serializează emiterile; Security 6: excepția din `invoice_is_locked` nu vede subtranzacțiile).
 - **Example:** `backend/src/main/resources/db/migration/V4__series_numbering.sql` (assign_document_number, allocate_number); `V5__invoices.sql` (invoice_is_locked); `NumberingConcurrencyIT.java`.
 - **Source:** agent · confidence medium
+- **Confirmed:** 2026-11-25
