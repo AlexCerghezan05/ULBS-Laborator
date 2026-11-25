@@ -1,0 +1,80 @@
+# D-044: deploy pe Render, planul gratuit (Q-021). Pașii din interfața Render: docs/deploy.md.
+# Browserul vede doar p21-frontend (nginx); nginx trimite /api la adresa publică HTTPS a lui
+# p21-backend (serviciile gratuite nu primesc trafic pe rețeaua privată). Local nu se schimbă
+# nimic: setările de aici sunt doar pentru Render.
+
+databases:
+  - name: p21-db
+    plan: free
+    region: frankfurt
+    postgresMajorVersion: "18"
+    databaseName: p21
+    user: p21
+    ipAllowList: [] # doar conexiuni din Render; din afară, prin dashboard (docs/deploy.md)
+
+services:
+  - type: web
+    name: p21-backend
+    runtime: docker
+    plan: free
+    region: frankfurt
+    rootDir: backend
+    dockerfilePath: ./Dockerfile
+    healthCheckPath: /api/health
+    envVars:
+      - key: PORT
+        value: "8080"
+      # Conexiunea internă la p21-db; Spring compune URL-ul JDBC din variabilele de mai jos.
+      - key: DB_HOST
+        fromDatabase: { name: p21-db, property: host }
+      - key: DB_PORT
+        fromDatabase: { name: p21-db, property: port }
+      - key: DB_NAME
+        fromDatabase: { name: p21-db, property: database }
+      - key: SPRING_DATASOURCE_URL
+        value: jdbc:postgresql://${DB_HOST}:${DB_PORT}/${DB_NAME}
+      - key: SPRING_DATASOURCE_USERNAME
+        fromDatabase: { name: p21-db, property: user }
+      - key: SPRING_DATASOURCE_PASSWORD
+        fromDatabase: { name: p21-db, property: password }
+      # Q-038: migrările plus datele de producție (D-045), fără seed-ul de test (db/seed).
+      - key: SPRING_FLYWAY_LOCATIONS
+        value: classpath:db/migration,classpath:db/prod
+      # D-046: conturile, doar hash-uri BCrypt (docs/deploy.md). Admin obligatoriu.
+      - key: P21_ADMIN_USERNAME
+        sync: false
+      - key: P21_ADMIN_PASSWORD_HASH
+        sync: false
+      - key: P21_OPERATOR_USERNAME
+        sync: false
+      - key: P21_OPERATOR_PASSWORD_HASH
+        sync: false
+      - key: P21_CONTABIL_USERNAME
+        sync: false
+      - key: P21_CONTABIL_PASSWORD_HASH
+        sync: false
+      # 512 MB pe planul gratuit: heap mic, un singur fir de GC, compilare JIT doar C1 (pornire
+      # mai rapidă pe 0,1 CPU). Memoria măsurată: docs/deploy.md.
+      - key: JAVA_TOOL_OPTIONS
+        value: >-
+          -Xmx200m -Xss512k -XX:MaxMetaspaceSize=128m -XX:ReservedCodeCacheSize=48m
+          -XX:MaxDirectMemorySize=32m -XX:+UseSerialGC -XX:TieredStopAtLevel=1
+      - key: SPRING_DATASOURCE_HIKARI_MAXIMUM_POOL_SIZE
+        value: "5"
+      - key: SERVER_TOMCAT_THREADS_MAX
+        value: "20"
+
+  - type: web
+    name: p21-frontend
+    runtime: docker
+    plan: free
+    region: frankfurt
+    rootDir: frontend
+    dockerfilePath: ./Dockerfile
+    healthCheckPath: /
+    envVars:
+      - key: PORT
+        value: "80"
+      # Adresa publică a lui p21-backend (https://p21-backend-....onrender.com), fără / la final.
+      - key: P21_BACKEND_URL
+        sync: false

@@ -67,7 +67,7 @@
 - **Rejected:** none recorded.
 - **Evidence:** review-ul PR #1 cu trei sub-agenți (Performance, Security, SEO & GEO), 19.11.2026; aprobarea owner-ului, 19.11.2026.
 - **Source:** user · confidence high
-- **Confirmed:** 2026-11-19
+- **Confirmed:** 2026-11-26
 
 ## D-029 · Un utilizator are un singur rol
 - **Status:** approved
@@ -98,3 +98,18 @@
 - **Evidence:** planul „Documentația API cu OpenAPI (Q-044)”, aprobat de Alexandru Cerghezan, 25.11.2026; `backend/src/main/java/ro/ulbs/p21/auth/SecurityConfig.java`; `backend/src/test/java/ro/ulbs/p21/docs/ApiDocsIT.java`.
 - **Source:** user · confidence high
 - **Confirmed:** 2026-11-25
+
+## D-044 · Deploy pe Render, planul gratuit, din render.yaml
+- **Status:** approved
+- **Date:** 2026-11-26
+- **Rule:**
+  - `render.yaml` (Blueprint, `frankfurt`): `p21-db` (Postgres 18 Free), `p21-backend` și `p21-frontend` (Docker web services Free, din `backend/Dockerfile` și `frontend/Dockerfile`).
+  - Browserul vede doar adresa frontend-ului. nginx trimite `/api/` la adresa publică HTTPS a backend-ului, din `P21_BACKEND_URL` (șablon `frontend/nginx.conf.template`, implicit `http://backend:8080` pentru Compose). Trimite `Host` al backend-ului, `X-Forwarded-Host` al frontend-ului și `X-Forwarded-Proto` primit de la Render. Certificatul backend-ului se verifică.
+  - Backend-ul citește `X-Forwarded-*` (`server.forward-headers-strategy=framework`), deci cookie-urile `JSESSIONID` și `XSRF-TOKEN` sunt `Secure`, fără `Domain` (D-039).
+  - Setările doar pentru Render stau în `render.yaml`: URL-ul JDBC compus din `fromDatabase`, `SPRING_FLYWAY_LOCATIONS=classpath:db/migration,classpath:db/prod` (fără `db/seed`), limitele JVM (`-Xmx200m`, SerialGC, C1), pool-ul Hikari de 5 conexiuni, 20 de fire Tomcat. Health check-ul backend-ului e `/api/health`, al frontend-ului `/`.
+  - Deploy-ul se face doar la go-ul owner-ului; pașii sunt în `docs/deploy.md`.
+- **Why:** Răspunsul la Q-021: HTTPS gratuit, fără card, cu Docker (D-001). Serviciile gratuite nu primesc trafic pe rețeaua privată, deci nginx folosește adresa publică a backend-ului.
+- **Rejected:** Adresa backend-ului scrisă în cod; două origini (CORS și cookie-uri cross-site); rețeaua privată Render (nu e disponibilă pe planul gratuit); seed-ul de test în producție.
+- **Evidence:** planul „Deploy pe Render, plan gratuit”, aprobat de Alexandru Cerghezan, 26.11.2026; documentația Render (free, blueprint-spec, postgresql), citită 26.11.2026; `render.yaml`; `ForwardedHeadersIT.java`; memoria măsurată: `docs/deploy.md`.
+- **Source:** user · confidence high
+- **Confirmed:** 2026-11-26

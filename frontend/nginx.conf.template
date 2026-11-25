@@ -1,0 +1,61 @@
+# D-040: nginx servește build-ul Vite și trimite /api spre backend.
+# D-024: securitate de bază (fără versiune, headere de securitate, fără indexare).
+# D-044: șablon; imaginea nginx înlocuiește variabilele de mediu la pornire (envsubst):
+# - P21_BACKEND_URL: adresa backend-ului. Implicit (Dockerfile) http://backend:8080, ca în
+#   Compose; pe Render, adresa publică HTTPS a backend-ului (render.yaml).
+# - NGINX_LOCAL_RESOLVERS: DNS-ul din /etc/resolv.conf (127.0.0.11 în Docker), pus de imagine.
+# Variabilele nginx ($host, $scheme...) nu sunt de mediu, deci rămân neatinse.
+
+# Protocolul văzut de browser: cel trimis de proxy-ul din față (Render termină HTTPS-ul și
+# trimite X-Forwarded-Proto), altfel cel al cererii (local, http).
+map $http_x_forwarded_proto $p21_forwarded_proto {
+    default $http_x_forwarded_proto;
+    ""      $scheme;
+}
+
+server {
+    listen 80;
+    root /usr/share/nginx/html;
+    server_tokens off;
+
+    # Headerele se moștenesc doar în location-urile fără add_header propriu.
+    add_header X-Content-Type-Options "nosniff" always;
+    add_header X-Frame-Options "DENY" always;
+    add_header Referrer-Policy "no-referrer" always;
+    add_header X-Robots-Tag "noindex, nofollow" always;
+
+    # Cu variabilă, nginx rezolvă din nou numele (backend-ul recreat în Docker, IP-urile Render).
+    resolver ${NGINX_LOCAL_RESOLVERS} valid=10s ipv6=off;
+    set $backend ${P21_BACKEND_URL};
+
+    location /api/ {
+        proxy_pass $backend;
+        # Render alege serviciul după Host, deci Host e al backend-ului; adresa văzută de browser
+        # (a frontend-ului) merge în X-Forwarded-Host. Cookie-urile n-au Domain (D-039), deci
+        # rămân pe adresa frontend-ului.
+        proxy_set_header Host $proxy_host;
+        proxy_set_header X-Forwarded-Host $http_host;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $p21_forwarded_proto;
+        # HTTPS spre backend (Render): SNI și certificat verificat.
+        proxy_ssl_server_name on;
+        proxy_ssl_verify on;
+        proxy_ssl_trusted_certificate /etc/ssl/certs/ca-certificates.crt;
+        # Lanțul are certificatul serverului, un intermediar și rădăcina (implicit nginx: 1).
+        proxy_ssl_verify_depth 3;
+        # Pe planul gratuit backend-ul adoarme; trezirea plus pornirea Spring pe 0,1 CPU durează
+        # ~2,5 minute (măsurat, docs/deploy.md), iar cererea așteaptă.
+        proxy_read_timeout 300s;
+    }
+
+    # Fișierele Vite (cu hash): un fișier lipsă dă 404, nu index.html.
+    location /assets/ {
+        try_files $uri =404;
+    }
+
+    # index.html se verifică la fiecare încărcare, ca să nu ceară assets vechi.
+    location / {
+        expires -1;
+        try_files $uri /index.html;
+    }
+}

@@ -18,7 +18,7 @@
 - **Why:** Codul Java care va veni nu poate ocoli regula; testele rulează pe aceeași bază reală local și în CI.
 - **Example:** `backend/src/main/resources/db/migration/V5__invoices.sql`; `backend/src/test/java/ro/ulbs/p21/db/DbFixtures.java`; `IssuedInvoiceImmutableIT.java`; `NumberingConcurrencyIT.java`.
 - **Source:** agent · confidence medium
-- **Confirmed:** 2026-11-25
+- **Confirmed:** 2026-11-26
 
 ## PATTERN-003 · Tranzacția de emitere: documentul inserat la final, fără I/O, fără savepoint-uri
 - **Status:** candidate

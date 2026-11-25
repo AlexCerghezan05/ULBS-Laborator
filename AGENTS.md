@@ -101,7 +101,8 @@ docker compose --profile test run --rm frontend-test
 
 ## 3. Layout
 - `backend/` — Spring Boot (Maven); Flyway migrations in `src/main/resources/db/migration/`.
-- `frontend/` — React + TypeScript (Vite), served by nginx (`nginx.conf`).
+- `frontend/` — React + TypeScript (Vite), served by nginx (`nginx.conf.template`, D-044).
+- `render.yaml` — the Render Blueprint (D-044); steps in `docs/deploy.md`.
 - `docker-compose.yml` — `db`, `backend`, `frontend`; profile `test`: `db-test`, `backend-test`.
 - `.github/workflows/ci.yml` — tests and ledger lint on every push.
 - `docs/agents/` — the knowledge ledger and the guide for people.
@@ -113,6 +114,7 @@ docker compose --profile test run --rm frontend-test
 
 ## 5. Release
 Default branch: `main`. No release flow yet (Q-003). Push only on the owner's go.
+Deploy: Render reads `render.yaml` from `main` (D-044); steps, checks and risks in `docs/deploy.md`. Deploy only on the owner's go.
 
 ## 6. Definition of done
 - Tests: `docker compose --profile test run --rm backend-test` and `docker compose --profile test run --rm frontend-test` pass. Frontend behaviour without an automated test is listed as "checked by hand".

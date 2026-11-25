@@ -143,8 +143,10 @@
 - **Source:** planul „Schema bazei de date”, 25.11.2026 (sugestie)
 
 ## Q-039 · Contorul inițial al unei serii la deploy (continuarea din SmartBill)
-- **Status:** open
+- **Status:** answered
+- **Answer:** O migrare repetabilă care rulează doar în producție (`db/prod/R__prod_start.sql`) importă factura S1 (Aa0060) și chitanța ei (Aa 0021) cu numerele lor și pune contoarele Aa/2026 la 60 și 21. Rulează ca proprietar al tabelelor și oprește trigger-ele de numerotare și garda contorului doar în tranzacția ei, fără `session_replication_role`. Nu suprascrie un contor existent. Următoarele numere sunt Aa0061 și Aa 0022; din 2027 numerotarea pornește de la 1 (D-005). O singură dată, la primul deploy; fără ecran (Alexandru Cerghezan, 26.11.2026, planul „Deploy pe Render”). Decizia: D-045.
 - **Context:** Clientul a emis în SmartBill facturi până la Aa0060 (S1) în 2026, deci în aplicație prima factură trebuie să fie Aa0061 (la fel pentru chitanțele `Aa`, ultima cunoscută 0021). Contorul `series_counter` se schimbă acum doar din trigger-ul de numerotare (V4); seed-ul local îl setează cu trigger-ele oprite (`session_replication_role`), ceea ce cere superuser, iar în producție aplicația nu va fi superuser (Q-038). Cum se setează contorul inițial la deploy: o migrare per instalare, o funcție permisă doar Admin-ului și doar cât seria nu are documente în anul respectiv, un ecran „Ultimul număr emis” la DS-p21-series? Cine o face, o singură dată sau și la începutul unui an?
 - **Blocks:** Deploy-ul live (Q-021, Q-038): prima factură emisă în aplicație pentru client; seria de chitanțe.
 - **Who answers:** Alexandru Cerghezan
 - **Source:** cererea lui Alexandru Cerghezan, 25.11.2026, după review-ul de securitate al PR #2
+- **Confirmed:** 2026-11-26

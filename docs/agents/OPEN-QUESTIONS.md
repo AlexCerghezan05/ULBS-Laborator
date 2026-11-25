@@ -43,7 +43,7 @@
 - Q-033 · Contabilul confirmă regula cursului BNR
 - Q-034 · Motivul de scutire pentru XML
 - Q-037 · Numerele de factură în ordinea cronologică a datei emiterii
-- Q-039 · Contorul inițial al unei serii la deploy (continuarea din SmartBill)
+- Q-039 · Contorul inițial al unei serii la deploy (continuarea din SmartBill) · _answered_
 
 ### [Incasari](questions/incasari.md)
 - Q-012 · Încasări în tranșe
@@ -56,10 +56,10 @@
 - Q-001 · What will this repo hold, and in which stack? · _answered_
 - Q-002 · Which build, run and test commands does the project use? · _answered_
 - Q-003 · How is work released or handed in?
-- Q-021 · Unde rulează deploy-ul live HTTPS
+- Q-021 · Unde rulează deploy-ul live HTTPS · _answered_
 - Q-022 · Cum facem screenshot-urile aplicației
 - Q-035 · CSP complet pentru aplicație
-- Q-038 · Utilizatorul Postgres al aplicației în producție
+- Q-038 · Utilizatorul Postgres al aplicației în producție · _investigating_
 - Q-044 · Documentarea OpenAPI a API-ului · _answered_
 
 ### [Rapoarte](questions/rapoarte.md)
