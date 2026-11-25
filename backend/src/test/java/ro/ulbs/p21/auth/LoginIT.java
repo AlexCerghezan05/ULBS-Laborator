@@ -43,6 +43,9 @@ class LoginIT {
     @Test
     void successfulLoginStartsANewSessionAndMeReturnsTheUser() throws Exception {
         String username = users.user("OPERATOR");
+        // Antetul DS-p21-app-shell arată denumirea firmei (D-003: un singur rând în company).
+        String company = jdbc.queryForObject("select name from company where id = 1", String.class);
+        String me = "{\"username\":\"" + username + "\",\"fullName\":\"Test OPERATOR\",\"role\":\"OPERATOR\",\"companyName\":\"" + company + "\"}";
         MockHttpSession before = new MockHttpSession();
         String idBefore = before.getId();
 
@@ -55,7 +58,7 @@ class LoginIT {
                         })
                         .contentType("application/json").content(AuthFixtures.body(username, PASSWORD)))
                 .andExpect(status().isOk())
-                .andExpect(content().json("{\"username\":\"" + username + "\",\"fullName\":\"Test OPERATOR\",\"role\":\"OPERATOR\"}", true))
+                .andExpect(content().json(me, true))
                 .andReturn();
 
         MockHttpSession session = (MockHttpSession) result.getRequest().getSession(false);
@@ -64,7 +67,7 @@ class LoginIT {
 
         mvc.perform(get("/api/me").session(session))
                 .andExpect(status().isOk())
-                .andExpect(content().json("{\"username\":\"" + username + "\",\"fullName\":\"Test OPERATOR\",\"role\":\"OPERATOR\"}", true));
+                .andExpect(content().json(me, true));
     }
 
     @Test

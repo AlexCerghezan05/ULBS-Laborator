@@ -26,21 +26,25 @@ class LoginController {
     record LoginRequest(String username, String password) {
     }
 
-    record Me(String username, String fullName, String role) {
-        static Me of(AppPrincipal p) {
-            return new Me(p.username(), p.fullName(), p.role());
-        }
+    /** Utilizatorul curent și denumirea firmei, pentru antetul DS-p21-app-shell. */
+    record Me(String username, String fullName, String role, String companyName) {
     }
 
     private final LoginService logins;
+    private final AppUserRepository users;
     private final SessionAuthenticationStrategy sessionStrategy;
     private final SecurityContextRepository contextRepository;
 
-    LoginController(LoginService logins, SessionAuthenticationStrategy sessionStrategy,
+    LoginController(LoginService logins, AppUserRepository users, SessionAuthenticationStrategy sessionStrategy,
                     SecurityContextRepository contextRepository) {
         this.logins = logins;
+        this.users = users;
         this.sessionStrategy = sessionStrategy;
         this.contextRepository = contextRepository;
+    }
+
+    private Me toMe(AppPrincipal p) {
+        return new Me(p.username(), p.fullName(), p.role(), users.companyName());
     }
 
     @PostMapping("/api/login")
@@ -52,7 +56,7 @@ class LoginController {
             case LOGIN_LOCKED -> ApiError.response(HttpStatus.TOO_MANY_REQUESTS, "LOGIN_LOCKED");
             case OK -> {
                 startSession(result.principal(), request, response);
-                yield ResponseEntity.ok(Me.of(result.principal()));
+                yield ResponseEntity.ok(toMe(result.principal()));
             }
         };
     }
@@ -75,7 +79,7 @@ class LoginController {
     @PreAuthorize(Access.READ)
     @GetMapping("/api/me")
     Me me(@AuthenticationPrincipal AppPrincipal principal) {
-        return Me.of(principal);
+        return toMe(principal);
     }
 
     /** Pune cookie-ul XSRF-TOKEN înaintea primului POST (login). */

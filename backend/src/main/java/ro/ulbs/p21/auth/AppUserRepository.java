@@ -49,6 +49,11 @@ public class AppUserRepository {
         jdbc.update("update app_user set failed_login_count = 0, locked_until = null where id = ? and (failed_login_count <> 0 or locked_until is not null)", id);
     }
 
+    /** Denumirea firmei furnizor pentru antet (D-003: un singur rând); null dacă firma nu e completată încă. */
+    String companyName() {
+        return jdbc.queryForList("select name from company where id = 1", String.class).stream().findFirst().orElse(null);
+    }
+
     /** D-041: false și pentru un utilizator care nu mai există. */
     boolean isActive(long id) {
         return jdbc.queryForList("select active from app_user where id = ?", Boolean.class, id).stream()

@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Facturi</title>
-<!-- DS-p21-app-shell · status: draft (25.11.2026) · machetă, nu cod de producție.
+<!-- DS-p21-app-shell · status: approved (25.11.2026) · machetă, nu cod de producție.
      Cadrul paginilor după login: antetul cu meniul, utilizatorul curent și „Ieșire”.
      Conținutul de acum: lista de facturi provizorie (DS-p21-invoice-list are machetă proprie mai târziu).
      Meniul are doar ecranele care există (planul „Autentificare și autorizare”, 25.11.2026).
@@ -90,6 +90,9 @@ h2 { font-size:16px; line-height:24px; font-weight:600; margin:0; }
 .app { position:relative; min-height:560px; background:var(--color-bg); display:flex; flex-direction:column; }
 .header { background:var(--color-surface); border-bottom:var(--border-width) solid var(--color-border);
   display:flex; align-items:center; gap:var(--space-4); padding:0 var(--space-5); min-height:48px; }
+.brand { display:flex; align-items:baseline; gap:var(--space-2); min-width:0; flex:none; max-width:320px; }
+.brand .app-name { font-size:16px; line-height:24px; font-weight:600; flex:none; }
+.brand .company { font-size:13px; line-height:18px; color:var(--color-text-muted); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; min-width:0; }
 .nav { display:flex; gap:var(--space-1); flex:1; min-width:0; }
 .nav a { font-size:14px; line-height:20px; font-weight:500; color:var(--color-text-muted); text-decoration:none;
   display:inline-flex; align-items:center; min-height:48px; padding:0 var(--space-2); border-bottom:2px solid transparent;
@@ -138,6 +141,7 @@ h2 { font-size:16px; line-height:24px; font-weight:600; margin:0; }
 /* ---------- Telefon (sm, 360–767 px) ---------- */
 @container (max-width: 767px) {
   .header { flex-wrap:wrap; padding:0 var(--space-4); gap:0 var(--space-3); }
+  .brand { flex-basis:100%; max-width:none; padding-top:var(--space-2); }
   .nav a { min-height:44px; }
   .user { flex-basis:100%; justify-content:space-between; padding:var(--space-2) 0; border-top:var(--border-width) solid var(--color-border); }
   .who .name { max-width:180px; }
@@ -151,7 +155,7 @@ h2 { font-size:16px; line-height:24px; font-weight:600; margin:0; }
 <body>
 
 <div class="mockbar" role="region" aria-label="Comenzi machetă">
-  <span class="tag">Machetă · DS-p21-app-shell · draft</span>
+  <span class="tag">Machetă · DS-p21-app-shell · approved</span>
   <span class="mocklabel" id="lbl-state">Stare</span>
   <div class="seg" id="seg-state" role="group" aria-labelledby="lbl-state"></div>
   <span class="mocklabel" id="lbl-role">Rol</span>
@@ -171,7 +175,7 @@ h2 { font-size:16px; line-height:24px; font-weight:600; margin:0; }
       <li><strong>Cadrul</strong> fiecărei pagini de după login: un antet cu meniul în stânga, iar în dreapta numele utilizatorului, rolul și butonul „Ieșire”. Ecranele următoare intră în același cadru.</li>
       <li><strong>Meniul</strong> are doar ecranele care există: acum doar „Facturi”. Celelalte intrări (clienți, produse, încasări, rapoarte, setări) apar odată cu ecranele lor, după rolul utilizatorului (D-012). Intrarea paginii curente are <code>aria-current="page"</code> și linia de accent dedesubt.</li>
       <li><strong>Utilizatorul</strong>: numele complet (<code>app_user.full_name</code>) și rolul ca etichetă cu text (Admin, Operator, Contabil), din <code>GET /api/me</code>. Un nume lung se taie cu „…” și se vede întreg în tooltip (<code>title</code>).</li>
-      <li><strong>Fără numele aplicației sau al firmei în antet</strong>: nu au fost stabilite. Se pot adăuga la cerere.</li>
+      <li><strong>Numele aplicației și firma</strong>: în stânga antetului, „Facturare” și denumirea firmei furnizor (<code>company.name</code>, câmpul <code>companyName</code> din <code>GET /api/me</code>). O denumire lungă se taie cu „…”, cu tooltip. Fără firmă completată, apare doar „Facturare”.</li>
       <li><strong>Lista de facturi provizorie</strong>: titlul „Facturi” și un empty state care spune ce va apărea aici. Fără buton „Factură nouă”: formularul de factură (DS-p21-invoice-form) nu e construit încă. Lista reală (DS-p21-invoice-list) are machetă proprie, mai târziu.</li>
       <li><strong>Încărcare</strong>: cât timp se citește <code>GET /api/me</code>, antetul și pagina arată skeleton-uri în forma finală, fără animație.</li>
       <li><strong>Eroare</strong> (serverul nu răspunde la <code>/api/me</code>): mesaj cu ce e de făcut și butonul „Reîncercați”. Un răspuns 401 nu e eroare: trimite la login (cu „Sesiunea a expirat” pentru <code>SESSION_EXPIRED</code>, D-034).</li>
@@ -201,9 +205,14 @@ const ROLES = { ADMIN:'Admin', OPERATOR:'Operator', CONTABIL:'Contabil' };
 const NAMES = { ADMIN:'Admin Test', OPERATOR:'Ion Ionescu', CONTABIL:'Contabil Test' };
 const LONG = 'Alexandra-Maria Constantinescu-Dumitrescu';
 
+const COMPANY = 'FURNIZOR EXEMPLU S.R.L.';
+const LONG_COMPANY = 'SOCIETATEA COMERCIALA DE TRANSPORT SI LOGISTICA EXEMPLU S.R.L.';
+const brand = (company) => `<div class="brand"><span class="app-name">Facturare</span>${company === null ? '' : `<span class="company" title="${company}">${company}</span>`}</div>`;
+
 function header(key, role) {
   if (key === 'loading' || key === 'error') {
     return `<header class="header">
+      ${brand(null)}
       <nav class="nav" aria-label="Meniu principal"><a href="#" aria-current="page">Facturi</a></nav>
       <div class="user" aria-hidden="true"><div class="who"><span class="sk name"></span><span class="sk role"></span></div><span class="sk btn"></span></div>
     </header>`;
@@ -211,6 +220,7 @@ function header(key, role) {
   const name = key === 'longname' ? LONG : NAMES[role];
   const out = key === 'loggingout';
   return `<header class="header">
+    ${brand(key === 'longname' ? LONG_COMPANY : COMPANY)}
     <nav class="nav" aria-label="Meniu principal"><a href="#" aria-current="page">Facturi</a></nav>
     <div class="user">
       <div class="who"><span class="name" title="${name}">${name}</span><span class="role">${ROLES[role]}</span></div>
