@@ -88,3 +88,13 @@
 - **Evidence:** planul „Autentificare și autorizare”, aprobat de Alexandru Cerghezan, 25.11.2026 (D-023 → superseded-by D-040).
 - **Source:** user · confidence high
 - **Confirmed:** 2026-11-25
+
+## D-043 · Documentația API e la /api/docs, doar pentru Admin
+- **Status:** approved
+- **Date:** 2026-11-25
+- **Rule:** Specificația OpenAPI (springdoc) e la `GET /api/docs` și Swagger UI la `/api/docs/ui`, sub `/api/`, unde nginx trimite deja cererile la backend. Accesul e doar pentru rolul Admin, în toate mediile, inclusiv în producție: fără sesiune 401 `UNAUTHENTICATED`, alt rol 403 `FORBIDDEN` (C-001). Regula stă în `SecurityConfig`, pentru că rutele springdoc nu sunt controllerele aplicației. „Try it out” trimite `X-XSRF-TOKEN` din cookie-ul `XSRF-TOKEN` (`springdoc.swagger-ui.csrf.enabled=true`, D-039).
+- **Why:** D-002 cere API documentat cu OpenAPI, dar API-ul nu trebuie expus public: aplicația e internă (D-024).
+- **Rejected:** documentație publică; documentația dezactivată în producție; un `API.md` scris de mână (nu mai e nevoie: springdoc 3.2.0 e compatibil cu Boot 4.1).
+- **Evidence:** planul „Documentația API cu OpenAPI (Q-044)”, aprobat de Alexandru Cerghezan, 25.11.2026; `backend/src/main/java/ro/ulbs/p21/auth/SecurityConfig.java`; `backend/src/test/java/ro/ulbs/p21/docs/ApiDocsIT.java`.
+- **Source:** user · confidence high
+- **Confirmed:** 2026-11-25

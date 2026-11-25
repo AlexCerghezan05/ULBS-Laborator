@@ -56,7 +56,8 @@
 - **Confirmed:** 2026-11-25
 
 ## Q-044 · Documentarea OpenAPI a API-ului
-- **Status:** open
+- **Status:** answered
+- **Answer:** springdoc-openapi 3.2.0 (construit pe Spring Boot 4.1.2): specificația la `/api/docs`, Swagger UI la `/api/docs/ui`, doar pentru Admin, în toate mediile; „Try it out” trimite tokenul CSRF (Alexandru Cerghezan, 25.11.2026). Decizia: D-043.
 - **Context:** D-002 cere API REST documentat cu OpenAPI, dar niciun endpoint nu e documentat încă (`/api/health` și rutele de autentificare, C-001). Varianta aleasă: springdoc, într-un plan separat, imediat după planul de autentificare; de verificat compatibilitatea cu Spring Boot 4.1 și dacă documentația e publică sau cere login.
 - **Blocks:** D-002 (partea de OpenAPI).
 - **Who answers:** Alexandru Cerghezan

@@ -55,4 +55,5 @@
 - D-024 · Securitate de bază: nginx, Docker, CI, fără indexare
 - D-029 · Un utilizator are un singur rol
 - D-040 · Build și rulare: Maven și Vitest în profilul `test` din Compose, frontend în nginx
+- D-043 · Documentația API e la /api/docs, doar pentru Admin
 
