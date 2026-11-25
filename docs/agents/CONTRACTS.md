@@ -26,8 +26,9 @@
   - `GET /api/health` (public) → 200 `{"status":"UP"}`.
   - Orice rută protejată: 401 `SESSION_EXPIRED` (cookie de sesiune care nu mai e valid) sau 401 `UNAUTHENTICATED` (fără sesiune, după logout, cont dezactivat: D-041) · 403 `FORBIDDEN` (rol greșit, D-012) · 403 `CSRF` (token CSRF lipsă sau greșit).
   - CSRF: orice POST/PUT/PATCH/DELETE trimite header-ul `X-XSRF-TOKEN` cu valoarea cookie-ului `XSRF-TOKEN` (D-039).
+- **Documentation:** specificația OpenAPI la `GET /api/docs` și Swagger UI la `/api/docs/ui`, cu exemple pentru fiecare rută de mai sus. Doar Admin: fără sesiune 401 `UNAUTHENTICATED`, alt rol 403 `FORBIDDEN` (D-043).
 - **Consumers:** `frontend/src/api.ts`, `frontend/src/pages/LoginPage.tsx`, `frontend/src/auth.tsx`.
-- **Evidence:** planul „Autentificare și autorizare”, aprobat 25.11.2026; `companyName` cerut de Alexandru Cerghezan pentru antet, 25.11.2026; `backend/src/main/java/ro/ulbs/p21/auth/LoginController.java`, `SecurityConfig.java`; testele din `backend/src/test/java/ro/ulbs/p21/auth/`.
+- **Evidence:** planul „Autentificare și autorizare”, aprobat 25.11.2026; `companyName` cerut de Alexandru Cerghezan pentru antet, 25.11.2026; trimiterea la documentație, planul „Documentația API cu OpenAPI (Q-044)”, aprobat 25.11.2026 (`backend/src/main/java/ro/ulbs/p21/docs/OpenApiConfig.java`); `backend/src/main/java/ro/ulbs/p21/auth/LoginController.java`, `SecurityConfig.java`; testele din `backend/src/test/java/ro/ulbs/p21/auth/`.
 - **Source:** agent · confidence high
 - **Confirmed:** 2026-11-25
 

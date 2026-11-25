@@ -60,7 +60,7 @@
 - Q-022 · Cum facem screenshot-urile aplicației
 - Q-035 · CSP complet pentru aplicație
 - Q-038 · Utilizatorul Postgres al aplicației în producție
-- Q-044 · Documentarea OpenAPI a API-ului
+- Q-044 · Documentarea OpenAPI a API-ului · _answered_
 
 ### [Rapoarte](questions/rapoarte.md)
 - Q-014 · Raportul de încasări

@@ -4,9 +4,10 @@ Aplicație de facturare cu export e-Factura (UBL 2.1, RO_CIUS) pentru un client 
 o firmă mică din Sibiu (Aura Logistic SRL, transport alternativ de persoane).
 Proiectul P21 din catalogul Web Avansat. Fișa completă: [`docs/brief.md`](docs/brief.md).
 
-> Stadiu (19.11.2026): scope și stack aprobate (D-002…D-023 în
-> [`docs/agents/DECISIONS.md`](docs/agents/DECISIONS.md)). Există scheletul: backend cu
-> `GET /api/health`, prima migrare (cotele de TVA, D-020), pagina de stare, Docker Compose și CI.
+> Stadiu (25.11.2026): scope și stack aprobate (deciziile în
+> [`docs/agents/DECISIONS.md`](docs/agents/DECISIONS.md)). Există scheletul (`GET /api/health`,
+> Docker Compose, CI), schema bazei de date (migrările Flyway V1–V8), autentificarea cu roluri
+> (C-001) și documentația API OpenAPI la `/api/docs/ui`, doar pentru Admin (D-043).
 
 ## Documente
 | Ce | Unde |
@@ -18,6 +19,7 @@ Proiectul P21 din catalogul Web Avansat. Fișa completă: [`docs/brief.md`](docs
 | Vocabular | [`CONTEXT.md`](CONTEXT.md) |
 | Întrebări deschise | [`docs/agents/OPEN-QUESTIONS.md`](docs/agents/OPEN-QUESTIONS.md) |
 | Jurnal de lucru cu AI | [`AI_LOG.md`](AI_LOG.md) |
+| Documentația API (OpenAPI) | cu aplicația pornită și login ca Admin: Swagger UI la http://localhost:8090/api/docs/ui, specificația JSON la http://localhost:8090/api/docs (D-043) |
 
 ## Scope
 

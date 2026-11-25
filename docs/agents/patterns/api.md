@@ -27,3 +27,11 @@
 - **Why:** Review-ul de securitate PR #3: o citire fără lock urmată de UPDATE lăsa 20 de cereri simultane să verifice parola de 20 de ori în loc de 5.
 - **Example:** `backend/src/main/java/ro/ulbs/p21/auth/LoginService.java` (login); `AppUserRepository.java` (findForLogin); `backend/src/test/java/ro/ulbs/p21/auth/LoginConcurrencyIT.java`.
 - **Source:** agent · confidence medium
+
+## PATTERN-007 · Rutele se documentează pe controller; erorile comune și rutele din filtre în OpenApiConfig
+- **Status:** candidate
+- **Date:** 2026-11-25
+- **How:** Fiecare rută nouă primește `@Operation` și câte un `@ApiResponse` pentru fiecare status pe care îl întoarce ea însăși, cu `@ExampleObject` cu nume (pentru erori: numele e codul, iar schema e `#/components/schemas/ApiError`). Erorile comune din C-001 (401 `UNAUTHENTICATED` / `SESSION_EXPIRED`, 403 `FORBIDDEN` pe rutele cu sesiune, 403 `CSRF` pe POST/PUT/PATCH/DELETE) nu se scriu pe controller: le adaugă `OpenApiCustomizer`-ul din `ro.ulbs.p21.docs.OpenApiConfig`, unde se descriu și rutele făcute de filtre (logout). Parametrii injectați de Spring (de ex. `CsrfToken`) se ascund cu `@Parameter(hidden = true)`. `ApiDocsIT` verifică rutele și codurile.
+- **Why:** Erorile comune se scriu într-un singur loc și nu se uită pe rutele noi; specificația rămâne aliniată cu C-001.
+- **Example:** `backend/src/main/java/ro/ulbs/p21/auth/LoginController.java`; `backend/src/main/java/ro/ulbs/p21/docs/OpenApiConfig.java`; `backend/src/test/java/ro/ulbs/p21/docs/ApiDocsIT.java`.
+- **Source:** agent · confidence medium
