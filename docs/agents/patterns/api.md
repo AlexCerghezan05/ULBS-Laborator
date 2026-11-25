@@ -5,11 +5,10 @@
 ## PATTERN-004 · Fiecare rută își declară accesul cu @PreAuthorize, verificat de un test
 - **Status:** candidate
 - **Date:** 2026-11-25
-- **How:** Fiecare metodă de controller din `ro.ulbs.p21` are `@PreAuthorize` cu unul din nivelurile din `Access` (`ADMIN`, `WRITE`, `REPORTS`, `READ`, după D-012). `SecurityConfig` lasă publice doar rutele din lista lui; restul cer login. `RouteSecurityCoverageIT` parcurge toate rutele: pică dacă una n-are `@PreAuthorize` sau dacă lista rutelor publice diferă. O rută publică nouă se adaugă în ambele locuri, cu motiv. Testele de roluri folosesc rute de test într-un `@RestController` imbricat în test, cu `@Import`.
+- **How:** Fiecare metodă de controller din `ro.ulbs.p21` are `@PreAuthorize` cu unul din nivelurile din `Access` (`ADMIN`, `WRITE`, `REPORTS`, `READ`, după D-012). `SecurityConfig` lasă publice doar rutele din lista lui; restul cer login. `RouteSecurityCoverageIT` parcurge toate rutele: pică dacă una n-are `@PreAuthorize`, dacă o rută care modifică date (POST, PUT, PATCH, DELETE) are doar `permitAll()` sau `isAuthenticated()`, sau dacă rutele lăsate publice de regulile din `SecurityConfig` (întrebate direct pentru un vizitator fără login) diferă de lista lui. O rută publică nouă se adaugă în ambele locuri, cu motiv. Testele de roluri folosesc rute de test într-un `@RestController` imbricat în test, cu `@Import`.
 - **Why:** Rolurile se verifică pe server pe fiecare rută, nu doar în UI (D-012); o rută uitată fără regulă e prinsă de test, nu în producție.
 - **Example:** `backend/src/main/java/ro/ulbs/p21/auth/Access.java`; `SecurityConfig.java`; `backend/src/test/java/ro/ulbs/p21/auth/RouteSecurityCoverageIT.java`; `AuthorizationIT.java`.
 - **Source:** agent · confidence medium
-- **Confirmed:** 2026-11-25
 
 ## PATTERN-005 · Erorile API au forma {"error":"COD"}; textul îl pune frontend-ul
 - **Status:** candidate
