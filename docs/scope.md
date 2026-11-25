@@ -32,7 +32,7 @@ editată de Admin. (D-003)
 - Număr secvențial, fără goluri și fără duplicate sub emiteri simultane (test).
 - Resetare anuală și comportamentul după 9999: după răspunsul la Q-008.
 - Storno-ul nu are serie proprie: ia următorul număr din seria facturii originale (interviu, D-005).
-- Proforma nu consumă număr din seria de facturi (test). Folosirea proformei de către client: Q-006.
+- Proforma nu consumă număr din seria de facturi (test). Clientul nu folosește proforme; ele rămân în scope și se testează cu date de test (Q-006).
 
 ### Facturi
 - Data emiterii și data scadentă; linii cu discount; cote de TVA multiple pe aceeași factură.
@@ -102,7 +102,7 @@ Java 21 + Spring Boot, PostgreSQL, Flyway, OpenAPI, React + TypeScript; schematr
 RO_CIUS validat în Java (ph-schematron sau Saxon). Totul în Docker (D-001).
 
 ## 6. Blocaje deschise
-- **Q-018** · facturile reale S2–S5 lipsesc: Definition of Done („cele 5 facturi reale”) e blocat.
-- Q-005 contabil · Q-006 proforme · Q-007 rotunjire implicită · Q-008 format număr · Q-009 BNR ·
+- Q-018 răspunsă (25.11.2026): o singură factură reală (S1); Definition of Done cere „factura reală S1 produce XML valid” (README.md).
+- Q-005 contabil · Q-007 rotunjire implicită · Q-008 format număr · Q-009 BNR ·
   Q-010 storno parțial · Q-011/Q-015 U.M. · Q-012 tranșe · Q-013 XML din SmartBill ·
   Q-014 raport de încasări · Q-017 numele firmei · Q-019 reminder-e · Q-020 coloane rapoarte · Q-021 deploy · Q-033 regula cursului BNR (contabil).

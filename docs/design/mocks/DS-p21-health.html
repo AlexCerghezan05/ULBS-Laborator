@@ -6,7 +6,7 @@
 <title>Starea serverului</title>
 <!-- DS-p21-health · status: approved (19.11.2026) · machetă, nu cod de producție.
      Ecran tehnic temporar al scheletului (D-023); dispare când apare DS-p21-login.
-     Doar tokens din docs/design/DESIGN.md (D-011). Inter vine aici din Google Fonts;
+     Doar tokens din docs/design/DESIGN.md (D-025). Inter vine aici din Google Fonts;
      în aplicație e self-hosted. -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -14,10 +14,10 @@
 <style>
 /* ---------- Tokens (DESIGN.md → Tokens) ---------- */
 :root {
-  --color-bg:#F6F8FA; --color-surface:#FFFFFF; --color-surface-muted:#F1F3F5;
-  --color-border:#D8DEE4; --color-border-strong:#8592A0;
-  --color-text:#1F2933; --color-text-muted:#5B6672;
-  --color-accent:#3E6A87; --color-accent-hover:#335A73; --color-on-accent:#FFFFFF; --color-accent-subtle:#E8F0F5;
+  --color-bg:#FAF6F1; --color-surface:#FFFFFF; --color-surface-muted:#F5EFE8;
+  --color-border:#E6DCD1; --color-border-strong:#958678;
+  --color-text:#2D2420; --color-text-muted:#6B5D53;
+  --color-accent:#6B4A3A; --color-accent-hover:#563A2D; --color-on-accent:#FFFFFF; --color-accent-subtle:#F3ECE6;
   --color-success:#1E7A46; --color-success-bg:#E6F4EC;
   --color-danger:#B42318; --color-danger-bg:#FDECEA;
   --color-warning:#8A5A00; --color-warning-bg:#FFF4E0;
@@ -32,10 +32,10 @@
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --color-bg:#0F1419; --color-surface:#161C22; --color-surface-muted:#1D252D;
-    --color-border:#2C3640; --color-border-strong:#5E6B78;
-    --color-text:#E6EAEE; --color-text-muted:#9AA6B2;
-    --color-accent:#7FA9C7; --color-accent-hover:#9BBDD6; --color-on-accent:#0F1419; --color-accent-subtle:#1B2B38;
+    --color-bg:#16120F; --color-surface:#1E1915; --color-surface-muted:#27211C;
+    --color-border:#3A312A; --color-border-strong:#796B60;
+    --color-text:#F0E9E2; --color-text-muted:#B3A69B;
+    --color-accent:#CFAE94; --color-accent-hover:#DEC3AD; --color-on-accent:#16120F; --color-accent-subtle:#2E241D;
     --color-success:#5CC98A; --color-success-bg:#12291C;
     --color-danger:#F28B82; --color-danger-bg:#3A1715;
     --color-warning:#E8B04B; --color-warning-bg:#33270F;
@@ -45,10 +45,10 @@
   }
 }
 :root[data-theme="dark"] {
-  --color-bg:#0F1419; --color-surface:#161C22; --color-surface-muted:#1D252D;
-  --color-border:#2C3640; --color-border-strong:#5E6B78;
-  --color-text:#E6EAEE; --color-text-muted:#9AA6B2;
-  --color-accent:#7FA9C7; --color-accent-hover:#9BBDD6; --color-on-accent:#0F1419; --color-accent-subtle:#1B2B38;
+  --color-bg:#16120F; --color-surface:#1E1915; --color-surface-muted:#27211C;
+  --color-border:#3A312A; --color-border-strong:#796B60;
+  --color-text:#F0E9E2; --color-text-muted:#B3A69B;
+  --color-accent:#CFAE94; --color-accent-hover:#DEC3AD; --color-on-accent:#16120F; --color-accent-subtle:#2E241D;
   --color-success:#5CC98A; --color-success-bg:#12291C;
   --color-danger:#F28B82; --color-danger-bg:#3A1715;
   --color-warning:#E8B04B; --color-warning-bg:#33270F;

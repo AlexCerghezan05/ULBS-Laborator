@@ -32,7 +32,8 @@
 - **Source:** interviul din 16.11.2026 și factura Aa0060 (INTERVIEW.md, SAMPLES.md)
 
 ## Q-018 · Facturile reale S2–S5
-- **Status:** open
+- **Status:** answered
+- **Answer:** Clientul a refuzat să dea alte facturi în afară de S1 (telefonic, 25.11.2026). Profesorul a confirmat pe 25.11.2026 că o singură factură reală e suficientă. Punctul din Definition of Done devine „factura reală S1 produce XML valid”. Storno-ul, EUR, cotele multiple și persoana fizică se acoperă cu facturi de test, marcate clar ca test (Alexandru Cerghezan, 25.11.2026). Testele de rotunjire pe facturi reale (Q-007) se fac doar pe S1.
 - **Context:** Fișa cere minim 5 facturi reale anonimizate; în SAMPLES.md este doar S1 (Aa0060). Ideal S2–S5 acoperă un storno, o factură cu mai multe linii, una plătită în tranșe și una din alt an. Clientul a refuzat să dea un storno ca exemplu.
 - **Blocks:** Definition of Done: „cele 5 facturi reale produc XML valid”; testele de rotunjire pe facturi reale (Q-007).
 - **Who answers:** Alexandru Cerghezan (facturile vin de la client, Aura Logistic SRL)

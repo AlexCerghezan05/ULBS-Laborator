@@ -121,3 +121,13 @@
 - **Evidence:** răspunsul la Q-030, 19.11.2026; `docs/design/registry.yaml`; SAMPLES.md (S1).
 - **Source:** user · confidence high
 - **Confirmed:** 2026-11-19
+
+## D-026 · O singură factură reală (S1); restul cazurilor cu facturi de test
+- **Status:** approved
+- **Date:** 2026-11-25
+- **Rule:** S1 (Aa0060) este singura factură reală și trebuie să producă XML RO_CIUS valid (raportul validatorului în repo). Storno-ul, facturile în EUR/USD, cotele de TVA multiple, clientul persoană fizică și proforma se testează cu facturi de test, marcate clar ca test și ținute separat de S1. D-006 și D-008 rămân.
+- **Why:** Clientul a refuzat să dea alte facturi în afară de S1 și nu folosește proforme; profesorul a confirmat pe 25.11.2026 că o singură factură reală e suficientă (Q-018, Q-006).
+- **Rejected:** Cinci facturi reale, cum cere fișa.
+- **Evidence:** răspunsurile la Q-018 și Q-006, 25.11.2026; INTERVIEW.md (follow-up 25.11.2026); SAMPLES.md.
+- **Source:** user · confidence high
+- **Confirmed:** 2026-11-25

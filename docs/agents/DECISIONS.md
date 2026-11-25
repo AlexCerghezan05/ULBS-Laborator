@@ -8,7 +8,7 @@
 
 ## Index
 ### [Design](decisions/design.md)
-- D-011 · Design tokens și stil UI din DESIGN.md
+- D-025 · Design tokens și stil UI din DESIGN.md, paletă caldă
 
 ### [E factura](decisions/e-factura.md)
 - D-009 · e-Factura: doar export XML, fără trimitere în SPV
@@ -29,6 +29,7 @@
 - D-018 · Fără ciorne de factură
 - D-020 · Cotele de TVA într-un tabel populat prin migrare
 - D-021 · Linia de factură din catalog, cu text liber permis
+- D-026 · O singură factură reală (S1); restul cazurilor cu facturi de test
 
 ### [Platforma](decisions/platforma.md)
 - D-001 · Servers and databases run in Docker

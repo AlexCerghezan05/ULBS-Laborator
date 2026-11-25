@@ -3,7 +3,8 @@
 > Topic file. The index is in `../OPEN-QUESTIONS.md`.
 
 ## Q-006 · Proforme
-- **Status:** open
+- **Status:** answered
+- **Answer:** Clientul nu folosește proforme (confirmat telefonic, 25.11.2026). Proformele rămân în scope pentru că le cere fișa (D-014, D-017) și se testează cu date de test, ca la D-006 și D-008 (Alexandru Cerghezan, 25.11.2026).
 - **Context:** Clientul a spus atât „nu folosesc proforme”, cât și că proforma devine factură după plată. Le folosește sau nu?
 - **Blocks:** Fluxul proformă → factură.
 - **Who answers:** Alexandru Cerghezan (răspunsul vine de la client, Aura Logistic SRL)
