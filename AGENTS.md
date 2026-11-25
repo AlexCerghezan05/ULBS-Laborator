@@ -92,9 +92,10 @@ cp .env.example .env
 docker compose up --build
 # Build the images:
 docker compose build
-# Test (mvn -B verify on the db-test Postgres, D-023):
+# Test backend (mvn -B verify on the db-test Postgres, D-040):
 docker compose --profile test run --rm backend-test
-# Frontend tests: none yet.
+# Test frontend (npm ci + vitest run, D-040):
+docker compose --profile test run --rm frontend-test
 # screenshot (UI): none yet (Q-022)
 ```
 
@@ -114,7 +115,7 @@ docker compose --profile test run --rm backend-test
 Default branch: `main`. No release flow yet (Q-003). Push only on the owner's go.
 
 ## 6. Definition of done
-- Tests: `docker compose --profile test run --rm backend-test` passes. Behaviour without an automated test (frontend) is listed as "checked by hand".
+- Tests: `docker compose --profile test run --rm backend-test` and `docker compose --profile test run --rm frontend-test` pass. Frontend behaviour without an automated test is listed as "checked by hand".
 - The ledger lint passes.
 - UI changes: screenshots of every changed screen, light and dark, compared with `docs/design/DESIGN.md` (command: Q-022).
 - New practices recorded as candidate patterns; open points recorded as Q- entries.

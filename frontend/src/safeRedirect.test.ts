@@ -37,7 +37,8 @@ describe('loginPath', () => {
   });
 
   it('marchează sesiunea expirată', () => {
-    expect(loginPath('/facturi', true)).toBe('/login?next=%2Ffacturi&expired=1');
+    expect(loginPath('/facturi/5', true)).toBe('/login?next=%2Ffacturi%2F5&expired=1');
+    expect(loginPath(HOME, true)).toBe('/login?expired=1');
   });
 
   it('fără next pentru pagina implicită', () => {

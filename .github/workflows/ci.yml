@@ -1,4 +1,4 @@
-# La fiecare push: testele backend-ului (aceeași comandă ca local, D-023) și ledger-lint.
+# La fiecare push: testele backend-ului și ale frontend-ului (aceleași comenzi ca local, D-040) și ledger-lint.
 name: CI
 
 on: push
@@ -16,6 +16,8 @@ jobs:
         run: cp .env.example .env
       - name: Teste (mvn -B verify pe db-test)
         run: docker compose --profile test run --rm backend-test
+      - name: Teste frontend (vitest run)
+        run: docker compose --profile test run --rm frontend-test
       - name: Oprire servicii de test
         if: always()
         run: docker compose --profile test down

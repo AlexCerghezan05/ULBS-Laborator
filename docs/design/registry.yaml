@@ -17,19 +17,19 @@ designs:
     kind: screen
     summary: Autentificare cu nume de utilizator și parolă (app_user.username); fără înregistrare și fără „am uitat parola”, conturile le creează Admin-ul (D-012). Mesaje sub câmp pentru câmpuri goale; mesaje pentru date greșite (generic), prea multe încercări (D-036, D-037), cont dezactivat (D-035), sesiune expirată. După login: pagina internă de unde a plecat utilizatorul, altfel lista de facturi (DS-p21-invoice-list, D-034).
     roles: toți (Admin, Operator, Contabil)
-    source: none yet
+    source: frontend/src/pages/LoginPage.tsx
     screenshots: []
     design_ref: mocks/DS-p21-login.html
-    status: approved
+    status: implemented
 
   - id: DS-p21-app-shell
     kind: component
     summary: Cadrul paginilor de după login - antetul cu „Facturare” și denumirea firmei (company.name), meniul (doar ecranele care există; acum „Facturi”), numele și rolul utilizatorului din GET /api/me (C-001) și butonul „Ieșire”. Stări - încărcare, eroare la /api/me, nume lung, ieșire în curs, ieșire eșuată. Conține deocamdată lista de facturi provizorie (empty state).
     roles: toți (Admin, Operator, Contabil); intrările din meniu după rol (D-012), odată cu ecranele lor
-    source: none yet
+    source: frontend/src/components/AppShell.tsx, frontend/src/pages/InvoiceListPage.tsx
     screenshots: []
     design_ref: mocks/DS-p21-app-shell.html
-    status: approved
+    status: implemented
 
   - id: DS-p21-company-settings
     kind: screen
@@ -156,12 +156,3 @@ designs:
     screenshots: []
     design_ref: none
     status: planned
-
-  - id: DS-p21-health
-    kind: screen
-    summary: Ecran tehnic temporar al scheletului (D-023) - cere o dată GET /api/health și arată răspunsul (încărcare, succes, eroare). Dispare când apare DS-p21-login.
-    roles: oricine, fără autentificare (autentificarea are plan separat, D-012)
-    source: frontend/src/App.tsx
-    screenshots: []
-    design_ref: mocks/DS-p21-health.html
-    status: implemented
