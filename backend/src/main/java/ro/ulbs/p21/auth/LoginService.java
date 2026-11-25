@@ -5,6 +5,7 @@ import java.util.Optional;
 import java.util.UUID;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ro.ulbs.p21.auth.AppUserRepository.LoginRow;
 
 /**
@@ -36,6 +37,11 @@ class LoginService {
         this.dummyHash = encoder.encode(UUID.randomUUID().toString());
     }
 
+    /**
+     * O singură tranzacție, cu lock pe rândul contului: blocarea, parola și numărătoarea se
+     * verifică și se scriu fără ca o altă încercare pe același cont să intervină (PR #3).
+     */
+    @Transactional
     Result login(String username, String password) {
         String pw = password == null ? "" : password;
         Optional<LoginRow> found = username == null ? Optional.empty() : users.findForLogin(username);

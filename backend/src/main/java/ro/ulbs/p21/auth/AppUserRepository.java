@@ -20,11 +20,17 @@ public class AppUserRepository {
         this.jdbc = jdbc;
     }
 
+    /**
+     * Rândul contului, blocat până la commit (FOR UPDATE): încercările simultane pe același cont
+     * așteaptă una după alta, deci fiecare vede blocarea și numărătoarea lăsate de cea dinainte.
+     * Se cheamă doar într-o tranzacție (LoginService.login).
+     */
     Optional<LoginRow> findForLogin(String username) {
         List<LoginRow> rows = jdbc.query("""
                 select id, username, full_name, password_hash, role, active,
                        coalesce(locked_until > now(), false) as locked
-                from app_user where username = ?""",
+                from app_user where username = ?
+                for update""",
                 (rs, n) -> new LoginRow(rs.getLong("id"), rs.getString("username"), rs.getString("full_name"),
                         rs.getString("password_hash"), rs.getString("role"), rs.getBoolean("active"), rs.getBoolean("locked")),
                 username);
